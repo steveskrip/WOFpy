@@ -138,20 +138,20 @@
 					<wml2:parameter>
 						<om:NamedValue>
 							<om:name xlink:title="dataType" xlink:href="http://hiscentral.cuahsi.org/wml/dataType"/>
-							<om:value xsi:type="xsd:string">{ variable_result.DataType  }}</om:value>
+							<om:value xsi:type="xsd:string">{{ variable_result.DataType }}</om:value>
 						</om:NamedValue>
 					</wml2:parameter>
 					<wml2:parameter>
 						<om:NamedValue>
 							<om:name xlink:title="noDataValue"
 								xlink:href="http://hiscentral.cuahsi.org/wml/noDataValue"/>
-							<om:value xsi:type="xsd:string">{ variable_result.NoDataValue  }}</om:value>
+							<om:value xsi:type="xsd:string">{{ variable_result.NoDataValue  }}</om:value>
 						</om:NamedValue>
 					</wml2:parameter>
 					<wml2:parameter>
 						<om:NamedValue>
 							<om:name xlink:title="http://hiscentral.cuahsi.org/wml/sampleMedium" xlink:href=""/>
-							<om:value xsi:type="xsd:string">{ variable_result.SampleMedium }}</om:value>
+							<om:value xsi:type="xsd:string">{{ variable_result.SampleMedium }}</om:value>
 						</om:NamedValue>
 					</wml2:parameter>
 				<!--	<wml2:parameter>
