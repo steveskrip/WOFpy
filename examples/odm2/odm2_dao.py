@@ -316,7 +316,7 @@ class Odm2Dao(BaseDao):
 
     def get_method_by_id(self, method_id):
         m = self.db_session.query(odm2_models.Methods).\
-            filter(odm2_models.Methods.MethodID == method_id).one()
+            filter(odm2_models.Methods.MethodID == method_id).first()
         w_m = model.Method(m)
         return w_m
 
