@@ -10,6 +10,7 @@ class Variable(wof_base.BaseVariable):
         self.NoDataValue = v.NoDataValue
         self.SampleMedium = VarSampleMedium
         self.DataType = v.VariableTypeCV
+        self.Speciation = v.SpeciationCV
         if v_unit is not None:
             self.VariableUnits = Unit(v_unit)
         else:

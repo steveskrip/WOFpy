@@ -151,7 +151,7 @@ def get_values_wml2():
 
     if (data_values is not None):
         firstMethod = data_values[0].MethodID
-        method_result = current_app.wof_inst.dao.get_methods_by_id(firstMethod)
+        method_result = current_app.wof_inst.dao.get_method_by_id(firstMethod)
 
     current_date = str(datetime.datetime.now())
 
