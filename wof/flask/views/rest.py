@@ -153,7 +153,7 @@ def get_values_wml2():
         firstMethod = data_values[0].MethodID
         method_result = current_app.wof_inst.dao.get_method_by_id(firstMethod)
 
-    current_date = str(datetime.datetime.now())
+    current_date = str(datetime.datetime.now().isoformat())
 
     response = make_response(render_template('wml2_values_template.xml',
                                             current_date=current_date,

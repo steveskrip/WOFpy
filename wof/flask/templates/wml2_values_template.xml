@@ -21,7 +21,7 @@
 	gml:id="generated_collection_doc">
 	<wml2:metadata>
 		<wml2:DocumentMetadata gml:id="doc_md">
-			<wml2:generationDate>{{ current_date.isoformat() }}</wml2:generationDate>
+			<wml2:generationDate>{{ current_date }}</wml2:generationDate>
 			<wml2:version xlink:href="http://www.opengis.net/waterml/2.0" xlink:title="WaterML 2.0 RFC"/>
 			<wml2:generationSystem>WOFpy Experimental/Demo WaterML2 Method</wml2:generationSystem>
 		</wml2:DocumentMetadata>
