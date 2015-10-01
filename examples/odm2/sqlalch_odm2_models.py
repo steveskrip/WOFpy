@@ -104,8 +104,8 @@ class Series(wof_base.BaseSeries):
         #self.MethodDescription = m_obj.MethodDescription
         self.Method = Method(m_obj)
         self.Organization = o_obj.OrganizationName
-        self.BeginDateTimeUTC = a_obj.BeginDateTime
-        self.EndDateTimeUTC = a_obj.EndDateTime
+        self.BeginDateTimeUTC = a_obj.BeginDateTime.isoformat()
+        self.EndDateTimeUTC = a_obj.EndDateTime.isoformat()
         self.ValueCount = r.ValueCount
         self.Source = Source(aff)
 
@@ -114,7 +114,7 @@ class DataValue(wof_base.BaseDataValue):
     def __init__(self,resultType,v,aff_id=None):
         self.ValueID = v.ValueID
         self.DataValue = v.DataValue
-        self.DateTimeUTC = v.ValueDateTime
+        self.DateTimeUTC = v.ValueDateTime.isoformat()
         self.UTCOffset = v.ValueDateTimeUTCOffset
         if aff_id is not None:
             self.SourceID = '%d' % aff_id
