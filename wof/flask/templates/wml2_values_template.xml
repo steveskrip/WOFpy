@@ -21,7 +21,7 @@
 	gml:id="generated_collection_doc">
 	<wml2:metadata>
 		<wml2:DocumentMetadata gml:id="doc_md">
-			<wml2:generationDate>{{ current_date }}</wml2:generationDate>
+			<wml2:generationDate>{{ current_date.isoformat() }}</wml2:generationDate>
 			<wml2:version xlink:href="http://www.opengis.net/waterml/2.0" xlink:title="WaterML 2.0 RFC"/>
 			<wml2:generationSystem>WOFpy Experimental/Demo WaterML2 Method</wml2:generationSystem>
 		</wml2:DocumentMetadata>
@@ -104,20 +104,22 @@
 					<!--wml2:intendedSamplingInterval--><!--  wml2:status should be a mapping based on QC level... but there is no fixed qcvocab-->
 					<wml2:sampledMedium xlink:href="http://www.opengis.net/def/waterml/2.0/medium/SurfaceWater"
 						xlink:title="Surface Water"/>
-					<!--wml2:maximumGap--></wml2:ObservationMetadata>
+					<!--wml2:maximumGap-->
+				</wml2:ObservationMetadata>
 			</om:metadata>
-			<gml:name codeSpace="http://www.opengis.net/waterml/2.0/examples">WML2fromWOFpy</gml:name>
+
 			<om:phenomenonTime>
                             <gml:TimePeriod gml:id="phen_time">
                                     <gml:beginPosition>{{ data_values[0].DateTimeUTC }}</gml:beginPosition>
                                     <gml:endPosition>{{ data_values[data_values|length-1].DateTimeUTC }}</gml:endPosition>
                             </gml:TimePeriod>
 			</om:phenomenonTime>
-			<om:resultTime>
-				<gml:TimeInstant>
+	<!--		<om:resultTime>
+				<gml:TimeInstant gml:id="result_time">
 					<gml:timePosition></gml:timePosition> {# TODO: Figure out what this is #}
 				</gml:TimeInstant>
 			</om:resultTime>
+			-->
 			<om:procedure> {# TODO: Figure out what this is. Method. #}
 				<wml2:ObservationProcess gml:id="process-1">
 					<gml:description>Water chemistry grab sample collected by technicians in the field.</gml:description>
@@ -207,18 +209,22 @@
 				</sams:shape>
 				<wml2:monitoringType xlink:href="http://www.cuahsi.org/waterml2/siteType/surfaceWater"
 					xlink:title="Surface Water"/>
-				<!-- wml2 descriptionReference pointer to a web page --><wml2:gaugeDatum xlink:href="http://www.opengis.net/def/datum/EPSG/0/5102" xlink:title="NGVD29"/>
+				<!-- wml2 descriptionReference pointer to a web page -->
+					<wml2:verticalDatum xlink:href="http://www.opengis.net/def/datum/EPSG/0/5102" xlink:title="NGVD29"/>
+					<wml2:timeZone ></wml2:timeZone>
+					<wml2:daylightSavingTimeZone></wml2:daylightSavingTimeZone>
 			</wml2:MonitoringPoint>
 			</om:featureOfInterest>	
 			<om:result>
-				<wml2:MeasurementTimeseries>
-					<wml2:temporalExtent xlink:href="#phen_time"/>
+				<wml2:MeasurementTimeseries gml:id="MTS">
+					
 					<wml2:metadata>
 						<wml2:MeasurementTimeseriesMetadata><!--9.11.4 (TimeSeriesMetadata) + 9.14.1 (MeasurementTimeSeriesMetadata)
 	            basetime
 	                                            spacing commentblock startAnchorPoint endAnchorPoint
 	                                            cumulative accumulationAnchorTime
 	                                            accumulationIntervalLength aggregationDuration -->
+							<wml2:temporalExtent xlink:href="#phen_time"/>
 							<wml2:cumulative>false</wml2:cumulative>
 						</wml2:MeasurementTimeseriesMetadata>
 					</wml2:metadata>
@@ -231,7 +237,7 @@
 							<!--8.6.3 unitOfMeasure. Mapping. only one or two
                                             are done presently. The unit of measure is specified
                                             using the ISO19103 UnitOfMeasure type. -->
-							<wml2:uom uom="{{variable_result.VariableUnits.UnitsAbbreviation}}"/>
+							<wml2:uom code="{{variable_result.VariableUnits.UnitsAbbreviation}}"/>
 							<!--8.6.5 Data type mapping to
                                             InterpolationType-->
 							<wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/Discontinuous"
