@@ -62,6 +62,7 @@ class BaseVariable(object):
     VariableDescription = None
     VariableUnits = BaseUnits()
     TimeUnits = BaseUnits()
+    Speciation = None # added for wml 1.1
 
 
 class BaseSite(object):

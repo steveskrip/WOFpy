@@ -149,13 +149,18 @@ def get_values_wml2():
     site_result = current_app.wof_inst.dao.get_site_by_code(siteCode)
     variable_result = current_app.wof_inst.dao.get_variable_by_code(varCode)
 
+    if (data_values is not None):
+        firstMethod = data_values[0].MethodID
+        method_result = current_app.wof_inst.dao.get_methods_by_id(firstMethod)
+
     current_date = str(datetime.datetime.now())
 
     response = make_response(render_template('wml2_values_template.xml',
                                             current_date=current_date,
                                             data_values=data_values,
                                             site_result=site_result,
-                                            variable_result=variable_result))
+                                            variable_result=variable_result,
+                                            method_result=method_result ))
 
     response.headers['Content-Type'] = 'text/xml'
 
