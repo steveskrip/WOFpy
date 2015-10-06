@@ -77,6 +77,43 @@ class Odm2Dao(BaseDao):
                 s_arr.append(w_s)
         return s_arr
 
+    def get_sites_by_box(self, west,south,north,east):
+        """
+        north - ymax - latitude
+        south - ymin - latitude
+        west - xmin - longitude
+        east - xmax - longitude
+        """
+        try:
+            s = self.db_session.query(odm2_models.Sites).\
+                join(odm2_models.SamplingFeatures).\
+                filter(odm2_models.Sites.Latitude >= south,
+                       odm2_models.Sites.Latitude <= north,
+                       odm2_models.Sites.Longitude >= west,
+                       odm2_models.Sites.Longitude <= east).all()
+        except:
+            s = None
+        if len(s) is 0 or s is None:
+            site_alias = aliased(odm2_models.Sites, name='site_alias')
+            sf_alias = aliased(odm2_models.SamplingFeatures, name='sf_alias')
+            rf_alias = aliased(odm2_models.RelatedFeatures, name='rf_alias')
+            try:
+                s = self.db_session.query(site_alias,sf_alias,rf_alias).\
+                    filter(sf_alias.SamplingFeatureID == rf_alias.SamplingFeatureID,
+                           rf_alias.RelatedFeatureID == site_alias.SamplingFeatureID,
+                           site_alias.Latitude >= south,
+                           site_alias.Latitude <= north,
+                           site_alias.Longitude >= west,
+                           site_alias.Longitude <= east).all()
+            except:
+                s = None
+        s_arr = []
+        if s is not None or len(s) is not 0:
+            for i in range(len(s)):
+                w_s = model.Site(s[i])
+                s_arr.append(w_s)
+        return s_arr
+
     def get_units_for_variable(self,var_code):
         u = None
         s = None
@@ -106,6 +143,7 @@ class Odm2Dao(BaseDao):
         u = None
         s = None
         t = None
+        ti = None
         resultType = 'M' #'TS': Time series, 'M':measurement
         try:
             r = self.db_session.query(odm2_models.MeasurementResultValues).\
@@ -154,26 +192,28 @@ class Odm2Dao(BaseDao):
                 u = r.MeasurementResultObj.ResultObj.UnitsObj
                 s = r.MeasurementResultObj.ResultObj.SampledMediumCV
                 t = r.MeasurementResultObj.TimeUnitObj
+                ti = r.MeasurementResultObj.TimeAggregationInterval
             if resultType is 'TS':
                 u = r.TimeSeriesResultObj.ResultObj.UnitsObj
                 s = r.TimeSeriesResultObj.ResultObj.SampledMediumCV
                 t = r.TimeUnitObj
-        return u,s,t
+                ti = r.TimeAggregationInterval
+        return u,s,t,ti
 
     def get_all_variables(self):
         v = self.db_session.query(odm2_models.Variables).all()
         v_arr = []
         for i in range(len(v)):
-            u,s,t = self.get_units_for_value_for_variable(v[i].VariableCode)
-            w_v = model.Variable(v[i],s,u,t)
+            u,s,t,ti = self.get_units_for_value_for_variable(v[i].VariableCode)
+            w_v = model.Variable(v[i],s,u,t,ti)
             v_arr.append(w_v)
         return v_arr
 
     def get_variable_by_code(self, var_code):
         v = self.db_session.query(odm2_models.Variables).\
             filter(odm2_models.Variables.VariableCode == var_code).first()
-        u,s,t = self.get_units_for_value_for_variable(var_code)
-        w_v = model.Variable(v,s,u,t)
+        u,s,t,ti = self.get_units_for_value_for_variable(var_code)
+        w_v = model.Variable(v,s,u,t,ti)
         return w_v
 
     def get_variables_by_codes(self, var_codes_arr):
@@ -181,8 +221,8 @@ class Odm2Dao(BaseDao):
             filter(odm2_models.Variables.VariableCode.in_(var_codes_arr)).all()
         v_arr = []
         for i in range(len(v)):
-            u,s,t = self.get_units_for_value_for_variable(v[i].VariableCode)
-            w_v = model.Variable(v[i],s,u,t)
+            u,s,t,ti = self.get_units_for_value_for_variable(v[i].VariableCode)
+            w_v = model.Variable(v[i],s,u,t,ti)
             v_arr.append(w_v)
         return v_arr
 
@@ -198,13 +238,16 @@ class Odm2Dao(BaseDao):
                 filter(odm2_models.SamplingFeatures.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
                        odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).all()
         r_arr = []
+        varCodeArr = []
         aff = None
         for i in range(len(r)):
             if i is 0:
                 aff = self.db_session.query(odm2_models.Affiliations).\
                     filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()
             w_r = model.Series(r[i],aff)
-            r_arr.append(w_r)
+            if w_r.Variable.VariableCode not in varCodeArr:
+                varCodeArr.append(w_r.Variable.VariableCode)
+                r_arr.append(w_r)
         return r_arr
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
@@ -224,15 +267,17 @@ class Odm2Dao(BaseDao):
                        odm2_models.Variables.VariableCode == var_code).all()
 
         r_arr = []
+        varCodeArr = []
         aff = None
         for i in range(len(r)):
             if i is 0:
                 aff = self.db_session.query(odm2_models.Affiliations).\
                   filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()
             w_r = model.Series(r[i],aff)
-            r_arr.append(w_r)
+            if w_r.Variable.VariableCode not in varCodeArr:
+                varCodeArr.append(w_r.Variable.VariableCode)
+                r_arr.append(w_r)
         return r_arr
-
 
     def get_datavalues(self, site_code, var_code, begin_date_time=None,
                        end_date_time=None):
@@ -308,9 +353,9 @@ class Odm2Dao(BaseDao):
                         org_id = valueResultArr[i].MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
                     if resultType is 'TS':
                         org_id = valueResultArr[i].TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
-                    aff_id = self.db_session.query(odm2_models.Affiliations.AffiliationID).\
+                    aff = self.db_session.query(odm2_models.Affiliations).\
                             filter(odm2_models.Affiliations.OrganizationID == org_id).first()
-                w_v = model.DataValue(resultType,valueResultArr[i],aff_id)
+                w_v = model.DataValue(resultType,valueResultArr[i],aff)
                 v_arr.append(w_v)
         return v_arr
 
@@ -343,4 +388,20 @@ class Odm2Dao(BaseDao):
             w_a = model.Source(aff[i])
             aff_arr.append(w_a)
         return aff_arr
+
+    def get_qualcontrollvl_by_id(self, qual_control_lvl_id):
+        pl = self.db_session.query(odm2_models.ProcessingLevels)\
+            .filter(odm2_models.ProcessingLevels.ProcessingLevelID == qual_control_lvl_id).first()
+        w_pl = model.QualityControlLevel(pl)
+        return w_pl
+
+    def get_qualcontrollvls_by_ids(self, qual_control_lvl_id_arr):
+        pl = self.db_session.query(odm2_models.ProcessingLevels)\
+            .filter(odm2_models.ProcessingLevels.ProcessingLevelID.in_(qual_control_lvl_id_arr)).all()
+        pl_arr = []
+        for i in range(len(pl)):
+            w_pl = model.QualityControlLevel(pl[i])
+            pl_arr.append(w_pl)
+        return pl_arr
+
 

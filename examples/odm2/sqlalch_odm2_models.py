@@ -3,7 +3,7 @@ import wof.models as wof_base
 class Variable(wof_base.BaseVariable):
 
     def __init__(self, v=None,
-                 VarSampleMedium=None, v_unit=None, v_tunit=None):
+                 VarSampleMedium=None, v_unit=None, v_tunit=None, v_timeinterval=None):
         self.VariableCode = v.VariableCode
         self.VariableName = v.VariableNameCV
         self.VariableDescription = v.VariableDefinition
@@ -17,6 +17,7 @@ class Variable(wof_base.BaseVariable):
             self.VariableUnits = None
         if v_tunit is not None:
             self.TimeUnits = Unit(v_tunit)
+            self.TimeSupport = v_timeinterval
         else:
             self.TimeUnits = None
 
@@ -93,49 +94,51 @@ class Series(wof_base.BaseSeries):
         #self.VariableCode = v_obj.VariableCode
         #self.VariableName = v_obj.VariableNameCV
         self.SampleMedium = r.SampledMediumCV
-        self.QualityControlLevelID = \
-            wof_base.QualityControlLevelTypes['QUAL_CONTROLLED_DATA'][1]
-        self.QualityControlLevelCode = \
-            wof_base.QualityControlLevelTypes['QUAL_CONTROLLED_DATA'][0]
-        #self.QualityControlLevelCode = p_obj.Definition
-        #self.QualityControlLevelID = int(p_obj.ProcessingLevelCode)
-        #self.QualityControlLevelID = 0
+        self.QualityControlLevelID = p_obj.ProcessingLevelID
+        self.QualityControlLevelCode = p_obj.ProcessingLevelCode
+        self.Definition = p_obj.Definition
+        self.Explanation = p_obj.Explanation
         #self.MethodID = m_obj.MethodID
         #self.MethodDescription = m_obj.MethodDescription
         self.Method = Method(m_obj)
         self.Organization = o_obj.OrganizationName
         self.BeginDateTimeUTC = a_obj.BeginDateTime.isoformat()
-        self.EndDateTimeUTC = a_obj.EndDateTime.isoformat()
+        if a_obj.EndDateTime is not None:
+            self.EndDateTimeUTC = a_obj.EndDateTime.isoformat()
         self.ValueCount = r.ValueCount
         self.Source = Source(aff)
 
 class DataValue(wof_base.BaseDataValue):
 
-    def __init__(self,resultType,v,aff_id=None):
+    def __init__(self,resultType,v,aff_obj=None):
         self.ValueID = v.ValueID
         self.DataValue = v.DataValue
         self.DateTimeUTC = v.ValueDateTime.isoformat()
         self.UTCOffset = v.ValueDateTimeUTCOffset
-        if aff_id is not None:
-            self.SourceID = '%d' % aff_id
+        if aff_obj is not None:
+            self.SourceID = '%d' % aff_obj.AffiliationID
+            self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
         if resultType is 'M':
             self.CensorCode = v.MeasurementResultObj.CensorCodeCV
             self.MethodID = v.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
+            self.MethodCode = v.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
+            self.QualityControlLevelID = v.MeasurementResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelID
+            #self.QualityControlLevel = QualityControlLevel(v.MeasurementResultObj.ResultObj.ProcessingLevelObj)
+            self.QualityControlLevel = v.MeasurementResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelCode
         if resultType is 'TS':
             self.CensorCode = v.CensorCodeCV
             self.MethodID = v.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
-
-    QualityControlLevelID = \
-        wof_base.QualityControlLevelTypes['QUAL_CONTROLLED_DATA'][1]
-    QualityControlLevel = \
-        wof_base.QualityControlLevelTypes['QUAL_CONTROLLED_DATA'][0]
-
+            self.MethodCode = v.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
+            self.QualityControlLevelID = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelID
+            #self.QualityControlLevel = QualityControlLevel(v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj)
+            self.QualityControlLevel = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelCode
 
 class Method(wof_base.BaseMethod):
     def __init__(self,m_obj):
         self.MethodID = m_obj.MethodID
         self.MethodDescription = m_obj.MethodDescription
         self.MethodLink = m_obj.MethodLink
+        self.MethodCode = m_obj.MethodCode
 
 class Unit(wof_base.BaseUnits):
     def __init__(self,u_obj):
@@ -148,6 +151,7 @@ class Source(wof_base.BaseSource):
     def __init__(self,aff_obj):
         self.SourceID = aff_obj.AffiliationID
         self.Organization = aff_obj.OrganizationObj.OrganizationName
+        self.OrganizationCode = aff_obj.OrganizationObj.OrganizationCode
         self.SourceDescription = aff_obj.OrganizationObj.OrganizationDescription
         self.SourceLink = aff_obj.OrganizationObj.OrganizationLink
         self.ContactName = '%s %s' % (aff_obj.PersonObj.PersonFirstName,aff_obj.PersonObj.PersonLastName)
@@ -157,3 +161,10 @@ class Source(wof_base.BaseSource):
         #self.City = 'San Diego'
         #self.State = 'CA'
         #self.ZipCode = '92122'
+
+class QualityControlLevel(wof_base.BaseQualityControlLevel):
+    def __init__(self, p_obj):
+        self.QualityControlLevelID = p_obj.ProcessingLevelID
+        self.QualityControlLevelCode = p_obj.ProcessingLevelCode
+        self.Definition = p_obj.Definition
+        self.Explanation = p_obj.Explanation

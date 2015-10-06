@@ -127,6 +127,7 @@ class BaseMethod(object):
     MethodID = None
     MethodDescription = None
     MethodLink = None
+    MethodCode = None #WaterML1.1
 
 
 class BaseMetadata(object):

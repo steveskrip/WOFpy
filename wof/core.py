@@ -9,6 +9,7 @@ import werkzeug
 import wof.flask
 import wof.soap
 import WaterML
+import wof.core_1_1 as wof_1_1
 
 
 class WOF(object):
@@ -59,8 +60,8 @@ class WOF(object):
                             for s in siteCodesArr]
             siteResultArr = self.dao.get_sites_by_codes(siteCodesArr)
 
-        if len(siteResultArr) == 0:
-            return None
+        #if len(siteResultArr) == 0:
+        #    return None
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
 
@@ -73,9 +74,14 @@ class WOF(object):
         queryInfo.set_extension('')
         siteInfoResponse.set_queryInfo(queryInfo)
 
-        for siteResult in siteResultArr:
-            s = self.create_site_element(siteResult)
-            siteInfoResponse.add_site(s)
+        if siteResultArr:
+            for siteResult in siteResultArr:
+                s = self.create_site_element(siteResult)
+                siteInfoResponse.add_site(s)
+        else:
+            #site = WaterML.site()
+            #siteInfoResponse.add_site(site)
+            raise Exception("Site,'%s', Not Found" % siteArg)
 
         return siteInfoResponse
 
@@ -91,7 +97,7 @@ class WOF(object):
                 siteCode, varCode)
 
         if len(seriesResultArr) == 0:
-            return None
+            raise Exception("Site,'%s', Not Found" % siteArg)
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
 
@@ -104,8 +110,13 @@ class WOF(object):
         queryInfo.set_extension('')
         siteInfoResponse.set_queryInfo(queryInfo)
 
-        s = self.create_site_element(siteResult, seriesResultArr)
-        siteInfoResponse.add_site(s)
+        if siteResult:
+            s = self.create_site_element(siteResult, seriesResultArr)
+            siteInfoResponse.add_site(s)
+        else:
+            #site = WaterML.site()
+            #siteInfoResponse.add_site(site)
+            raise Exception("Site,'%s', Not Found" % siteArg)
 
         return siteInfoResponse
 
@@ -118,6 +129,9 @@ class WOF(object):
             varCodesArr = [v.replace(self.vocabulary + ':', '')
                            for v in varCodesArr]
             variableResultArr = self.dao.get_variables_by_codes(varCodesArr)
+
+        if not variableResultArr:
+            raise Exception("Variable,'%s', Not Found" % varArg)
 
         variableInfoResponse = WaterML.VariablesResponseType()
 
@@ -151,7 +165,7 @@ class WOF(object):
         valueResultArr = self.dao.get_datavalues(siteCode, varCode,
                                                  startDateTime, endDateTime)
         if not valueResultArr:
-            raise Exception("ERROR: No data found for %s:%s for dates %s - %s" % (
+            raise Exception("Values Not Found for %s:%s for dates %s - %s" % (
                 siteCode, varCode, startDateTime, endDateTime))
 
         timeSeriesResponse = WaterML.TimeSeriesResponseType()
@@ -166,6 +180,11 @@ class WOF(object):
         queryInfo.add_note(queryInfoNote)
         queryInfo.set_extension('')
         timeSeriesResponse.set_queryInfo(queryInfo)
+
+        #if not valueResultArr:
+        #    timeSeries = WaterML.TimeSeriesType()
+        #    timeSeriesResponse.set_timeSeries(timeSeries)
+        #    return timeSeriesResponse
 
         timeSeries = WaterML.TimeSeriesType()
 

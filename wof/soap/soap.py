@@ -58,9 +58,12 @@ def create_wof_service_class(wof_instance):
 
         #_out_variable_names ????
         @soap(Array(String), String, _returns=Any)
-        def GetSites(self, site, authToken):
+        def GetSites(self, site=None, authToken=None):
             try:
-                siteArg = ','.join(str(s) for s in site)
+                if site is not None:
+                    siteArg = ','.join(str(s) for s in site)
+                else:
+                    siteArg = None
                 logging.debug(site)
                 logging.debug(siteArg)
                 siteResponse = self.wof_inst.create_get_site_response(siteArg)
@@ -77,9 +80,13 @@ def create_wof_service_class(wof_instance):
 
         # This is the one that returns WITH <![CDATA[...]]>
         @soap(Array(String), String, _returns=String)
-        def GetSitesXml(self, site, authToken):
+        def GetSitesXml(self, site=None, authToken=None):
+            """
             try:
-                siteArg = ','.join(str(s) for s in site)
+                if site is not None:
+                    siteArg = ','.join(str(s) for s in site)
+                else:
+                    siteArg = None
                 siteResponse = self.wof_inst.create_get_site_response(siteArg)
                 outStream = StringIO.StringIO()
                 siteResponse.export(outStream, 0, name_="sitesResponse",
@@ -91,10 +98,13 @@ def create_wof_service_class(wof_instance):
                     raise inst
                 else:
                     raise Fault(faultstring=str(inst))
+            """
+            siteResult = self.GetSites(site,authToken)
+            return siteResult.replace('\n', '')
 
         @soap(String, String, _returns=String)
         def GetSiteInfo(self, site, authToken):
-
+            """
             try:
                 siteInfoResponse = \
                             self.wof_inst.create_get_site_info_response(site)
@@ -108,10 +118,12 @@ def create_wof_service_class(wof_instance):
                     raise inst
                 else:
                     raise Fault(faultstring=str(inst))
+            """
+            siteinfoResult = self.GetSiteInfoObject(site,authToken)
+            return siteinfoResult.replace('\n', '')
 
         @soap(String, String, _returns=Any)
         def GetSiteInfoObject(self, site, authToken):
-
             try:
                 siteInfoResponse = \
                             self.wof_inst.create_get_site_info_response(site)
@@ -128,6 +140,7 @@ def create_wof_service_class(wof_instance):
 
         @soap(String, String, _returns=String)
         def GetVariableInfo(self, variable, authToken):
+            """
             try:
                 variableInfoResponse = \
                         self.wof_inst.create_get_variable_info_response(variable)
@@ -142,6 +155,9 @@ def create_wof_service_class(wof_instance):
                     raise inst
                 else:
                     raise Fault(faultstring=str(inst))
+            """
+            varinfoResult = self.GetVariableInfoObject(variable,authToken)
+            return varinfoResult.replace('\n', '')
 
         @soap(String, String, _returns=Any)
         def GetVariableInfoObject(self, variable, authToken):
@@ -162,6 +178,7 @@ def create_wof_service_class(wof_instance):
 
         @soap(String, String, String, String, _returns=String)
         def GetValues(self, location, variable, startDate, endDate):
+            """
             try:
                 timeSeriesResponse = self.wof_inst.create_get_values_response(
                     location, variable, startDate, endDate)
@@ -176,6 +193,9 @@ def create_wof_service_class(wof_instance):
                     raise inst
                 else:
                     raise Fault(faultstring=str(inst))
+            """
+            valuesResult = self.GetValuesObject(location,variable,startDate,endDate)
+            return valuesResult.replace('\n', '')
 
         @soap(String, String, String, String, _returns=Any)
         def GetValuesObject(self, location, variable, startDate, endDate):

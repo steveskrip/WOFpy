@@ -118,3 +118,9 @@ class BaseDao(object):
         Returns a list of OffsetTypes identified by the given id list.
         """
         raise NotImplementedError("Method not implemented.")
+
+    def get_sites_by_box(self, west,south,north,east):
+        """
+        Returns a list of OffsetTypes identified by the given id list.
+        """
+        raise NotImplementedError("Method not implemented.")
