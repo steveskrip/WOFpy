@@ -71,8 +71,8 @@ class DataValue(wof_base.BaseDataValue):
 
 class Series(wof_base.BaseSeries):
     # Properties common to all series in this example
-    BeginDateTime = '2008-01-01T00:00-06'
-    EndDateTime = '2008-04-30T00:00-06'
+    BeginDateTime = '2008-01-01T00:00:00-06'
+    EndDateTime = '2008-04-30T00:00:00-06'
     BeginDateTimeUTC = '2008-01-01T06:00Z'
     EndDateTimeUTC = '2008-04-30T06:00Z'
     ValueCount = 121
