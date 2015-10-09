@@ -4,6 +4,9 @@ import config
 from wof.flask.views.rest import rest
 from wof.flask.views.wsdl import wsdl
 
+from wof.flask.views.rest_1_1 import rest_1_1
+from wof.flask.views.wsdl_1_1 import wsdl_1_1
+
 try:
     from flask import Blueprint
     USE_BLUEPRINTS = True
@@ -23,8 +26,37 @@ def create_app(wof_inst, soap_service_url=None):
     if USE_BLUEPRINTS:
         app.register_blueprint(rest)
         app.register_blueprint(wsdl)
+
+        #app.register_blueprint(rest_1_1)
+        app.register_blueprint(wsdl_1_1)
     else:
         app.register_module(rest)
         app.register_module(wsdl)
+
+        #app.register_module(rest_1_1)
+        app.register_module(wsdl_1_1)
+
+    return app
+
+def create_app_1_1(wof_inst, soap_service_url=None):
+    app = Flask(__name__)
+
+    app.config.from_object(config.Config)
+    app.wof_inst = wof_inst
+    if not 'SOAP_SERVICE_URL' in app.config and soap_service_url:
+        app.config['SOAP_SERVICE_URL'] = soap_service_url
+
+    if USE_BLUEPRINTS:
+        #app.register_blueprint(rest)
+        #app.register_blueprint(wsdl)
+
+        app.register_blueprint(rest_1_1)
+        #app.register_blueprint(wsdl_1_1)
+    else:
+        #app.register_module(rest)
+        #app.register_module(wsdl)
+
+        app.register_module(rest_1_1)
+        #app.register_module(wsdl_1_1)
 
     return app

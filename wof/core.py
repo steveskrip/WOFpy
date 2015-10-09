@@ -86,6 +86,8 @@ class WOF(object):
         return siteInfoResponse
 
     def create_get_site_info_response(self, siteArg, varArg=None):
+        if siteArg is None:
+            raise Exception("Site Not Found")
         siteCode = siteArg.replace(self.network + ':', '')
         siteResult = self.dao.get_site_by_code(siteCode)
 
@@ -96,7 +98,7 @@ class WOF(object):
             seriesResultArr = self.dao.get_series_by_sitecode_and_varcode(
                 siteCode, varCode)
 
-        if len(seriesResultArr) == 0:
+        if seriesResultArr is None or len(seriesResultArr) == 0:
             raise Exception("Site,'%s', Not Found" % siteArg)
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
@@ -497,6 +499,10 @@ class WOF(object):
             seriesResult, "EndDateTime", "EndDateTimeUTC")
 
         #TimeInterval
+        if beginDateTime is None:
+            beginDateTime = datetime.datetime.now().isoformat()
+        if endDateTime is None:
+            endDateTime = datetime.datetime.now().isoformat()
         variableTimeInt = WaterML.TimeIntervalType(
             beginDateTime=beginDateTime,
             endDateTime=endDateTime)

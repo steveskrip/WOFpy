@@ -1,2 +1,3 @@
 
 from soap import create_wof_service_class
+from soap_wml11 import create_wof_service_class_1_1
