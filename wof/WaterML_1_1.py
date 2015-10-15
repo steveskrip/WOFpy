@@ -365,7 +365,7 @@ except ImportError as exp:
 # Globals
 #
 
-ExternalEncoding = 'ascii'
+ExternalEncoding = 'utf-8' #'ascii'
 Tag_pattern_ = re_.compile(r'({.*})?(.*)')
 String_cleanup_pat_ = re_.compile(r"[\n\r\s]+")
 Namespace_extract_pat_ = re_.compile(r'{(.*)}(.*)')
@@ -2890,6 +2890,7 @@ class TimeSeriesType(GeneratedsSuper):
         if self.variable is not None:
             self.variable.export(outfile, level, namespace_, name_='variable', pretty_print=pretty_print)
         for values_ in self.values:
+        #if self.values:
             values_.export(outfile, level, namespace_, name_='values', pretty_print=pretty_print)
     def build(self, node):
         already_processed = set()
@@ -3482,7 +3483,9 @@ class TimeSeriesResponseType(GeneratedsSuper):
         if self.queryInfo is not None:
             self.queryInfo.export(outfile, level, namespace_, name_='queryInfo', pretty_print=pretty_print)
         for timeSeries_ in self.timeSeries:
+        #if self.timeSeries:
             timeSeries_.export(outfile, level, namespace_, name_='timeSeries', pretty_print=pretty_print)
+
     def build(self, node):
         already_processed = set()
         self.buildAttributes(node, node.attrib, already_processed)
@@ -4271,9 +4274,11 @@ class SourceType(GeneratedsSuper):
             self.metadata.export(outfile, level, namespace_, name_='metadata', pretty_print=pretty_print)
         for contactInformation_ in self.contactInformation:
             contactInformation_.export(outfile, level, namespace_, name_='contactInformation', pretty_print=pretty_print)
-        for sourceLink_ in self.sourceLink:
+        #for sourceLink_ in self.sourceLink:
+        if self.sourceLink is not None:
             showIndent(outfile, level, pretty_print)
-            outfile.write('<%ssourceLink>%s</%ssourceLink>%s' % (namespace_, self.gds_format_string(quote_xml(sourceLink_).encode(ExternalEncoding), input_name='sourceLink'), namespace_, eol_))
+            outfile.write('<%ssourceLink>%s</%ssourceLink>%s' % (namespace_, self.gds_format_string(quote_xml(self.sourceLink).encode(ExternalEncoding), input_name='sourceLink'), namespace_, eol_))
+
         if self.citation is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%scitation>%s</%scitation>%s' % (namespace_, self.gds_format_string(quote_xml(self.citation).encode(ExternalEncoding), input_name='citation'), namespace_, eol_))

@@ -26,7 +26,9 @@ def index():
                            s=current_app.wof_inst.default_site,
                            v=current_app.wof_inst.default_variable,
                            sd=current_app.wof_inst.default_start_date,
-                           ed=current_app.wof_inst.default_end_date)
+                           ed=current_app.wof_inst.default_end_date,
+                           u=current_app.wof_inst.default_unitid,
+                           sm=current_app.wof_inst.default_samplemedium)
 
 
 @rest.route('/GetSites', methods=['GET'])

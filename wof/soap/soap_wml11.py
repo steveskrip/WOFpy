@@ -5,7 +5,7 @@ import soaplib
 from lxml import etree
 from soaplib.core.model.base import Base
 from soaplib.core.service import rpc, soap, DefinitionBase
-from soaplib.core.model.primitive import String, Any, Integer, Float
+from soaplib.core.model.primitive import String, Any, Integer, Float, Boolean
 from soaplib.core.model.exception import Fault
 from soaplib.core.model.clazz import Array, ClassModel
 
@@ -15,7 +15,6 @@ NSDEF = 'xmlns:gml="http://www.opengis.net/gml" \
     xmlns:xlink="http://www.w3.org/1999/xlink" \
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \
-#    xmlns:wtr="http://www.cuahsi.org/waterML/" \
     xmlns:wtr="http://www.cuahsi.org/waterML/1.1/" \
     xmlns="http://www.cuahsi.org/waterML/1.1/"'
 
@@ -24,7 +23,7 @@ NSDEF = 'xmlns:gml="http://www.opengis.net/gml" \
 # requests so the default requests from soapUI will cause errors
 
 
-def create_wof_service_class(wof_instance):
+def create_wof_service_class_1_1(wof_instance):
     class WOFService(DefinitionBase):
 
         wof_inst = wof_instance
@@ -59,9 +58,12 @@ def create_wof_service_class(wof_instance):
 
         #_out_variable_names ????
         @soap(Array(String), String, _returns=Any)
-        def GetSites(self, site, authToken):
+        def GetSitesObject(self, site=None, authToken=None):
             try:
-                siteArg = ','.join(str(s) for s in site)
+                if site is not None:
+                    siteArg = ','.join(str(s) for s in site)
+                else:
+                    siteArg = None
                 logging.debug(site)
                 logging.debug(siteArg)
                 siteResponse = self.wof_inst.create_get_site_response(siteArg)
@@ -76,11 +78,30 @@ def create_wof_service_class(wof_instance):
                 else:
                     raise Fault(faultstring=str(inst))
 
+        @soap(Float, Float, Float, Float, Boolean, String, _returns=Any)
+        def GetSitesByBoxObject(self, west,south,north,east, IncludeSeries, authToken=None):
+
+            try:
+                siteResponse = self.wof_inst.create_get_site_box_response(west,south,north,east,IncludeSeries)
+                outStream = StringIO.StringIO()
+                siteResponse.export(outStream, 0, name_="sitesResponse",
+                                    namespacedef_=NSDEF)
+                return outStream.getvalue()
+
+            except Exception as inst:
+                if type(inst) == Fault:
+                    raise inst
+                else:
+                    raise Fault(faultstring=str(inst))
+
         # This is the one that returns WITH <![CDATA[...]]>
         @soap(Array(String), String, _returns=String)
-        def GetSitesXml(self, site, authToken):
+        def GetSites(self, site=None, authToken=None):
             try:
-                siteArg = ','.join(str(s) for s in site)
+                if site is not None:
+                    siteArg = ','.join(str(s) for s in site)
+                else:
+                    siteArg = None
                 siteResponse = self.wof_inst.create_get_site_response(siteArg)
                 outStream = StringIO.StringIO()
                 siteResponse.export(outStream, 0, name_="sitesResponse",
@@ -127,6 +148,26 @@ def create_wof_service_class(wof_instance):
                 else:
                     raise Fault(faultstring=str(inst))
 
+        @soap(Array(String), String, _returns=Any)
+        def GetSiteInfoMultpleObject(self, site, authToken):
+            if site is not None:
+                siteArg = ','.join(str(s) for s in site)
+            else:
+                siteArg = None
+            try:
+                siteInfoResponse = \
+                            self.wof_inst.create_get_site_info_multiple_response(siteArg)
+                outStream = StringIO.StringIO()
+                siteInfoResponse.export(outStream, 0, name_="sitesResponse",
+                                    namespacedef_=NSDEF)
+                return outStream.getvalue()
+
+            except Exception as inst:
+                if type(inst) == Fault:
+                    raise inst
+                else:
+                    raise Fault(faultstring=str(inst))
+
         @soap(String, String, _returns=String)
         def GetVariableInfo(self, variable, authToken):
             try:
@@ -161,6 +202,40 @@ def create_wof_service_class(wof_instance):
                 else:
                     raise Fault(faultstring=str(inst))
 
+        @soap(String, _returns=String)
+        def GetVariables(self,authToken=None):
+            try:
+                variableInfoResponse = \
+                        self.wof_inst.create_get_variable_info_response()
+                outStream = StringIO.StringIO()
+                variableInfoResponse.export(outStream, 0,
+                                            name_="variablesResponse",
+                                            namespacedef_=NSDEF)
+                return (outStream.getvalue()).replace('\n', '')
+
+            except Exception as inst:
+                if type(inst) == Fault:
+                    raise inst
+                else:
+                    raise Fault(faultstring=str(inst))
+
+        @soap(String, _returns=Any)
+        def GetVariablesObject(self,authToken=None):
+            try:
+                variableInfoResponse = \
+                        self.wof_inst.create_get_variable_info_response()
+                outStream = StringIO.StringIO()
+                variableInfoResponse.export(outStream, 0,
+                                            name_="variablesResponse",
+                                            namespacedef_=NSDEF)
+                return outStream.getvalue()
+
+            except Exception as inst:
+                if type(inst) == Fault:
+                    raise inst
+                else:
+                    raise Fault(faultstring=str(inst))
+
         @soap(String, String, String, String, _returns=String)
         def GetValues(self, location, variable, startDate, endDate):
             try:
@@ -183,6 +258,23 @@ def create_wof_service_class(wof_instance):
             try:
                 timeSeriesResponse = self.wof_inst.create_get_values_response(
                     location, variable, startDate, endDate)
+                outStream = StringIO.StringIO()
+                timeSeriesResponse.export(
+                    outStream, 0, name_="timeSeriesResponse",
+                    namespacedef_=NSDEF)
+                return outStream.getvalue()
+
+            except Exception as inst:
+                if type(inst) == Fault:
+                    raise inst
+                else:
+                    raise Fault(faultstring=str(inst))
+
+        @soap(String, String, String, String, _returns=Any)
+        def GetValuesForASiteObject(self, site, startDate, endDate, authToken=None):
+            try:
+                timeSeriesResponse = self.wof_inst.create_get_values_site_response(
+                    site, startDate, endDate)
                 outStream = StringIO.StringIO()
                 timeSeriesResponse.export(
                     outStream, 0, name_="timeSeriesResponse",

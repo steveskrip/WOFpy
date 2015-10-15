@@ -70,8 +70,7 @@ class Site(wof_base.BaseSite):
             self.LatLongDatum = sr
 
 class Series(wof_base.BaseSeries):
-    def __init__(self, r=None, aff=None):
-
+    def __init__(self, r=None, aff=None,bdate=None,edate=None):
         fa_obj = r.FeatureActionObj
         u_obj = r.UnitsObj
         v_obj = r.VariableObj
@@ -102,11 +101,12 @@ class Series(wof_base.BaseSeries):
         #self.MethodDescription = m_obj.MethodDescription
         self.Method = Method(m_obj)
         self.Organization = o_obj.OrganizationName
-        self.BeginDateTimeUTC = a_obj.BeginDateTime.isoformat()
+        self.BeginDateTimeUTC = bdate #a_obj.BeginDateTime.isoformat()
         if a_obj.EndDateTime is not None:
-            self.EndDateTimeUTC = a_obj.EndDateTime.isoformat()
+            self.EndDateTimeUTC = edate #a_obj.EndDateTime.isoformat()
         self.ValueCount = r.ValueCount
-        self.Source = Source(aff)
+        if aff is not None:
+            self.Source = Source(aff)
 
 class DataValue(wof_base.BaseDataValue):
 

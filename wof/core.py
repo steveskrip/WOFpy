@@ -27,6 +27,8 @@ class WOF(object):
     default_variable = None
     default_start_date = None
     default_end_date = None
+    default_unitid = None
+    default_samplemedium = None
 
     def __init__(self, dao, config_file=None):
         self.dao = dao
@@ -49,6 +51,11 @@ class WOF(object):
             self.default_variable = config.get('Default_Params', 'Variable')
             self.default_start_date = config.get('Default_Params', 'StartDate')
             self.default_end_date = config.get('Default_Params', 'EndDate')
+            if config.has_option('Default_Params','UnitID'):
+                self.default_unitid = config.get('Default_Params','UnitID')
+            if config.has_option('Default_Params','SampleMedium'):
+                self.default_samplemedium = config.get('Default_Params','SampleMedium')
+
 
     def create_get_site_response(self, siteArg=None):
 
@@ -169,6 +176,11 @@ class WOF(object):
         if not valueResultArr:
             raise Exception("Values Not Found for %s:%s for dates %s - %s" % (
                 siteCode, varCode, startDateTime, endDateTime))
+
+        if isinstance(valueResultArr,dict):
+            for key in valueResultArr.keys():
+                valueResultArr = valueResultArr[key]
+                break
 
         timeSeriesResponse = WaterML.TimeSeriesResponseType()
 
@@ -585,10 +597,35 @@ class WOF(object):
                                                  startDateTime, endDateTime)
         return valueResultArr
 
-
 def create_wof_app(dao, config_file):
     """
     Returns a fully instantiated WOF wsgi app (flask + soap)
+    """
+    wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+    app_1_1 = wof.flask.create_app_1_1(wof_obj_1_1)
+    #app_1_1 = wof.core_1_1.create_wof_app_1_1(dao,config_file)
+    WOFService_1_1 = wof.soap.create_wof_service_class_1_1(wof_obj_1_1)
+    soap_app_1_1 = soaplib.core.Application(
+        services=[WOFService_1_1],
+        tns='http://www.cuahsi.org/his/1.1/ws/',
+        name='WaterOneFlow_1_1'
+    )
+    soap_wsgi_app_1_1 = soaplib.core.server.wsgi.Application(soap_app_1_1)
+
+    wof_obj = WOF(dao, config_file)
+    app = wof.flask.create_app(wof_obj)
+    WOFService = wof.soap.create_wof_service_class(wof_obj)
+    soap_app = soaplib.core.Application(
+        services=[WOFService],
+        tns='http://www.cuahsi.org/his/1.0/ws/',
+        name='WaterOneFlow')
+    soap_wsgi_app = soaplib.core.server.wsgi.Application(soap_app)
+    app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, {
+        '/rest_1_1' : app_1_1,
+        '/soap/wateroneflow': soap_wsgi_app,
+        '/soap/wateroneflow_1_1': soap_wsgi_app_1_1
+        })
+
     """
     wof_obj = WOF(dao, config_file)
     app = wof.flask.create_app(wof_obj)
@@ -602,7 +639,9 @@ def create_wof_app(dao, config_file):
         '/soap/wateroneflow': soap_wsgi_app
         })
     return app
+    """
 
+    return app
 
 def _get_iso8061_datetime_string(object, local_datetime_attr,
                                  utc_datetime_attr):

@@ -7,11 +7,11 @@ import soaplib.core.server.wsgi
 import werkzeug
 
 import wof.flask
-import wof.soap_wm111
+import wof.soap
 import WaterML_1_1 as WaterML
 
 
-class WOF(object):
+class WOF_1_1(object):
 
     network = 'NETWORK'
     vocabulary = 'VOCABULARY'
@@ -26,6 +26,10 @@ class WOF(object):
     default_variable = None
     default_start_date = None
     default_end_date = None
+    default_west = None
+    default_south = None
+    default_north = None
+    default_east = None
 
     def __init__(self, dao, config_file=None):
         self.dao = dao
@@ -48,9 +52,12 @@ class WOF(object):
             self.default_variable = config.get('Default_Params', 'Variable')
             self.default_start_date = config.get('Default_Params', 'StartDate')
             self.default_end_date = config.get('Default_Params', 'EndDate')
+            self.default_east = config.get('Default_Params', 'East')
+            self.default_north = config.get('Default_Params','North')
+            self.default_south = config.get('Default_Params', 'South')
+            self.default_west = config.get('Default_Params', 'West')
 
     def create_get_site_response(self, siteArg=None):
-
         if siteArg == None or siteArg == '':
             siteResultArr = self.dao.get_all_sites()
         else:
@@ -59,23 +66,30 @@ class WOF(object):
                             for s in siteCodesArr]
             siteResultArr = self.dao.get_sites_by_codes(siteCodesArr)
 
-        if len(siteResultArr) == 0:
-            return None
+        #if len(siteResultArr) == 0:
+        #    return None
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
 
-        queryInfo = WaterML.QueryInfoType()
+        queryInfo = WaterML.QueryInfoType(creationTime=datetime.datetime.now())
         #TODO: check on how this should be done for multiple sites
-        criteria = WaterML.criteria(locationParam=siteArg)
+        pType = WaterML.parameterType(name='site',value=siteArg)
+        criteria = WaterML.criteriaType(MethodCalled='GetSites')
+        criteria.add_parameter(pType)
         queryInfo.set_criteria(criteria)
-        queryInfoNote = WaterML.NoteType()
-        queryInfo.add_note(queryInfoNote)
-        queryInfo.set_extension('')
+        #queryInfoNote = WaterML.NoteType()
+        #queryInfo.add_note(queryInfoNote)
+        #queryInfo.set_extension('')
         siteInfoResponse.set_queryInfo(queryInfo)
 
-        for siteResult in siteResultArr:
-            s = self.create_site_element(siteResult)
-            siteInfoResponse.add_site(s)
+        if siteResultArr:
+            for siteResult in siteResultArr:
+                s = self.create_site_element(siteResult)
+                siteInfoResponse.add_site(s)
+        else:
+            #site = WaterML.site()
+            #siteInfoResponse.add_site(site)
+            raise Exception("Site,'%s', Not Found" % siteArg)
 
         return siteInfoResponse
 
@@ -90,22 +104,107 @@ class WOF(object):
             seriesResultArr = self.dao.get_series_by_sitecode_and_varcode(
                 siteCode, varCode)
 
-        if len(seriesResultArr) == 0:
-            return None
+        #if len(seriesResultArr) == 0:
+        #    return None
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
 
-        queryInfo = WaterML.QueryInfoType()
-        criteria = WaterML.criteria(locationParam=siteArg,
-                                    variableParam=varArg)
+        queryInfo = WaterML.QueryInfoType(creationTime=datetime.datetime.now())
+        criteria = WaterML.criteriaType(MethodCalled='GetSiteInfo')
+        pType_site = WaterML.parameterType(name='site',value=siteArg)
+        criteria.add_parameter(pType_site)
+        if varArg is not None:
+            pType_var = WaterML.parameterType(name='variable',value=varArg)
+            criteria.add_parameter(pType_var)
         queryInfo.set_criteria(criteria)
-        queryInfoNote = WaterML.NoteType()
-        queryInfo.add_note(queryInfoNote)
-        queryInfo.set_extension('')
+        #queryInfoNote = WaterML.NoteType()
+        #queryInfo.add_note(queryInfoNote)
+        #queryInfo.set_extension('')
         siteInfoResponse.set_queryInfo(queryInfo)
 
         s = self.create_site_element(siteResult, seriesResultArr)
         siteInfoResponse.add_site(s)
+
+        return siteInfoResponse
+
+    def create_get_site_info_multiple_response(self, siteArg):
+        siteCodesArr = siteArg.split(',')
+        siteCodesArr = [s.replace(self.network + ':', '')
+                        for s in siteCodesArr]
+
+        siteInfoResponse = WaterML.SiteInfoResponseType()
+
+        queryInfo = WaterML.QueryInfoType(creationTime=datetime.datetime.now())
+        criteria = WaterML.criteriaType(MethodCalled='GetSiteInfo')
+        pType_site = WaterML.parameterType(name='site',value=siteArg)
+        criteria.add_parameter(pType_site)
+        queryInfo.set_criteria(criteria)
+        #queryInfoNote = WaterML.NoteType()
+        #queryInfo.add_note(queryInfoNote)
+        #queryInfo.set_extension('')
+        siteInfoResponse.set_queryInfo(queryInfo)
+
+        for siteArg in siteCodesArr:
+            siteCode = siteArg.replace(self.network + ':', '')
+            siteResult = self.dao.get_site_by_code(siteCode)
+            seriesResultArr = self.dao.get_series_by_sitecode(siteCode)
+
+            #if len(seriesResultArr) == 0:
+            #    return None
+            s = self.create_site_element(siteResult, seriesResultArr)
+            siteInfoResponse.add_site(s)
+
+        return siteInfoResponse
+
+    def to_bool(self, value):
+        valid = {'true': True, 't': True, '1': True,
+                 'false': False, 'f': False, '0': False,
+        }
+
+        if isinstance(value, bool):
+            return value
+
+        if not isinstance(value, basestring):
+            value = False
+            return value
+
+        lower_value = value.lower()
+        if lower_value in valid:
+            return valid[lower_value]
+        else:
+            value = False
+            return value
+
+    def create_get_site_box_response(self, west,south,north,east,IncludeSeries):
+
+        IncludeSeries = self.to_bool(IncludeSeries)
+        siteResultArr = self.dao.get_sites_by_box(west,south,north,east)
+
+        siteInfoResponse = WaterML.SiteInfoResponseType()
+
+        queryInfo = WaterML.QueryInfoType(creationTime=datetime.datetime.now())
+        criteria = WaterML.criteriaType(MethodCalled='GetSitesByBox')
+        pType_west = WaterML.parameterType(name='west',value=west)
+        pType_west = WaterML.parameterType(name='south',value=south)
+        pType_west = WaterML.parameterType(name='north',value=north)
+        pType_west = WaterML.parameterType(name='east',value=east)
+        pType_west = WaterML.parameterType(name='IncludeSeries',value=IncludeSeries)
+        criteria.add_parameter(pType_west)
+        queryInfo.set_criteria(criteria)
+        #queryInfoNote = WaterML.NoteType()
+        #queryInfo.add_note(queryInfoNote)
+        #queryInfo.set_extension('')
+        siteInfoResponse.set_queryInfo(queryInfo)
+
+        for siteResult in siteResultArr:
+            seriesResultArr = None
+            if IncludeSeries:
+                seriesResultArr = self.dao.get_series_by_sitecode(siteResult.SiteCode)
+
+            #if len(seriesResultArr) == 0:
+            #    return None
+            s = self.create_site_element(siteResult,seriesResultArr,IncludeSeries)
+            siteInfoResponse.add_site(s)
 
         return siteInfoResponse
 
@@ -125,15 +224,18 @@ class WOF(object):
         # like when it is.  If it should be in the response, then the
         # WSDL needs to be updated
 
-        #queryInfo = WaterML.QueryInfoType()
-        #criteria = WaterML.criteria(variableParam=varArg)
-        #queryInfo.set_criteria(criteria)
-        #queryInfoNote = WaterML.NoteType()
-        #queryInfo.add_note(queryInfoNote)
+        queryInfo = WaterML.QueryInfoType()
+        criteria = WaterML.criteriaType(MethodCalled='GetVariableInfo')
+        if varArg is not None:
+            pType_var = WaterML.parameterType(name='variable',value=varArg)
+            criteria.add_parameter(pType_var)
+        queryInfo.set_criteria(criteria)
+        queryInfoNote = WaterML.NoteType('Web Service')
+        queryInfo.add_note(queryInfoNote)
         #queryInfo.set_extension('')
-        #variableInfoResponse.set_queryInfo(queryInfo)
+        variableInfoResponse.set_queryInfo(queryInfo)
 
-        variables = WaterML.variables()
+        variables = WaterML.variablesType()
         for variableResult in variableResultArr:
             v = self.create_variable_element(variableResult)
             variables.add_variable(v)
@@ -156,16 +258,34 @@ class WOF(object):
 
         timeSeriesResponse = WaterML.TimeSeriesResponseType()
 
-        queryInfo = WaterML.QueryInfoType()
-        timeParam = WaterML.timeParam(
-            beginDateTime=startDateTime, endDateTime=endDateTime)
-        criteria = WaterML.criteria(
-            locationParam=siteArg, variableParam=varArg, timeParam=timeParam)
+        queryInfo = WaterML.QueryInfoType(creationTime=datetime.datetime.now())
+        criteria = WaterML.criteriaType(MethodCalled='GetValues')
+        pType_site = WaterML.parameterType(name='site',value=siteArg)
+        criteria.add_parameter(pType_site)
+        pType_var = WaterML.parameterType(name='variable',value=varArg)
+        criteria.add_parameter(pType_var)
+        if startDateTime is not None:
+            pType_sdate = WaterML.parameterType(name='startDate',value=startDateTime)
+            criteria.add_parameter(pType_sdate)
+        if endDateTime is not None:
+            pType_edate = WaterML.parameterType(name='endDate',value=endDateTime)
+            criteria.add_parameter(pType_edate)
         queryInfo.set_criteria(criteria)
-        queryInfoNote = WaterML.NoteType()
-        queryInfo.add_note(queryInfoNote)
-        queryInfo.set_extension('')
+        #queryInfoNote = WaterML.NoteType()
+        #queryInfo.add_note(queryInfoNote)
+        #queryInfo.set_extension('')
         timeSeriesResponse.set_queryInfo(queryInfo)
+
+        if isinstance(valueResultArr,dict):
+            for key in valueResultArr.keys():
+                timeSeries = self.create_timeseries(siteCode,key,valueResultArr[key])
+                timeSeriesResponse.add_timeSeries(timeSeries)
+        else:
+            timeSeries = self.create_timeseries(siteCode,varCode,valueResultArr)
+            timeSeriesResponse.add_timeSeries(timeSeries)
+        return timeSeriesResponse
+
+    def create_timeseries(self,siteCode, varCode,valueResultArr):
 
         timeSeries = WaterML.TimeSeriesType()
 
@@ -192,17 +312,18 @@ class WOF(object):
         #TODO: fill in some more of the attributes in this element
         values = WaterML.TsValuesSingleVariableType()
 
-        values.count = len(valueResultArr)
-
-        if varResult.VariableUnits:
-            values.unitsAbbreviation = varResult.VariableUnits.UnitsAbbreviation
-            values.unitsCode = varResult.VariableUnits.UnitsID
+        #waterML 1.0
+        #values.count = len(valueResultArr)
+        #if varResult.VariableUnits:
+        #    values.unitsAbbreviation = varResult.VariableUnits.UnitsAbbreviation
+        #    values.unitsCode = varResult.VariableUnits.UnitsID
 
         #Need to keep track of unique methodIDs and sourceIDs
         methodIdSet = set()
         sourceIdSet = set()
         qualifierIdSet = set()
         offsetTypeIdSet = set()
+        qualitycontrollevelIdSet = set()
 
         for valueResult in valueResultArr:
             v = self.create_value_element(valueResult)
@@ -219,6 +340,9 @@ class WOF(object):
 
             if valueResult.OffsetTypeID:
                 offsetTypeIdSet.add(valueResult.OffsetTypeID)
+
+            if valueResult.QualityControlLevelID:
+                qualitycontrollevelIdSet.add(valueResult.QualityControlLevelID)
 
         #Add method elements for each unique methodID
         if methodIdSet:
@@ -241,7 +365,7 @@ class WOF(object):
             qualIdArr = list(qualifierIdSet)
             qualResultArr = self.dao.get_qualifiers_by_ids(qualIdArr)
             for qualifierResult in qualResultArr:
-                q = WaterML.qualifier(
+                q = WaterML.QualifierType(
                     qualifierID=qualifierResult.QualifierID,
                     default=None,
                     network=self.network,
@@ -258,9 +382,67 @@ class WOF(object):
                 offset = self.create_offset_element(offsetTypeResult)
                 values.add_offset(offset)
 
-        timeSeries.values = values
-        timeSeriesResponse.set_timeSeries(timeSeries)
+        #Add qualitycontrollevel elements
+        if qualitycontrollevelIdSet:
+            qlevelIdIdArr = list(qualitycontrollevelIdSet)
+            qlevelResultArr = self.dao.get_qualcontrollvls_by_ids(qlevelIdIdArr)
+            for qlevelResult in qlevelResultArr:
+                qlevel = self.create_qlevel_element(qlevelResult)
+                values.add_qualityControlLevel(qlevel)
+
+        timeSeries.add_values(values)
+        #timeSeriesResponse.set_timeSeries(timeSeries)
+        return timeSeries
+
+    def create_get_values_site_response(self, site,
+                                        startDateTime,
+                                        endDateTime):
+
+        timeSeriesResponse = WaterML.TimeSeriesResponseType()
+        queryInfo = WaterML.QueryInfoType(creationTime=datetime.datetime.now())
+        criteria = WaterML.criteriaType(MethodCalled='GetValuesForASite')
+        pType_site = WaterML.parameterType(name='site',value=site)
+        criteria.add_parameter(pType_site)
+        if startDateTime is not None:
+            pType_sdate = WaterML.parameterType(name='startDate',value=startDateTime)
+            criteria.add_parameter(pType_sdate)
+        if endDateTime is not None:
+            pType_edate = WaterML.parameterType(name='endDate',value=endDateTime)
+            criteria.add_parameter(pType_edate)
+        queryInfo.set_criteria(criteria)
+        #queryInfoNote = WaterML.NoteType()
+        #queryInfo.add_note(queryInfoNote)
+        #queryInfo.set_extension('')
+        timeSeriesResponse.set_queryInfo(queryInfo)
+
+        siteCode = site.replace(self.network + ':', '')
+        seriesResultArr = self.dao.get_series_by_sitecode(siteCode)
+        if seriesResultArr:
+            for seriesResult in seriesResultArr:
+                valueResultArr = self.dao.get_datavalues(siteCode,
+                                                         seriesResult.Variable.VariableCode,
+                                                         startDateTime,
+                                                         endDateTime)
+                #if not valueResultArr:
+                #    raise Exception("ERROR: No data found for %s for dates %s - %s" % (
+                #                    site, startDateTime, endDateTime))
+                if not valueResultArr:
+                    continue
+
+                timeSeries = self.create_timeseries(siteCode,
+                                                    seriesResult.Variable.VariableCode,
+                                                    valueResultArr)
+                timeSeriesResponse.add_timeSeries(timeSeries)
+
         return timeSeriesResponse
+
+    def create_qlevel_element(self, qlevelResult):
+        qlevel = WaterML.QualityControlLevelType(
+                    qualityControlLevelID=qlevelResult.QualityControlLevelID,
+                    qualityControlLevelCode=qlevelResult.QualityControlLevelCode,
+                    definition=qlevelResult.Definition,
+                    explanation=qlevelResult.Explanation)
+        return qlevel
 
     def create_offset_element(self, offsetTypeResult):
         #TODO: where does offsetIsVertical come from
@@ -269,15 +451,14 @@ class WOF(object):
             offsetTypeID=offsetTypeResult.OffsetTypeID,
             offsetValue=None,
             offsetDescription=offsetTypeResult.OffsetDescription,
-            offsetIsVertical='true',
-            offsetHorizDirectionDegrees=None)
+            offsetIsVertical='true')
 
         if offsetTypeResult.OffsetUnits:
             units = WaterML.UnitsType(
-                UnitID=offsetTypeResult.OffsetUnits.UnitsID,
-                UnitAbbreviation=offsetTypeResult.OffsetUnits.UnitsAbbreviation,
-                UnitName=offsetTypeResult.OffsetUnits.UnitsName,
-                UnitType=offsetTypeResult.OffsetUnits.UnitsType)
+                unitID=offsetTypeResult.OffsetUnits.UnitsID,
+                unitAbbreviation=offsetTypeResult.OffsetUnits.UnitsAbbreviation,
+                unitName=offsetTypeResult.OffsetUnits.UnitsName,
+                unitType=offsetTypeResult.OffsetUnits.UnitsType)
 
             offset.units = units
 
@@ -286,21 +467,23 @@ class WOF(object):
     def create_method_element(self, methodResult):
         method = WaterML.MethodType(
             methodID=methodResult.MethodID,
-            MethodDescription=methodResult.MethodDescription,
-            MethodLink=methodResult.MethodLink)
+            methodCode=methodResult.MethodCode,
+            methodDescription=methodResult.MethodDescription,
+            methodLink=methodResult.MethodLink)
 
         # need at least one MethodLink element to meet WaterML 1.0
         # schema validation
-        if method.MethodLink == None:
-            method.MethodLink = ''
+        if method.methodLink == None:
+            method.methodLink = ''
         return method
 
     def create_source_element(self, sourceResult):
         source = WaterML.SourceType(
             sourceID=sourceResult.SourceID,
-            Organization=sourceResult.Organization,
-            SourceDescription=sourceResult.SourceDescription,
-            SourceLink=sourceResult.SourceLink)
+            sourceCode=sourceResult.OrganizationCode,
+            organization=sourceResult.Organization,
+            sourceDescription=sourceResult.SourceDescription,
+            sourceLink=sourceResult.SourceLink)
 
         contactInfo = self.create_contact_info_element(sourceResult)
 
@@ -308,11 +491,11 @@ class WOF(object):
 
         if sourceResult.Metadata:
             metadata = WaterML.MetaDataType(
-                TopicCategory=sourceResult.Metadata.TopicCategory,
-                Title=sourceResult.Metadata.Title,
-                Abstract=sourceResult.Metadata.Abstract,
-                ProfileVersion=sourceResult.Metadata.ProfileVersion,
-                MetadataLink=sourceResult.Metadata.MetadataLink)
+                topicCategory=sourceResult.Metadata.TopicCategory,
+                title=sourceResult.Metadata.Title,
+                abstract=sourceResult.Metadata.Abstract,
+                profileVersion=sourceResult.Metadata.ProfileVersion,
+                metadataLink=sourceResult.Metadata.MetadataLink)
 
             source.Metadata = metadata
 
@@ -329,10 +512,10 @@ class WOF(object):
                                        sourceResult.ZipCode])
 
             contactInfo = WaterML.ContactInformationType(
-                Email=sourceResult.Email,
-                ContactName=sourceResult.ContactName,
-                Phone=sourceResult.Phone,
-                Address=addressString)
+                email=sourceResult.Email,
+                contactName=sourceResult.ContactName,
+                phone=sourceResult.Phone,
+                address=addressString)
 
             return contactInfo
 
@@ -344,9 +527,9 @@ class WOF(object):
             valueResult, "LocalDateTime", "DateTimeUTC")
 
         value = WaterML.ValueSingleVariable(
-                        qualityControlLevel=valueResult.QualityControlLevel,
-                        methodID=valueResult.MethodID,
-                        sourceID=valueResult.SourceID,
+                        qualityControlLevelCode=valueResult.QualityControlLevel,
+                        methodCode=valueResult.MethodCode,
+                        sourceCode=valueResult.SourceCode,
                         censorCode=valueResult.CensorCode,
                         sampleID=valueResult.SampleID,
                         offsetTypeID=valueResult.OffsetTypeID,
@@ -365,8 +548,8 @@ class WOF(object):
         #    value.offsetUnitsCode = offsetTypeResult.OffsetUnits.UnitsID
         return value
 
-    def create_site_element(self, siteResult, seriesResultArr=None):
-        site = WaterML.site()
+    def create_site_element(self, siteResult, seriesResultArr=None, IncludeSeries=True):
+        site = WaterML.siteType()
         siteInfo = self.create_site_info_element(siteResult)
 
         site.set_siteInfo(siteInfo)
@@ -376,40 +559,40 @@ class WOF(object):
             and not siteResult.State
             and not siteResult.Comments):
 
-            siteInfo.add_note(WaterML.NoteType())
+            siteInfo.add_note(WaterML.PropertyType())
         else:
             if siteResult.County:
-                countyNote = WaterML.NoteType(title="County",
+                countyNote = WaterML.PropertyType(name="County",
                                               valueOf_=siteResult.County)
-                siteInfo.add_note(countyNote)
+                siteInfo.add_siteProperty(countyNote)
 
             if siteResult.State:
-                stateNote = WaterML.NoteType(title="State",
+                stateNote = WaterML.PropertyType(name="State",
                                              valueOf_=siteResult.State)
-                siteInfo.add_note(stateNote)
+                siteInfo.add_siteProperty(stateNote)
 
             if siteResult.Comments:
-                commentsNote = WaterML.NoteType(
-                    title="Site Comments",
+                commentsNote = WaterML.PropertyType(
+                    name="Site Comments",
                     valueOf_=escape(siteResult.Comments))
-                siteInfo.add_note(commentsNote)
+                siteInfo.add_siteProperty(commentsNote)
 
-        seriesCatalog = WaterML.seriesCatalogType()
-        if (seriesResultArr != None):
-            seriesCatalog.menuGroupName = self.menu_group_name
-            #TODO: Make sure this is set properly in config fileame
-            seriesCatalog.serviceWsdl = self.service_wsdl
+        if IncludeSeries:
+            seriesCatalog = WaterML.seriesCatalogType()
+            if seriesResultArr is not None:
+                seriesCatalog.menuGroupName = self.menu_group_name
+                #TODO: Make sure this is set properly in config fileame
+                seriesCatalog.serviceWsdl = self.service_wsdl
 
-            for seriesResult in seriesResultArr:
-                series = self.create_series_element(seriesResult)
+                for seriesResult in seriesResultArr:
+                    series = self.create_series_element(seriesResult)
+                    seriesCatalog.add_series(series)
 
-                seriesCatalog.add_series(series)
-
-        site.add_seriesCatalog(seriesCatalog)
+            site.add_seriesCatalog(seriesCatalog)
 
         # need at least one extension element to meet WaterML 1.0
         # schema validation
-        site.set_extension('')
+        #site.set_extension('')
         return site
 
     def create_site_info_element(self, siteResult):
@@ -417,24 +600,23 @@ class WOF(object):
         siteInfo.set_siteName(siteResult.SiteName)
 
         #TODO: agencyName
-        siteCode = WaterML.siteCode(network=self.network,
+        siteCode = WaterML.siteCodeType(network=self.network,
                                     siteID=siteResult.SiteID,
-                                    valueOf_=siteResult.SiteCode,
-                                    agencyName=None,
-                                    defaultId=None)
+                                    valueOf_=siteResult.SiteCode
+                                    )
 
         siteInfo.add_siteCode(siteCode)
 
         # TODO: Maybe remove this?  None of the other WOF services
         # return this info probably because it is not that useful
-        timeZoneInfo = WaterML.timeZoneInfo(siteUsesDaylightSavingsTime=False,
-                                            daylightSavingsTimeZone=None)
-        timeZoneInfo.defaultTimeZone = WaterML.defaultTimeZone(
-            ZoneOffset=self.timezone,
-            ZoneAbbreviation=self.timezone_abbr)
+        #timeZoneInfo = WaterML.timeZoneInfoType(siteUsesDaylightSavingsTime=False,
+        #                                    daylightSavingsTimeZone=None)
+        #timeZoneInfo.defaultTimeZone = WaterML.defaultTimeZoneType(
+        #    zoneOffset=self.timezone,
+        #    zoneAbbreviation=self.timezone_abbr)
 
-        siteInfo.set_timeZoneInfo(timeZoneInfo)
-        geoLocation = WaterML.geoLocation()
+        #siteInfo.set_timeZoneInfo(timeZoneInfo)
+        geoLocation = WaterML.geoLocationType()
         geogLocation = WaterML.LatLonPointType(
             srs="EPSG:{0}".format(siteResult.LatLongDatum.SRSID),
             latitude=siteResult.Latitude,
@@ -442,7 +624,7 @@ class WOF(object):
         geoLocation.set_geogLocation(geogLocation)
 
         if (siteResult.LocalX and siteResult.LocalY):
-            localSiteXY = WaterML.localSiteXY()
+            localSiteXY = WaterML.localSiteXYType()
             localSiteXY.projectionInformation = \
                                         siteResult.LocalProjection.SRSName
             localSiteXY.X = siteResult.LocalX
@@ -455,21 +637,21 @@ class WOF(object):
         # need at least one extension element to meet WaterML 1.0
         # schema validation
 
-        siteInfo.set_extension('')
+        #siteInfo.set_extension('')
 
         # need at least one altname element to meet WaterML 1.0 schema
         # validation
-        siteInfo.set_altname('')
+        #siteInfo.set_altname('')
         return siteInfo
 
     def create_series_element(self, seriesResult):
-        series = WaterML.series()
+        series = WaterML.seriesType()
 
         #Variable
         variable = self.create_variable_element(seriesResult.Variable)
         series.set_variable(variable)
 
-        series.valueCount = WaterML.valueCount(
+        series.valueCount = WaterML.valueCountType(
             valueOf_=str(seriesResult.ValueCount))
 
         beginDateTime = _get_iso8061_datetime_string(
@@ -478,6 +660,11 @@ class WOF(object):
             seriesResult, "EndDateTime", "EndDateTimeUTC")
 
         #TimeInterval
+        if beginDateTime is None:
+            beginDateTime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        if endDateTime is None:
+            endDateTime = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
         variableTimeInt = WaterML.TimeIntervalType(
             beginDateTime=beginDateTime,
             endDateTime=endDateTime)
@@ -496,7 +683,9 @@ class WOF(object):
         #QualityControlLevel
         qualityControlLevel = WaterML.QualityControlLevelType(
                     qualityControlLevelID=seriesResult.QualityControlLevelID,
-                    valueOf_=seriesResult.QualityControlLevelCode)
+                    qualityControlLevelCode=seriesResult.QualityControlLevelCode,
+                    definition=seriesResult.Definition,
+                    explanation=seriesResult.Explanation)
 
         series.QualityControlLevel = qualityControlLevel
 
@@ -509,37 +698,44 @@ class WOF(object):
             dataType=variableResult.DataType,
             generalCategory=variableResult.GeneralCategory,
             sampleMedium=variableResult.SampleMedium,
-            NoDataValue=variableResult.NoDataValue,
-            variableDescription=variableResult.VariableDescription)
+            noDataValue=variableResult.NoDataValue,
+            variableDescription=variableResult.VariableDescription,
+            speciation=variableResult.Speciation)
 
-        variableCode = WaterML.variableCode()
+        #For specimen data
+        v_code = variableResult.VariableCode
+        v_code_i = v_code.find('::')
+        if v_code_i != -1:
+            v_code = v_code[0:v_code_i]
+
+        variableCode = WaterML.variableCodeType()
         variableCode.vocabulary = self.vocabulary
         #TODO: What is this, should it always be true?
         variableCode.default = "true"
         variableCode.variableID = variableResult.VariableID
-        variableCode.valueOf_ = variableResult.VariableCode
+        variableCode.valueOf_ = v_code
 
         variable.add_variableCode(variableCode)
 
         if variableResult.VariableUnits:
-            units = WaterML.units(
-                unitsAbbreviation=variableResult.VariableUnits.UnitsAbbreviation,
-                unitsCode=variableResult.VariableUnitsID,
-                unitsType=variableResult.VariableUnits.UnitsType,
-                valueOf_=variableResult.VariableUnits.UnitsName)
+            units = WaterML.UnitsType(
+                unitAbbreviation=variableResult.VariableUnits.UnitsAbbreviation,
+                unitCode=variableResult.VariableUnitsID,
+                unitType=variableResult.VariableUnits.UnitsType,
+                unitName=variableResult.VariableUnits.UnitsName)
 
-            variable.set_units(units)
+            variable.set_unit(units)
 
-        timeSupport = WaterML.timeSupport()
+        timeSupport = WaterML.timeScaleType()
         timeSupport.isRegular = variableResult.IsRegular
 
         if variableResult.TimeUnits:
             timeUnits = WaterML.UnitsType(
-                UnitID=variableResult.TimeUnits.UnitsID,
-                UnitName=variableResult.TimeUnits.UnitsName,
-                UnitDescription=variableResult.TimeUnits.UnitsName,
-                UnitType=variableResult.TimeUnits.UnitsType,
-                UnitAbbreviation=variableResult.TimeUnits.UnitsAbbreviation)
+                unitID=variableResult.TimeUnits.UnitsID,
+                unitName=variableResult.TimeUnits.UnitsName,
+                unitDescription=variableResult.TimeUnits.UnitsName,
+                unitType=variableResult.TimeUnits.UnitsType,
+                unitAbbreviation=variableResult.TimeUnits.UnitsAbbreviation)
 
             timeSupport.set_unit(timeUnits)
 
@@ -548,8 +744,8 @@ class WOF(object):
         # which isn't stored in ODM.
         if variableResult.TimeSupport:
             # integer in WaterML 1.0
-            timeSupport.timeInterval = str(int(variableResult.TimeSupport))
-        variable.set_timeSupport(timeSupport)
+            timeSupport.timeSupport = float(variableResult.TimeSupport)
+        variable.set_timeScale(timeSupport)
         return variable
 
     def create_wml2_values_object(self, siteArg, varArg, startDateTime=None,
@@ -561,20 +757,20 @@ class WOF(object):
         return valueResultArr
 
 
-def create_wof_app(dao, config_file):
+def create_wof_app_1_1(dao, config_file):
     """
     Returns a fully instantiated WOF wsgi app (flask + soap)
     """
-    wof_obj = WOF(dao, config_file)
-    app = wof.flask.create_app(wof_obj)
-    WOFService = wof.soap.create_wof_service_class(wof_obj)
+    wof_obj = WOF_1_1(dao, config_file)
+    app = wof.flask.create_app_1_1(wof_obj)
+    WOFService = wof.soap.create_wof_service_class_1_1(wof_obj)
     soap_app = soaplib.core.Application(
         services=[WOFService],
-        tns='http://www.cuahsi.org/his/1.0/ws/',
-        name='WaterOneFlow')
+        tns='http://www.cuahsi.org/his/1.1/ws/',
+        name='WaterOneFlow_1_1')
     soap_wsgi_app = soaplib.core.server.wsgi.Application(soap_app)
     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, {
-        '/soap/wateroneflow': soap_wsgi_app
+        '/soap/wateroneflow_1_1': soap_wsgi_app
         })
     return app
 
