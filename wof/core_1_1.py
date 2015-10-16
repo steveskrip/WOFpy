@@ -34,12 +34,12 @@ class WOF_1_1(object):
         config = ConfigParser.RawConfigParser()
         config.read(file_name)
 
-        self.network = config.get('WOF', 'Network')
-        self.vocabulary = config.get('WOF', 'Vocabulary')
-        self.menu_group_name = config.get('WOF', 'Menu_Group_Name')
-        self.service_wsdl = config.get('WOF', 'Service_WSDL')
-        self.timezone = config.get('WOF', 'Timezone')
-        self.timezone_abbr = config.get('WOF', 'TimezoneAbbreviation')
+        self.network = config.get('WOF_1_1', 'Network')
+        self.vocabulary = config.get('WOF_1_1', 'Vocabulary')
+        self.menu_group_name = config.get('WOF_1_1', 'Menu_Group_Name')
+        self.service_wsdl = config.get('WOF_1_1', 'Service_WSDL')
+        self.timezone = config.get('WOF_1_1', 'Timezone')
+        self.timezone_abbr = config.get('WOF_1_1', 'TimezoneAbbreviation')
 
         if config.has_section('Default_Params_1_1'):
             self.default_site = config.get('Default_Params_1_1', 'Site')
