@@ -41,15 +41,15 @@ class WOF_1_1(object):
         self.timezone = config.get('WOF', 'Timezone')
         self.timezone_abbr = config.get('WOF', 'TimezoneAbbreviation')
 
-        if config.has_section('Default_Params'):
-            self.default_site = config.get('Default_Params', 'Site')
-            self.default_variable = config.get('Default_Params', 'Variable')
-            self.default_start_date = config.get('Default_Params', 'StartDate')
-            self.default_end_date = config.get('Default_Params', 'EndDate')
-            self.default_east = config.get('Default_Params', 'East')
-            self.default_north = config.get('Default_Params','North')
-            self.default_south = config.get('Default_Params', 'South')
-            self.default_west = config.get('Default_Params', 'West')
+        if config.has_section('Default_Params_1_1'):
+            self.default_site = config.get('Default_Params_1_1', 'Site')
+            self.default_variable = config.get('Default_Params_1_1', 'Variable')
+            self.default_start_date = config.get('Default_Params_1_1', 'StartDate')
+            self.default_end_date = config.get('Default_Params_1_1', 'EndDate')
+            self.default_east = config.get('Default_Params_1_1', 'East')
+            self.default_north = config.get('Default_Params_1_1','North')
+            self.default_south = config.get('Default_Params_1_1', 'South')
+            self.default_west = config.get('Default_Params_1_1', 'West')
 
     def create_get_site_response(self, siteArg=None):
         if siteArg == None or siteArg == '':
