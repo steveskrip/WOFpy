@@ -34,22 +34,64 @@ class WOF_1_1(object):
         config = ConfigParser.RawConfigParser()
         config.read(file_name)
 
-        self.network = config.get('WOF_1_1', 'Network')
-        self.vocabulary = config.get('WOF_1_1', 'Vocabulary')
-        self.menu_group_name = config.get('WOF_1_1', 'Menu_Group_Name')
-        self.service_wsdl = config.get('WOF_1_1', 'Service_WSDL')
-        self.timezone = config.get('WOF_1_1', 'Timezone')
-        self.timezone_abbr = config.get('WOF_1_1', 'TimezoneAbbreviation')
+        if config.has_option('WOF_1_1','Network'):
+            self.network = config.get('WOF_1_1', 'Network')
+        else:
+            self.network = config.get('WOF', 'Network')
+        if config.has_option('WOF_1_1','Vocabulary'):
+            self.vocabulary = config.get('WOF_1_1', 'Vocabulary')
+        else:
+            self.vocabulary = config.get('WOF', 'Vocabulary')
+        if config.has_option('WOF_1_1','Menu_Group_Name'):
+            self.menu_group_name = config.get('WOF_1_1', 'Menu_Group_Name')
+        else:
+            self.menu_group_name = config.get('WOF', 'Menu_Group_Name')
+        if config.has_option('WOF_1_1','Service_WSDL'):
+            self.service_wsdl = config.get('WOF_1_1', 'Service_WSDL')
+        else:
+            self.service_wsdl = config.get('WOF', 'Service_WSDL')
+        if config.has_option('WOF_1_1','Timezone'):
+            self.timezone = config.get('WOF_1_1', 'Timezone')
+        else:
+            self.timezone = config.get('WOF', 'Timezone')
+        if config.has_option('WOF_1_1','TimezoneAbbreviation'):
+            self.timezone_abbr = config.get('WOF_1_1', 'TimezoneAbbreviation')
+        else:
+            self.timezone_abbr = config.get('WOF', 'TimezoneAbbreviation')
 
-        if config.has_section('Default_Params_1_1'):
-            self.default_site = config.get('Default_Params_1_1', 'Site')
-            self.default_variable = config.get('Default_Params_1_1', 'Variable')
-            self.default_start_date = config.get('Default_Params_1_1', 'StartDate')
-            self.default_end_date = config.get('Default_Params_1_1', 'EndDate')
-            self.default_east = config.get('Default_Params_1_1', 'East')
-            self.default_north = config.get('Default_Params_1_1','North')
-            self.default_south = config.get('Default_Params_1_1', 'South')
-            self.default_west = config.get('Default_Params_1_1', 'West')
+        if config.has_section('Default_Params'):
+            if config.has_option('Default_Params_1_1','Site'):
+                self.default_site = config.get('Default_Params_1_1', 'Site')
+            else:
+                self.default_site = config.get('Default_Params', 'Site')
+            if config.has_option('Default_Params_1_1','Variable'):
+                self.default_variable = config.get('Default_Params_1_1', 'Variable')
+            else:
+                self.default_variable = config.get('Default_Params', 'Variable')
+            if config.has_option('Default_Params_1_1','StartDate'):
+                self.default_start_date = config.get('Default_Params_1_1', 'StartDate')
+            else:
+                self.default_start_date = config.get('Default_Params', 'StartDate')
+            if config.has_option('Default_Params_1_1','EndDate'):
+                self.default_end_date = config.get('Default_Params_1_1', 'EndDate')
+            else:
+                self.default_end_date = config.get('Default_Params', 'EndDate')
+            if config.has_option('Default_Params_1_1','East'):
+                self.default_east = config.get('Default_Params_1_1', 'East')
+            else:
+                self.default_east = config.get('Default_Params', 'East')
+            if config.has_option('Default_Params_1_1','North'):
+                self.default_north = config.get('Default_Params_1_1','North')
+            else:
+                self.default_north = config.get('Default_Params','North')
+            if config.has_option('Default_Params_1_1','South'):
+                self.default_south = config.get('Default_Params_1_1', 'South')
+            else:
+                self.default_south = config.get('Default_Params', 'South')
+            if config.has_option('Default_Params_1_1','West'):
+                self.default_west = config.get('Default_Params_1_1', 'West')
+            else:
+                self.default_west = config.get('Default_Params', 'West')
 
     def create_get_site_response(self, siteArg=None):
         if siteArg == None or siteArg == '':
