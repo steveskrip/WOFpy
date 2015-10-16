@@ -14,7 +14,6 @@ from sqlalchemy import and_
 from sqlalchemy.sql import func
 
 import re
-from sqlalchemy.orm import with_polymorphic
 
 class Odm2Dao(BaseDao):
 
