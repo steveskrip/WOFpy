@@ -101,7 +101,8 @@ except ImportError as exp:
                     raise_parse_error(node, 'Requires sequence of floats')
             return values
         def gds_format_double(self, input_data, input_name=''):
-            return '%e' % input_data
+            #return '%e' % input_data
+            return "{0}".format(input_data)
         def gds_validate_double(self, input_data, node=None, input_name=''):
             return input_data
         def gds_format_double_list(self, input_data, input_name=''):
@@ -2143,6 +2144,8 @@ class LatLonPointType(GeogLocationType):
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='LatLonPointType')
+        outfile.write(u' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"')
+        outfile.write(u' xsi:type="LatLonPointType"')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
             self.exportChildren(outfile, level + 1, namespace_='', name_='LatLonPointType', pretty_print=pretty_print)
@@ -7318,6 +7321,8 @@ class SiteInfoType(SourceInfoType):
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         already_processed = set()
         self.exportAttributes(outfile, level, already_processed, namespace_, name_='SiteInfoType')
+        outfile.write(u' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"')
+        outfile.write(u' xsi:type="SiteInfoType"')
         if self.hasContent_():
             outfile.write('>%s' % (eol_, ))
             self.exportChildren(outfile, level + 1, namespace_='', name_='SiteInfoType', pretty_print=pretty_print)

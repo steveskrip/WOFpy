@@ -11,12 +11,15 @@ from soaplib.core.model.clazz import Array, ClassModel
 
 logger = logging.getLogger(__name__)
 
+"""
 NSDEF = 'xmlns:gml="http://www.opengis.net/gml" \
     xmlns:xlink="http://www.w3.org/1999/xlink" \
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \
     xmlns:wtr="http://www.cuahsi.org/waterML/1.1/" \
     xmlns="http://www.cuahsi.org/waterML/1.1/"'
+"""
+NSDEF = 'xmlns="http://www.cuahsi.org/waterML/1.1/"'
 
 #TODO: Input validation, error messages, test classes (use suds)
 #TODO: For some reason, soaplib does not ignore <!--comments--> in the soap
@@ -39,10 +42,14 @@ def create_wof_service_class_1_1(wof_instance):
             # Since I don't know, I am doing a dumb test for each one
 
             result_element_name_list = [
-                'GetSitesResult',
+                'GetSitesObjectResult',
                 'GetSiteInfoObjectResult',
                 'GetVariableInfoObjectResult',
-                'GetValuesObjectResult']
+                'GetValuesObjectResult',
+                'GetSitesByBoxObjectResult',
+                'GetSiteInfoMultpleObjectResult',
+                'GetVariablesObjectResult',
+                'GetValuesForASiteObjectResult']
 
             for result_element_name in result_element_name_list:
                 result_element = element.find(
@@ -107,7 +114,6 @@ def create_wof_service_class_1_1(wof_instance):
                 siteResponse.export(outStream, 0, name_="sitesResponse",
                                     namespacedef_=NSDEF)
                 return (outStream.getvalue()).replace('\n', '')
-
             except Exception as inst:
                 if type(inst) == Fault:
                     raise inst

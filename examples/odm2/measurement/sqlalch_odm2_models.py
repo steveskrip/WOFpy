@@ -21,7 +21,7 @@ class Variable(wof_base.BaseVariable):
             self.VariableUnits = None
         if v_tunit is not None:
             self.TimeUnits = Unit(v_tunit)
-            self.TimeSupport = v_timeinterval
+            #self.TimeSupport = v_timeinterval
         else:
             self.TimeUnits = None
 
