@@ -1,8 +1,9 @@
+import soaplib
 import logging
 
 import wof
 
-from odm2_measurement_dao import Odm2Dao
+from odm2_dao import Odm2Dao
 import private_config
 
 """ Before running this script, create a private_config.py file with the 
@@ -15,7 +16,7 @@ import private_config
 logging.basicConfig(level=logging.DEBUG)
 
 dao = Odm2Dao(private_config.odm2_connection_string)
-app = wof.create_wof_app(dao, 'odm2_config_measurement.cfg')
+app = wof.create_wof_app(dao, 'odm2_config_timeseries.cfg')
 app.config['DEBUG'] = True
 
 if __name__ == '__main__':
@@ -27,9 +28,8 @@ if __name__ == '__main__':
     url = "http://127.0.0.1:" + str(openPort) + "/"
 
     print "----------------------------------------------------------------"
-    print "Acess Service Root at " + url
-    print "Access WaterML 1.0 'REST' endpoints at " + url + "rest_1_0"
-    print "Access WaterML 1.1 'REST' endpoints at " + url + "rest_1_1"
+    print "Access WaterML 1.0 'REST' endpoints at " + url
+    print "Access WaterML 1.1 'REST' endpoints at " + url +"rest_1_1"
     print "Access WaterML 1.0 SOAP WSDL at " + url + "soap/wateroneflow.wsdl"
     print "Access WaterML 1.1 SOAP WSDL at " + url + "soap/wateroneflow_1_1.wsdl"
     print "----------------------------------------------------------------"

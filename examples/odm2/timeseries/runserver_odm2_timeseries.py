@@ -1,4 +1,3 @@
-import soaplib
 import logging
 
 import wof
@@ -28,8 +27,9 @@ if __name__ == '__main__':
     url = "http://127.0.0.1:" + str(openPort) + "/"
 
     print "----------------------------------------------------------------"
-    print "Access WaterML 1.0 'REST' endpoints at " + url
-    print "Access WaterML 1.1 'REST' endpoints at " + url +"rest_1_1"
+    print "Acess Service Root at " + url
+    print "Access WaterML 1.0 'REST' endpoints at " + url + "rest_1_0"
+    print "Access WaterML 1.1 'REST' endpoints at " + url + "rest_1_1"
     print "Access WaterML 1.0 SOAP WSDL at " + url + "soap/wateroneflow.wsdl"
     print "Access WaterML 1.1 SOAP WSDL at " + url + "soap/wateroneflow_1_1.wsdl"
     print "----------------------------------------------------------------"

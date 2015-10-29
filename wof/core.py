@@ -1,40 +1,89 @@
 import datetime
 
-import soaplib.core
-import soaplib.core.server.wsgi
 import werkzeug
-
 import wof.flask
-import wof.soap
 import wof.core_1_1 as wof_1_1
 import wof.core_1_0 as wof_1_0
 
+from spyne.server.wsgi import WsgiApplication
+from spyne.application import Application
+from spyne.model.primitive import Unicode, AnyXml
+from spyne.protocol.soap import Soap11
+from spyne.protocol.http import HttpRpc
+from spyne.protocol.xml import XmlDocument
+
+from wof.apps.spyned_1_0 import TWOFService as wml10
+from wof.apps.spyned_1_1 import TWOFService as wml11
+
+import logging
+#logging.basicConfig(level=logging.INFO)
+logging.getLogger('spyne.model.complex').setLevel(logging.ERROR)
+logging.getLogger('spyne.interface._base').setLevel(logging.ERROR)
+logging.getLogger('spyne.util.appreg').setLevel(logging.ERROR)
+logging.getLogger('spyne.interface.xml_schema').setLevel(logging.ERROR)
+
+_SERVICE_PARAMS = {
+    "r_type" : "rest",
+    "s_type" : "soap",
+    "wml10_tns" : "http://www.cuahsi.org/his/1.0/ws/",
+    "wml11_tns" : "http://www.cuahsi.org/his/1.1/ws/",
+    "wml10_rest_name" : "WaterOneFlow_rest_1_0",
+    "wml10_soap_name" : "WaterOneFlow_soap_1_0",
+    "wml11_rest_name" : "WaterOneFlow_rest_1_1",
+    "wml11_soap_name" : "WaterOneFlow_soap_1_1",
+}
+
 def create_wof_app(dao, config_file):
     """
-    Returns a fully instantiated WOF wsgi app (flask + soap)
+    Returns a fully instantiated WOF wsgi app (flask + apps)
     """
-    wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
-    app_1_1 = wof.flask.create_app_1_1(wof_obj_1_1)
-    WOFService_1_1 = wof.soap.create_wof_service_class_1_1(wof_obj_1_1)
-    soap_app_1_1 = soaplib.core.Application(
-        services=[WOFService_1_1],
-        tns='http://www.cuahsi.org/his/1.1/ws/',
-        name='WaterOneFlow_1_1'
-    )
-    soap_wsgi_app_1_1 = soaplib.core.server.wsgi.Application(soap_app_1_1)
 
-    wof_obj = wof_1_0.WOF(dao, config_file)
-    app = wof.flask.create_app(wof_obj)
-    WOFService = wof.soap.create_wof_service_class(wof_obj)
-    soap_app = soaplib.core.Application(
-        services=[WOFService],
-        tns='http://www.cuahsi.org/his/1.0/ws/',
-        name='WaterOneFlow')
-    soap_wsgi_app = soaplib.core.server.wsgi.Application(soap_app)
+    wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
+    wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+    app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+
+    soap_app_1_0 = Application(
+        [wml10(wof_obj_1_0,Unicode,_SERVICE_PARAMS["s_type"])],
+        tns=_SERVICE_PARAMS["wml10_tns"],
+        name=_SERVICE_PARAMS["wml10_soap_name"],
+        in_protocol=Soap11(validator='lxml'),
+        out_protocol=Soap11(),
+    )
+
+    rest_app_1_0 = Application(
+        [wml10(wof_obj_1_0,AnyXml,_SERVICE_PARAMS["r_type"])],
+        tns=_SERVICE_PARAMS["wml10_tns"],
+        name=_SERVICE_PARAMS["wml10_rest_name"],
+        in_protocol=HttpRpc(validator='soft'),
+        out_protocol=XmlDocument(),
+    )
+
+    soap_app_1_1 = Application(
+        [wml11(wof_obj_1_1,Unicode,_SERVICE_PARAMS["s_type"])],
+        tns=_SERVICE_PARAMS["wml11_tns"],
+        name=_SERVICE_PARAMS["wml11_soap_name"],
+        in_protocol=Soap11(validator='lxml'),
+        out_protocol=Soap11(),
+    )
+
+    rest_app_1_1 = Application(
+        [wml11(wof_obj_1_1,AnyXml,_SERVICE_PARAMS["r_type"])],
+        tns=_SERVICE_PARAMS["wml11_tns"],
+        name=_SERVICE_PARAMS["wml11_rest_name"],
+        in_protocol=HttpRpc(validator='soft'),
+        out_protocol=XmlDocument(),
+    )
+
+    rest_wsgi_wrapper_1_0 = WsgiApplication(rest_app_1_0)
+    soap_wsgi_wrapper_1_0 = WsgiApplication(soap_app_1_0)
+    rest_wsgi_wrapper_1_1 = WsgiApplication(rest_app_1_1)
+    soap_wsgi_wrapper_1_1 = WsgiApplication(soap_app_1_1)
+
     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, {
-        '/rest_1_1' : app_1_1,
-        '/soap/wateroneflow': soap_wsgi_app,
-        '/soap/wateroneflow_1_1': soap_wsgi_app_1_1
+        '/rest/1_0': rest_wsgi_wrapper_1_0,
+        '/rest/1_1' : rest_wsgi_wrapper_1_1,
+        '/soap/wateroneflow': soap_wsgi_wrapper_1_0,
+        '/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
         })
 
     return app

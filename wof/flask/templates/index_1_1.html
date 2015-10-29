@@ -7,58 +7,58 @@
 	
 	<ul>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetSites">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetSites">
                         GetSites
                     </a>
                 </li>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetSites?site={{p}}:{{s}}">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetSites?site={{p}}:{{s}}">
                         GetSites?site={{p}}:{{s}}
                     </a>
                 </li>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetSitesByBox?west={{w}}&south={{ so }}&north={{ n }}&east={{ e }}&IncludeSeries=false">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetSitesByBox?west={{w}}&south={{ so }}&north={{ n }}&east={{ e }}&IncludeSeries=false">
                         GetSitesByBox?west={{w}}&south={{ so }}&north={{ n }}&east={{ e }}&IncludeSeries=false
                     </a>
                 </li>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetSiteInfo?site={{p}}:{{s}}">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetSiteInfo?site={{p}}:{{s}}">
                         GetSiteInfo?site={{p}}:{{s}}
                     </a>
                 </li>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetSiteInfoMultiple?site={{p}}:{{s}}">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetSiteInfoMultiple?site={{p}}:{{s}}">
                         GetSiteInfoMultiple?site={{p}}:{{s}}
                     </a>
                 </li>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetVariableInfo">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetVariableInfo">
                         GetVariableInfo
                     </a>
                 </li>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetVariableInfo?variable={{p}}:{{v}}">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetVariableInfo?variable={{p}}:{{v}}">
                         GetVariableInfo?variable={{p}}:{{v}}
                     </a>
                 </li>
 		<li>
-                    <a href="{{request.script_root|safe}}/GetValues?location={{p}}:{{s}}&variable={{p}}:{{v}}">
+                    <a href="{{request.script_root|safe}}/{{ path }}GetValues?location={{p}}:{{s}}&variable={{p}}:{{v}}">
                         GetValues?location={{p}}:{{s}}&variable={{p}}:{{v}}
                     </a> Note: May crash browser for large values sets.
                 </li>
 		<li>
-			<a href="{{request.script_root|safe}}/GetValues?location={{p}}:{{s}}&variable={{p}}:{{v}}&startDate={{sd}}&endDate={{ed}}">
+			<a href="{{request.script_root|safe}}/{{ path }}GetValues?location={{p}}:{{s}}&variable={{p}}:{{v}}&startDate={{sd}}&endDate={{ed}}">
 				GetValues?location={{p}}:{{s}}&variable={{p}}:{{v}}&startDate={{sd}}&endDate={{ed}}
 			</a>
 		</li>
         <li>
-			<a href="{{request.script_root|safe}}/GetValuesForASite?site={{p}}:{{s}}&startDate={{sd}}&endDate={{ed}}">
+			<a href="{{request.script_root|safe}}/{{ path }}GetValuesForASite?site={{p}}:{{s}}&startDate={{sd}}&endDate={{ed}}">
 				GetValuesForASite?site={{p}}:{{s}}&startDate={{sd}}&endDate={{ed}}
 			</a>
 		</li>
 
         <li>
-			WaterML2 Example: <a href="{{request.script_root|safe}}/GetValues?format=wml2&location={{p}}:{{s}}&variable={{p}}:{{v}}&startDate={{sd}}&endDate={{ed}}">
+			WaterML2 Example: <a href="{{request.script_root|safe}}/{{ path }}GetValues?format=wml2&location={{p}}:{{s}}&variable={{p}}:{{v}}&startDate={{sd}}&endDate={{ed}}">
 				GetValues?format=wml2&location={{p}}:{{s}}&variable={{p}}:{{v}}&startDate={{sd}}&endDate={{ed}}
 			</a>
 		</li>

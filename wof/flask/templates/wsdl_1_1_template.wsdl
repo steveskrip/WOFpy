@@ -123,7 +123,7 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="GetSiteInfoMultpleObject">
+      <s:element name="GetSiteInfoMultipleObject">
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="site" type="tns:ArrayOfString" />
@@ -131,7 +131,7 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="GetSiteInfoMultpleObjectResponse">
+      <s:element name="GetSiteInfoMultipleObjectResponse">
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" ref="s1:sitesResponse" />
@@ -831,11 +831,11 @@
   <wsdl:message name="GetValuesObjectSoapOut">
     <wsdl:part name="parameters" element="s1:TimeSeriesResponse" />
   </wsdl:message>
-  <wsdl:message name="GetSiteInfoMultpleObjectSoapIn">
-    <wsdl:part name="parameters" element="tns:GetSiteInfoMultpleObject" />
+  <wsdl:message name="GetSiteInfoMultipleObjectSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSiteInfoMultipleObject" />
   </wsdl:message>
-  <wsdl:message name="GetSiteInfoMultpleObjectSoapOut">
-    <wsdl:part name="parameters" element="tns:GetSiteInfoMultpleObjectResponse" />
+  <wsdl:message name="GetSiteInfoMultipleObjectSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSiteInfoMultipleObjectResponse" />
   </wsdl:message>
   <wsdl:message name="GetSitesByBoxObjectSoapIn">
     <wsdl:part name="parameters" element="tns:GetSitesByBoxObject" />
@@ -923,11 +923,11 @@
   <wsdl:message name="GetValuesObjectHttpGetOut">
     <wsdl:part name="Body" element="s1:timeSeriesResponse" />
   </wsdl:message>
-  <wsdl:message name="GetSiteInfoMultpleObjectHttpGetIn">
+  <wsdl:message name="GetSiteInfoMultipleObjectHttpGetIn">
     <wsdl:part name="site" type="s2:StringArray" />
     <wsdl:part name="authToken" type="s:string" />
   </wsdl:message>
-  <wsdl:message name="GetSiteInfoMultpleObjectHttpGetOut">
+  <wsdl:message name="GetSiteInfoMultipleObjectHttpGetOut">
     <wsdl:part name="Body" element="s1:sitesResponse" />
   </wsdl:message>
   <wsdl:message name="GetSitesByBoxObjectHttpGetIn">
@@ -1024,11 +1024,11 @@
   <wsdl:message name="GetValuesObjectHttpPostOut">
     <wsdl:part name="Body" element="s1:timeSeriesResponse" />
   </wsdl:message>
-  <wsdl:message name="GetSiteInfoMultpleObjectHttpPostIn">
+  <wsdl:message name="GetSiteInfoMultipleObjectHttpPostIn">
     <wsdl:part name="site" type="s2:StringArray" />
     <wsdl:part name="authToken" type="s:string" />
   </wsdl:message>
-  <wsdl:message name="GetSiteInfoMultpleObjectHttpPostOut">
+  <wsdl:message name="GetSiteInfoMultipleObjectHttpPostOut">
     <wsdl:part name="Body" element="s1:sitesResponse" />
   </wsdl:message>
   <wsdl:message name="GetSitesByBoxObjectHttpPostIn">
@@ -1104,10 +1104,10 @@
       <wsdl:input message="tns:GetValuesObjectSoapIn" />
       <wsdl:output message="tns:GetValuesObjectSoapOut" />
     </wsdl:operation>
-    <wsdl:operation name="GetSiteInfoMultpleObject">
+    <wsdl:operation name="GetSiteInfoMultipleObject">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Given a site number, this method returns the site's metadata. Send the site code in this format: 'NetworkName:SiteCode'</wsdl:documentation>
-      <wsdl:input message="tns:GetSiteInfoMultpleObjectSoapIn" />
-      <wsdl:output message="tns:GetSiteInfoMultpleObjectSoapOut" />
+      <wsdl:input message="tns:GetSiteInfoMultipleObjectSoapIn" />
+      <wsdl:output message="tns:GetSiteInfoMultipleObjectSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetSitesByBoxObject">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Given a site number, this method returns the site's metadata. Send the site code in this format: 'NetworkName:SiteCode'</wsdl:documentation>
@@ -1171,10 +1171,10 @@
       <wsdl:input message="tns:GetValuesObjectHttpGetIn" />
       <wsdl:output message="tns:GetValuesObjectHttpGetOut" />
     </wsdl:operation>
-    <wsdl:operation name="GetSiteInfoMultpleObject">
+    <wsdl:operation name="GetSiteInfoMultipleObject">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Given a site number, this method returns the site's metadata. Send the site code in this format: 'NetworkName:SiteCode'</wsdl:documentation>
-      <wsdl:input message="tns:GetSiteInfoMultpleObjectHttpGetIn" />
-      <wsdl:output message="tns:GetSiteInfoMultpleObjectHttpGetOut" />
+      <wsdl:input message="tns:GetSiteInfoMultipleObjectHttpGetIn" />
+      <wsdl:output message="tns:GetSiteInfoMultipleObjectHttpGetOut" />
     </wsdl:operation>
     <wsdl:operation name="GetSitesByBoxObject">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Given a site number, this method returns the site's metadata. Send the site code in this format: 'NetworkName:SiteCode'</wsdl:documentation>
@@ -1238,10 +1238,10 @@
       <wsdl:input message="tns:GetValuesObjectHttpPostIn" />
       <wsdl:output message="tns:GetValuesObjectHttpPostOut" />
     </wsdl:operation>
-    <wsdl:operation name="GetSiteInfoMultpleObject">
+    <wsdl:operation name="GetSiteInfoMultipleObject">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Given a site number, this method returns the site's metadata. Send the site code in this format: 'NetworkName:SiteCode'</wsdl:documentation>
-      <wsdl:input message="tns:GetSiteInfoMultpleObjectHttpPostIn" />
-      <wsdl:output message="tns:GetSiteInfoMultpleObjectHttpPostOut" />
+      <wsdl:input message="tns:GetSiteInfoMultipleObjectHttpPostIn" />
+      <wsdl:output message="tns:GetSiteInfoMultipleObjectHttpPostOut" />
     </wsdl:operation>
     <wsdl:operation name="GetSitesByBoxObject">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Given a site number, this method returns the site's metadata. Send the site code in this format: 'NetworkName:SiteCode'</wsdl:documentation>
@@ -1338,8 +1338,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetSiteInfoMultpleObject">
-      <soap:operation soapAction="http://www.cuahsi.org/his/1.1/ws/GetSiteInfoMultpleObject" style="document" />
+    <wsdl:operation name="GetSiteInfoMultipleObject">
+      <soap:operation soapAction="http://www.cuahsi.org/his/1.1/ws/GetSiteInfoMultipleObject" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
