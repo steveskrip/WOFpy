@@ -4,6 +4,7 @@ from xml.sax.saxutils import escape
 import ConfigParser
 import WaterML
 import core
+import logging
 
 class WOF(object):
 
@@ -364,16 +365,48 @@ class WOF(object):
 
         return None
 
+    def check_censorCode(self, censorCode):
+        default = "nc"
+        valueList = [
+              "lt"
+              ,"gt"
+              ,"nc"
+              ,"nd"
+              ,"pnq"
+            ]
+        if (censorCode in valueList):
+            return censorCode
+        else:
+            return default
+    def check_QualityControlLevel(self, QualityControlLevel):
+        default = "Unknown"
+        valueList = [
+             "Raw data"
+          ,"Quality controlled data"
+          ,"Derived products"
+          ,"Interpreted products"
+          ,"Knowledge products"
+          ,"Unknown"
+        ]
+        if (QualityControlLevel in valueList):
+            return QualityControlLevel
+        else:
+            return default
+
     #TODO: lots more stuff to fill out here
     def create_value_element(self, valueResult):
         datetime_string = core._get_iso8061_datetime_string(
             valueResult, "LocalDateTime", "DateTimeUTC")
+        clean_censorCode =self.check_censorCode(valueResult.CensorCode)
+        clean_qcl = self.check_QualityControlLevel(valueResult.QualityControlLevel)
 
         value = WaterML.ValueSingleVariable(
-                        qualityControlLevel=valueResult.QualityControlLevel,
+                        qualityControlLevel=clean_qcl,
+                       # qualityControlLevel=valueResult.QualityControlLevel,
                         methodID=valueResult.MethodID,
                         sourceID=valueResult.SourceID,
-                        censorCode=valueResult.CensorCode,
+                        #censorCode=valueResult.CensorCode,
+                        censorCode=clean_censorCode,
                         sampleID=valueResult.SampleID,
                         offsetTypeID=valueResult.OffsetTypeID,
                         accuracyStdDev=valueResult.ValueAccuracy,
@@ -532,13 +565,134 @@ class WOF(object):
 
         return series
 
+    def check_dataTypeEnum(self, datatype):
+        default = "Unknown"
+        valueList = [
+          "Continuous"
+          ,"Instantaneous"
+          ,"Cumulative"
+          ,"Incremental"
+          ,"Average"
+          ,"Maximum"
+          ,"Minimum"
+          ,"Constant Over Interval"
+          ,"Categorical"
+          ,"Best Easy Systematic Estimator "
+          ,"Unknown"
+          ,"Variance"
+          ,"Median"
+          ,"Mode"
+          ,"Best Easy Systematic Estimator"
+          ,"Standard Deviation"
+          ,"Skewness"
+          ,"Equivalent Mean"
+          ,"Sporadic"
+          ,"Unknown"
+        ]
+        if (datatype in valueList):
+            return datatype
+        else:
+            logging.warn('value outside of enum for datatype ' + datatype)
+            return default
+
+    def check_UnitsType(self, UnitsType):
+        default = "Dimensionless"
+        valueList = [
+              "Angle"
+              ,"Area"
+              ,"Dimensionless"
+              ,"Energy"
+              ,"Energy Flux"
+              ,"Flow"
+              ,"Force"
+              ,"Frequency"
+              ,"Length"
+              ,"Light"
+              ,"Mass"
+              ,"Permeability"
+              ,"Power"
+              ,"Pressure/Stress"
+              ,"Resolution"
+              ,"Scale"
+              ,"Temperature"
+              ,"Time"
+              ,"Velocity"
+              ,"Volume"
+            ]
+        if (UnitsType in valueList):
+            return UnitsType
+        else:
+            logging.warn('value outside of enum for UnitsType ' + UnitsType)
+            return default
+
+    def check_SampleMedium(self, SampleMedium):
+        default = "Unknown"
+        valueList = [
+          "Surface Water"
+          ,"Ground Water"
+          ,"Sediment"
+          ,"Soil"
+          ,"Air"
+          ,"Tissue"
+          ,"Precipitation"
+          ,"Unknown"
+          ,"Other"
+          ,"Snow"
+          ,"Not Relevant"
+        ]
+        if (SampleMedium in valueList):
+            return SampleMedium
+        else:
+            logging.warn('default returned: value outside of enum for SampleMedium ' + SampleMedium)
+            return default
+
+    def check_generalCategory(self, generalCategory):
+        default = "Unknown"
+        valueList = [
+          "Water Quality"
+          ,"Climate"
+          ,"Hydrology"
+          ,"Geology"
+          ,"Biota"
+          ,"Unknown"
+          ,"Instrumentation"
+        ]
+        if (generalCategory in valueList):
+            return generalCategory
+        else:
+            logging.warn('default returned: value outside of enum for generalCategory ' + generalCategory)
+            return default
+
+    def check_valueType(self, valueType):
+        default = "Unknown"
+        valueList = [
+          "Field Observation"
+          ,"Sample"
+          ,"Model Simulation Result"
+          ,"Derived Value"
+          ,"Unknown"
+        ]
+        if (valueType in valueList):
+            return valueType
+        else:
+            logging.warn('default returned: value outside of enum for valueType ' + valueType)
+            return default
+
     def create_variable_element(self, variableResult):
+        clean_datatype = self.check_dataTypeEnum( variableResult.DataType)
+        clean_medium = self.check_SampleMedium(variableResult.SampleMedium)
+        clean_category = self.check_generalCategory(variableResult.GeneralCategory)
+        clean_valuetype = self.check_valueType(variableResult.ValueType)
         variable = WaterML.VariableInfoType(
             variableName=variableResult.VariableName,
-            valueType=variableResult.ValueType,
-            dataType=variableResult.DataType,
-            generalCategory=variableResult.GeneralCategory,
-            sampleMedium=variableResult.SampleMedium,
+            #valueType=variableResult.ValueType,
+            valueType=clean_valuetype,
+                       # dataType=variableResult.DataType,
+            dataType =clean_datatype,
+            #generalCategory=variableResult.GeneralCategory,
+            generalCategory=clean_category,
+                        #sampleMedium=variableResult.SampleMedium,
+            sampleMedium=clean_medium,
             NoDataValue=variableResult.NoDataValue,
             variableDescription=variableResult.VariableDescription)
 
@@ -556,12 +710,14 @@ class WOF(object):
         variableCode.valueOf_ = v_code
 
         variable.add_variableCode(variableCode)
+        clean_variableUnits = self.check_UnitsType(variableResult.VariableUnits.UnitsType)
 
         if variableResult.VariableUnits:
             units = WaterML.units(
                 unitsAbbreviation=variableResult.VariableUnits.UnitsAbbreviation,
                 unitsCode=variableResult.VariableUnitsID,
-                unitsType=variableResult.VariableUnits.UnitsType,
+                #unitsType=variableResult.VariableUnits.UnitsType,
+                unitsType=clean_variableUnits,
                 valueOf_=variableResult.VariableUnits.UnitsName)
 
             variable.set_units(units)
@@ -574,7 +730,8 @@ class WOF(object):
                 UnitID=variableResult.TimeUnits.UnitsID,
                 UnitName=variableResult.TimeUnits.UnitsName,
                 UnitDescription=variableResult.TimeUnits.UnitsName,
-                UnitType=variableResult.TimeUnits.UnitsType,
+                #UnitType=variableResult.TimeUnits.UnitsType,
+                UnitType="Time",
                 UnitAbbreviation=variableResult.TimeUnits.UnitsAbbreviation)
 
             timeSupport.set_unit(timeUnits)
