@@ -33,7 +33,7 @@ _SERVICE_PARAMS = {
     "wml11_soap_name" : "WaterOneFlow_soap_1_1",
 }
 
-def create_wof_app(dao, config_file):
+def create_wof_flask_app(dao, config_file):
     """
     Returns a fully instantiated WOF wsgi app (flask + apps)
     """
@@ -41,6 +41,7 @@ def create_wof_app(dao, config_file):
     wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
     wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
     app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+    sensorNetwork=wof_obj_1_0.network.replace('/','')
 
     soap_app_1_0 = Application(
         [wml10(wof_obj_1_0,Unicode,_SERVICE_PARAMS["s_type"])],
@@ -80,10 +81,10 @@ def create_wof_app(dao, config_file):
     soap_wsgi_wrapper_1_1 = WsgiApplication(soap_app_1_1)
 
     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, {
-        '/rest/1_0': rest_wsgi_wrapper_1_0,
-        '/rest/1_1' : rest_wsgi_wrapper_1_1,
-        '/soap/wateroneflow': soap_wsgi_wrapper_1_0,
-        '/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
+       '/'+ sensorNetwork+'/rest/1_0': rest_wsgi_wrapper_1_0,
+       '/'+ sensorNetwork+'/rest/1_1' : rest_wsgi_wrapper_1_1,
+       '/'+ sensorNetwork+'/soap/wateroneflow': soap_wsgi_wrapper_1_0,
+       '/'+ sensorNetwork+'/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
         })
 
     return app

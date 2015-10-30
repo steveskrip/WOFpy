@@ -12,7 +12,7 @@ VALUES_FILE = 'data.csv'
 logging.basicConfig(level=logging.DEBUG)
 
 dao = CsvDao(SITES_FILE, VALUES_FILE)
-app = wof.create_wof_app(dao, CSV_CONFIG_FILE)
+app = wof.create_wof_flask_app(dao, CSV_CONFIG_FILE)
 app.config['DEBUG'] = True
 
 if __name__ == '__main__':

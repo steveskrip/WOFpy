@@ -20,7 +20,7 @@ CBI_CACHE_DATABASE_URI = 'sqlite:///' + os.path.join(
 logging.basicConfig(level=logging.DEBUG)
 
 cbi_dao = CbiDao(CBI_CONFIG_FILE, database_uri=CBI_CACHE_DATABASE_URI)
-app = wof.create_wof_app(cbi_dao, CBI_CONFIG_FILE)
+app = wof.create_wof_flask_app(cbi_dao, CBI_CONFIG_FILE)
 app.config['DEBUG'] = True
 
 if __name__ == '__main__':

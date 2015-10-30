@@ -11,7 +11,7 @@ SWIS_CONFIG_FILE = 'swis_config.cfg'
 logging.basicConfig(level=logging.DEBUG)
 
 swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri=SWIS_DATABASE_URI)
-app = wof.create_wof_app(swis_dao, SWIS_CONFIG_FILE)
+app = wof.create_wof_flask_app(swis_dao, SWIS_CONFIG_FILE)
 app.config['DEBUG'] = True
 
 if __name__ == '__main__':

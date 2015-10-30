@@ -10,24 +10,28 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
     app.config.from_object(config.Config)
     app.wof_inst = wof_inst
     app.wof_inst_1_1 = wof_inst_1_1
+    path = wof_inst.network
+    servicesPath =  '/'+wof_inst.network
 
-    @app.route('/')
+    #@app.route( '/')
     def index():
         return render_template('index.html',
-                               rest10='rest_1_0/',
-                               rest11='rest_1_1/',
-                               soap10='soap/wateroneflow.wsdl',
-                               soap11='soap/wateroneflow_1_1.wsdl',
+                               rest10=path+'/rest_1_0/',
+                               rest11=path+'/rest_1_1/',
+                               soap10=path+'/soap/wateroneflow.wsdl',
+                               soap11=path+'/soap/wateroneflow_1_1.wsdl',
                                p=current_app.wof_inst.network)
+
+    app.add_url_rule(servicesPath+'/', 'index', index)
 
     if wof_inst is not None:
         if not 'SOAP_SERVICE_URL' in app.config and soap_service_url:
             app.config['SOAP_SERVICE_URL'] = soap_service_url
 
-        @app.route('/rest_1_0/')
+        #@app.route('/rest_1_0/')
         def index_1_0():
             return render_template('index_1_0.html',
-                           path='rest/1_0/',
+                           path= path + '/rest/1_0/',
                            p=current_app.wof_inst.network,
                            s=current_app.wof_inst.default_site,
                            v=current_app.wof_inst.default_variable,
@@ -35,8 +39,9 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
                            ed=current_app.wof_inst.default_end_date,
                            u=current_app.wof_inst.default_unitid,
                            sm=current_app.wof_inst.default_samplemedium)
+        app.add_url_rule(servicesPath+'/rest_1_0/', 'index_1_0', index_1_0)
 
-        @app.route('/rest/1_0/GetValuesWML2', methods=['GET'])
+        #@app.route('/rest/1_0/GetValuesWML2', methods=['GET'])
         def get_values_wml2():
             """
             Experimental/Demo WaterML2-formatted Values response.
@@ -80,8 +85,9 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
             response.headers['Content-Type'] = 'text/xml'
 
             return response
+        app.add_url_rule(servicesPath+'/rest/1_0/GetValuesWML2', 'get_values_wml2', get_values_wml2)
 
-        @app.route('/soap/wateroneflow.wsdl')
+        #@app.route('/soap/wateroneflow.wsdl')
         def get_wsdl():
         #TODO: The WSDL should be served separately from the Flask application.
         # Come up with a better way to do this.
@@ -100,15 +106,16 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
 
             response.headers['Content-Type'] = 'text/xml'
             return response
+        app.add_url_rule(servicesPath+'/soap/wateroneflow.wsdl', 'get_wsdl', get_wsdl)
 
     if wof_inst_1_1 is not None:
         if not 'SOAP_SERVICE_URL_1_1' in app.config and soap_service_1_1_url:
             app.config['SOAP_SERVICE_URL_1_1'] = soap_service_1_1_url
 
-        @app.route('/rest_1_1/')
+        #@app.route('/rest_1_1/')
         def index_1_1():
             return render_template('index_1_1.html',
-                           path='rest/1_1/',
+                           path=path+'/rest/1_1/',
                            p=current_app.wof_inst_1_1.network,
                            s=current_app.wof_inst_1_1.default_site,
                            v=current_app.wof_inst_1_1.default_variable,
@@ -118,8 +125,9 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
                            so=current_app.wof_inst_1_1.default_south,
                            n=current_app.wof_inst_1_1.default_north,
                            e=current_app.wof_inst_1_1.default_east)
+        app.add_url_rule(servicesPath+'/rest_1_1/', 'index_1_1', index_1_1)
 
-        @app.route('/soap/wateroneflow_1_1.wsdl')
+        #@app.route('/soap/wateroneflow_1_1.wsdl')
         def get_wsdl_1_1():
         #TODO: The WSDL should be served separately from the Flask application.
         # Come up with a better way to do this.
@@ -138,8 +146,9 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
 
             response.headers['Content-Type'] = 'text/xml'
             return response
+        app.add_url_rule(servicesPath+'/soap/wateroneflow_1_1.wsdl', 'get_wsdl_1_1', get_wsdl_1_1)
 
-        @app.route('/rest/1_1/GetValuesWML2', methods=['GET'])
+        #@app.route('/rest/1_1/GetValuesWML2', methods=['GET'])
         def get_values_wml2_1_1():
             """
             Experimental/Demo WaterML2-formatted Values response.
@@ -187,5 +196,6 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
             response.headers['Content-Type'] = 'text/xml'
 
             return response
+        app.add_url_rule(servicesPath+'/rest/1_1/GetValuesWML2', 'get_values_wml2_1_1', get_values_wml2_1_1)
 
     return app

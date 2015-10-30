@@ -16,7 +16,7 @@ import private_config
 logging.basicConfig(level=logging.DEBUG)
 
 dao = Odm2Dao(private_config.odm2_connection_string)
-app = wof.create_wof_app(dao, 'odm2_config_measurement.cfg')
+app = wof.create_wof_flask_app(dao, 'odm2_config_measurement.cfg')
 app.config['DEBUG'] = True
 
 if __name__ == '__main__':

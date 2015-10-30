@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 dao = OdmDao(private_config.sara_connection_string)
-app = wof.create_wof_app(swis_dao, 'sara_config.cfg')
+app = wof.create_wof_flask_app(swis_dao, 'sara_config.cfg')
 app.config['DEBUG'] = True
 
 if __name__ == '__main__':
