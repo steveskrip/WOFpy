@@ -574,7 +574,8 @@ class WOF_1_1(object):
     #TODO: lots more stuff to fill out here
     def create_value_element(self, valueResult):
         datetime_string = core._get_iso8061_datetime_string(
-            valueResult, "LocalDateTime", "DateTimeUTC")
+           valueResult, "LocalDateTime", "DateTimeUTC")
+        aDate= dateutil.parser.parse(datetime_string)
 
         value = WaterML.ValueSingleVariable(
                         qualityControlLevelCode=valueResult.QualityControlLevel,
@@ -585,7 +586,8 @@ class WOF_1_1(object):
                         offsetTypeID=valueResult.OffsetTypeID,
                         accuracyStdDev=valueResult.ValueAccuracy,
                         offsetValue=valueResult.OffsetValue,
-                        dateTime=datetime_string,
+#                        dateTime=datetime_string,
+                        dateTime=aDate,
                         qualifiers=valueResult.QualifierID,
                         valueOf_=str(valueResult.DataValue))
 

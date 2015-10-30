@@ -104,6 +104,22 @@ class BaseDataValue(object):
     SampleID = None
     QualityControlLevel = None
     QualityControlLevelID = None
+    # WaterML 1_1 values.
+    def get_MethodCode(self):
+        return self.MethodID
+    MethodCode =property (get_MethodCode)
+
+    def get_SourceCode(self):
+        return self.SourceID
+    SourceCode =property (get_SourceCode)
+
+    def get_QualifierCode(self):
+        return self.QualifierID
+    QualifierCode =property (get_QualifierCode)
+
+    def get_SampleCode(self):
+        return self.SampleID
+    SampleCode =property (get_SampleCode)
 
     def __repr__(self):
         return '<DataValue: (%s, %s)>' % (self.DataValue, self.DateTimeUTC)
