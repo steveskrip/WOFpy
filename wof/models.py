@@ -141,6 +141,7 @@ class BaseMetadata(object):
 
 class BaseSource(object):
     SourceID = None
+    SourceCode = None
     Organization = None
     SourceDescription = None
     SourceLink = None
@@ -189,6 +190,8 @@ class BaseSeries(object):
     BeginDateTimeUTC = None
     EndDateTimeUTC = None
     ValueCount = None
+    Definition=None
+    Explanation=None
 
     Site = BaseSite()
     Variable = BaseVariable()

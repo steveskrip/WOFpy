@@ -1,4 +1,4 @@
-import soaplib
+import spyne
 import logging
 
 import wof
@@ -19,13 +19,16 @@ if __name__ == '__main__':
     # This must be an available port on your computer.  
     # For example, if 8080 is already being used, try another port such as
     # 5000 or 8081.
-    openPort = 8080 
+    openPort = 8080
 
     url = "http://127.0.0.1:" + str(openPort) + "/"
 
     print "----------------------------------------------------------------"
-    print "Access 'REST' endpoints at " + url
-    print "Access SOAP WSDL at " + url + "soap/wateroneflow.wsdl"
+    print "Acess Service Root at " + url
+    print "Access WaterML 1.0 'REST' endpoints at " + url + "rest_1_0"
+    print "Access WaterML 1.1 'REST' endpoints at " + url + "rest_1_1"
+    print "Access WaterML 1.0 SOAP WSDL at " + url + "soap/wateroneflow.wsdl"
+    print "Access WaterML 1.1 SOAP WSDL at " + url + "soap/wateroneflow_1_1.wsdl"
     print "----------------------------------------------------------------"
 
     app.run(host='0.0.0.0', port=openPort, threaded=True)

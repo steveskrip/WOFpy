@@ -4,6 +4,8 @@ from xml.sax.saxutils import escape
 import ConfigParser
 import WaterML_1_1 as WaterML
 import core
+import logging
+import dateutil.parser
 
 class WOF_1_1(object):
 
@@ -79,19 +81,31 @@ class WOF_1_1(object):
             if config.has_option('Default_Params_1_1','East'):
                 self.default_east = config.get('Default_Params_1_1', 'East')
             else:
-                self.default_east = config.get('Default_Params', 'East')
+                if config.has_option('Default_Params','East'):
+                    self.default_east = config.get('Default_Params', 'East')
+                else:
+                    self.default_east = 180
             if config.has_option('Default_Params_1_1','North'):
                 self.default_north = config.get('Default_Params_1_1','North')
             else:
-                self.default_north = config.get('Default_Params','North')
+                if config.has_option('Default_Params','North'):
+                    self.default_north = config.get('Default_Params', 'North')
+                else:
+                    self.default_north = 90
             if config.has_option('Default_Params_1_1','South'):
                 self.default_south = config.get('Default_Params_1_1', 'South')
             else:
-                self.default_south = config.get('Default_Params', 'South')
+                if config.has_option('Default_Params','South'):
+                    self.default_south= config.get('Default_Params', 'South')
+                else:
+                    self.default_south = -90
             if config.has_option('Default_Params_1_1','West'):
                 self.default_west = config.get('Default_Params_1_1', 'West')
             else:
-                self.default_west = config.get('Default_Params', 'West')
+                if config.has_option('Default_Params','West'):
+                    self.default_west = config.get('Default_Params', 'West')
+                else:
+                    self.default_west = -180
 
     def create_get_site_response(self, siteArg=None):
         if siteArg == None or siteArg == '':
@@ -516,7 +530,7 @@ class WOF_1_1(object):
     def create_source_element(self, sourceResult):
         source = WaterML.SourceType(
             sourceID=sourceResult.SourceID,
-            sourceCode=sourceResult.OrganizationCode,
+            sourceCode=sourceResult.SourceCode,
             organization=sourceResult.Organization,
             sourceDescription=sourceResult.SourceDescription,
             sourceLink=sourceResult.SourceLink)
@@ -694,6 +708,12 @@ class WOF_1_1(object):
             seriesResult, "BeginDateTime", "BeginDateTimeUTC")
         endDateTime = core._get_iso8061_datetime_string(
             seriesResult, "EndDateTime", "EndDateTimeUTC")
+        # WML1_1 wants a datetime, no zone. breaks the conversion
+        try:
+            beginDateTime =  dateutil.parser.parse(beginDateTime)
+            endDateTime =  dateutil.parser.parse(endDateTime)
+        except Exception as inst:
+              logging.error('bad datetime conversion')
 
         #TimeInterval
         if beginDateTime is None:

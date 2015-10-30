@@ -31,7 +31,7 @@ setup(
     install_requires=[
         'flask>=0.6.1',
         'lxml>=2.3',
-        'soaplib>=2.0.0b',
+        'spyne>=2.12.8',
         'nose',
         'python-dateutil==1.5.0'
     ],
