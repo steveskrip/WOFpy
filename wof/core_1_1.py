@@ -378,8 +378,7 @@ class WOF_1_1(object):
         for valueResult in valueResultArr:
             v = self.create_value_element(valueResult)
             values.add_value(v)
-
-            if valueResult.MethodID:
+            if valueResult.MethodID and valueResult.MethodCode:
                 methodIdSet.add(valueResult.MethodID)
 
             if valueResult.SourceID:
@@ -435,11 +434,16 @@ class WOF_1_1(object):
         #Add qualitycontrollevel elements
         if qualitycontrollevelIdSet:
             qlevelIdIdArr = list(qualitycontrollevelIdSet)
-            qlevelResultArr = self.dao.get_qualcontrollvls_by_ids(qlevelIdIdArr)
-            for qlevelResult in qlevelResultArr:
-                qlevel = self.create_qlevel_element(qlevelResult)
-                values.add_qualityControlLevel(qlevel)
-
+            try:
+                qlevelResultArr = self.dao.get_qualcontrollvls_by_ids(qlevelIdIdArr)
+                for qlevelResult in qlevelResultArr:
+                    qlevel = self.create_qlevel_element(qlevelResult)
+                    values.add_qualityControlLevel(qlevel)
+            except:
+                for qlevelID in qlevelIdIdArr:
+                    qlevel = WaterML.QualityControlLevelType(
+                        qualityControlLevelID=qlevelID)
+                    values.add_qualityControlLevel(qlevel)
         timeSeries.add_values(values)
         #timeSeriesResponse.set_timeSeries(timeSeries)
         return timeSeries
@@ -525,6 +529,8 @@ class WOF_1_1(object):
         # schema validation
         if method.methodLink == None:
             method.methodLink = ''
+        if method.methodCode == None:
+            method.methodCode = 'TEST'
         return method
 
     def create_source_element(self, sourceResult):
@@ -576,6 +582,11 @@ class WOF_1_1(object):
         datetime_string = core._get_iso8061_datetime_string(
            valueResult, "LocalDateTime", "DateTimeUTC")
         aDate= dateutil.parser.parse(datetime_string)
+
+        if not hasattr(valueResult,'MethodCode'):
+            setattr(valueResult,'MethodCode',None)
+        if not hasattr(valueResult,'SourceCode'):
+            setattr(valueResult,'SourceCode',None)
 
         value = WaterML.ValueSingleVariable(
                         qualityControlLevelCode=valueResult.QualityControlLevel,

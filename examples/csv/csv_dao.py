@@ -168,7 +168,7 @@ class CsvDao(BaseDao):
                 b = parse(begin_date_time_string)
             else:
                 # Provide default start date at beginning of period of record
-                b = parse('2008-01-01T00:00-06:00')
+                b = parse('2008-01-01T00:00:00')
         except:
             raise ValueError('invalid start date: ' + \
                              str(begin_date_time_string))
@@ -177,7 +177,7 @@ class CsvDao(BaseDao):
                 e = parse(end_date_time_string)
             else:
                 # Provide default end date at end of period of record
-                e = parse('2008-04-30T00:00-06:00')
+                e = parse('2008-04-30T00:00:00')
         except:
             raise ValueError('invalid end date: ' + str(end_date_time_string))
 
@@ -203,7 +203,7 @@ class CsvDao(BaseDao):
         # All values are in local time. For this example, local time is always
         # six hours behind UTC time.
         value_date = parse(row[1])
-        datavalue.LocalDateTime = value_date.isoformat() + '-06:00'
+        datavalue.LocalDateTime = value_date.isoformat()
 
         value_date = value_date + timedelta(hours=6)
         datavalue.DateTimeUTC = value_date.isoformat() + 'Z'

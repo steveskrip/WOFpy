@@ -138,6 +138,7 @@ class Source(wof_base.BaseSource):
         self.SourceID = aff_obj.AffiliationID
         self.Organization = aff_obj.OrganizationObj.OrganizationName
         self.OrganizationCode = aff_obj.OrganizationObj.OrganizationCode
+        self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
         self.SourceDescription = aff_obj.OrganizationObj.OrganizationDescription
         self.SourceLink = aff_obj.OrganizationObj.OrganizationLink
         self.ContactName = '%s %s' % (aff_obj.PersonObj.PersonFirstName,aff_obj.PersonObj.PersonLastName)
