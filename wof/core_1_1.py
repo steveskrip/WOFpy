@@ -529,8 +529,7 @@ class WOF_1_1(object):
         # schema validation
         if method.methodLink == None:
             method.methodLink = ''
-        if method.methodCode == None:
-            method.methodCode = 'TEST'
+
         return method
 
     def create_source_element(self, sourceResult):
