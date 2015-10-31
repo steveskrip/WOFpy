@@ -14,6 +14,7 @@ from spyne.protocol.xml import XmlDocument
 
 from wof.apps.spyned_1_0 import TWOFService as wml10
 from wof.apps.spyned_1_1 import TWOFService as wml11
+import urllib
 
 import logging
 #logging.basicConfig(level=logging.INFO)
@@ -32,6 +33,16 @@ _SERVICE_PARAMS = {
     "wml11_rest_name" : "WaterOneFlow_rest_1_1",
     "wml11_soap_name" : "WaterOneFlow_soap_1_1",
 }
+
+def site_map(app):
+    output = []
+    for rule in app.url_map.iter_rules():
+        methods = ','.join(rule.methods)
+        line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, rule))
+        output.append(line)
+
+    for line in sorted(output):
+        print(line)
 
 def create_wof_flask_app(dao, config_file):
     """
@@ -86,6 +97,8 @@ def create_wof_flask_app(dao, config_file):
        '/'+ sensorNetwork+'/soap/wateroneflow': soap_wsgi_wrapper_1_0,
        '/'+ sensorNetwork+'/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
         })
+
+    site_map(app)
 
     return app
 
