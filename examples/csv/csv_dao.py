@@ -10,6 +10,9 @@ import wof.models as wof_base
 import csv_model
 
 class CsvDao(BaseDao):
+    local_time_zone = tz(None, -21600)
+    utc_time_zone = tz(None,0)
+
     def __init__(self, sites_file_path, values_file_path):
         self.sites_file_path = sites_file_path
         self.values_file_path = values_file_path
@@ -168,7 +171,7 @@ class CsvDao(BaseDao):
                 b = parse(begin_date_time_string)
             else:
                 # Provide default start date at beginning of period of record
-                b = parse('2008-01-01T00:00:00')
+                b = parse('20080101T00:00:00-0600')
         except:
             raise ValueError('invalid start date: ' + \
                              str(begin_date_time_string))
@@ -177,7 +180,7 @@ class CsvDao(BaseDao):
                 e = parse(end_date_time_string)
             else:
                 # Provide default end date at end of period of record
-                e = parse('2008-04-30T00:00:00')
+                e = parse('20080430T00:00:00-0600')
         except:
             raise ValueError('invalid end date: ' + str(end_date_time_string))
 
@@ -185,12 +188,12 @@ class CsvDao(BaseDao):
         # local time.
         # Remove tzinfo in the end since datetimes from data file do not have
         # tzinfo either.  This enables date comparisons.
-        local_time_zone = tz(None, -21600) # Six hours behind UTC, in seconds
+       # local_time_zone = tz(None, -21600) # Six hours behind UTC, in seconds
         if b.tzinfo:
-            b = b.astimezone(local_time_zone)
+            b = b.astimezone(self.local_time_zone)
             b = b.replace(tzinfo=None)
         if e.tzinfo:
-            e = e.astimezone(local_time_zone)
+            e = e.astimezone(self.local_time_zone)
             e = e.replace(tzinfo=None)
 
         return [b, e]
@@ -203,11 +206,16 @@ class CsvDao(BaseDao):
         # All values are in local time. For this example, local time is always
         # six hours behind UTC time.
         value_date = parse(row[1])
-        datavalue.LocalDateTime = value_date.isoformat()
 
-        value_date = value_date + timedelta(hours=6)
-        datavalue.DateTimeUTC = value_date.isoformat() + 'Z'
-        
+        value_date = value_date.replace(tzinfo=self.local_time_zone)
+        #datavalue.LocalDateTime = value_date.isoformat()
+        datavalue.LocalDateTime = value_date # Use the object
+        #value_date = value_date + timedelta(hours=6)
+        delta = self.local_time_zone._offset
+        value_date_utc = value_date - delta
+        value_date_utc = value_date_utc.replace (tzinfo=None)
+        #datavalue.DateTimeUTC = value_date_utc.isoformat() + 'Z'
+        datavalue.DateTimeUTC = value_date_utc    # Use the object
         return datavalue
 
     def get_datavalues(self, site_code, var_code, begin_date_time=None,
