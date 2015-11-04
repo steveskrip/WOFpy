@@ -48,10 +48,10 @@ def TWOFService(wof_inst,T, T_name):
             return siteResult.replace('\n', '')
 
         @rpc(Float, Float, Float, Float, Boolean, Unicode, _returns=AnyXml)
-        def GetSitesByBoxObject(ctx, west,south,north,east, IncludeSeries, authToken=None):
+        def GetSitesByBoxObject(ctx, west,south,east,north, IncludeSeries, authToken=None):
             try:
                 siteResponse = \
-                    wof_inst.create_get_site_box_response(west,south,north,east,IncludeSeries)
+                    wof_inst.create_get_site_box_response(west,south,east,north,IncludeSeries)
                 outStream = StringIO.StringIO()
                 siteResponse.export(outStream, 0, name_="sitesResponse",
                                     namespacedef_=NSDEF)
@@ -63,8 +63,8 @@ def TWOFService(wof_inst,T, T_name):
                     raise Fault(faultstring=str(inst))
 
         @rpc(Float, Float, Float, Float, Boolean, Unicode, _returns=T)
-        def GetSitesByBox(ctx, west,south,north,east, IncludeSeries, authToken=None):
-            sitesResult = WOFService.GetSitesByBoxObject(ctx,west,south,north,east,IncludeSeries,authToken)
+        def GetSitesByBox(ctx, west,south,east,north, IncludeSeries, authToken=None):
+            sitesResult = WOFService.GetSitesByBoxObject(ctx,west,south,east,north,IncludeSeries,authToken)
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return sitesResult
             return sitesResult.replace('\n', '')

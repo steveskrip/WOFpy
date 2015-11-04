@@ -225,10 +225,10 @@ class WOF_1_1(object):
             value = False
             return value
 
-    def create_get_site_box_response(self, west,south,north,east,IncludeSeries):
+    def create_get_site_box_response(self, west,south,east,north,IncludeSeries):
 
         IncludeSeries = self.to_bool(IncludeSeries)
-        siteResultArr = self.dao.get_sites_by_box(west,south,north,east)
+        siteResultArr = self.dao.get_sites_by_box(west,south,east,north)
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
 
@@ -236,8 +236,8 @@ class WOF_1_1(object):
         criteria = WaterML.criteriaType(MethodCalled='GetSitesByBox')
         pType_west = WaterML.parameterType(name='west',value=west)
         pType_west = WaterML.parameterType(name='south',value=south)
-        pType_west = WaterML.parameterType(name='north',value=north)
         pType_west = WaterML.parameterType(name='east',value=east)
+        pType_west = WaterML.parameterType(name='north',value=north)
         pType_west = WaterML.parameterType(name='IncludeSeries',value=IncludeSeries)
         criteria.add_parameter(pType_west)
         queryInfo.set_criteria(criteria)

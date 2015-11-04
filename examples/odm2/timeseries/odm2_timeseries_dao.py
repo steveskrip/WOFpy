@@ -61,7 +61,7 @@ class Odm2Dao(BaseDao):
                 s_arr.append(w_s)
         return s_arr
 
-    def get_sites_by_box(self, west,south,north,east):
+    def get_sites_by_box(self, west,south,east,north):
         """
         north - ymax - latitude
         south - ymin - latitude
