@@ -341,7 +341,6 @@ class Odm2Dao(BaseDao):
                     else:
                         v_dict[variable_key] = []
                         v_dict[variable_key].append(w_v)
-                print 'v dict %s' % v_dict.keys()
                 return v_dict
             else:
                 for valueResult in valueResultArr:

@@ -50,7 +50,6 @@ class WOF(object):
             if config.has_option('Default_Params','SampleMedium'):
                 self.default_samplemedium = config.get('Default_Params','SampleMedium')
 
-
     def create_get_site_response(self, siteArg=None):
 
         if siteArg == None or siteArg == '':
@@ -589,6 +588,9 @@ class WOF(object):
           ,"Sporadic"
           ,"Unknown"
         ]
+        if datatype is None:
+            logging.warn('Datatype is not specified')
+            return default
         if (datatype in valueList):
             return datatype
         else:
@@ -619,6 +621,9 @@ class WOF(object):
               ,"Velocity"
               ,"Volume"
             ]
+        if UnitsType is None:
+            logging.warn('UnitsType is not specified ')
+            return default
         if (UnitsType in valueList):
             return UnitsType
         else:
@@ -640,6 +645,9 @@ class WOF(object):
           ,"Snow"
           ,"Not Relevant"
         ]
+        if SampleMedium is None:
+            logging.warn('SampleMedium is not specified')
+            return default
         if (SampleMedium in valueList):
             return SampleMedium
         else:
@@ -657,6 +665,9 @@ class WOF(object):
           ,"Unknown"
           ,"Instrumentation"
         ]
+        if generalCategory is None:
+            logging.warn('GeneralCategory is not specified')
+            return default
         if (generalCategory in valueList):
             return generalCategory
         else:
@@ -672,6 +683,9 @@ class WOF(object):
           ,"Derived Value"
           ,"Unknown"
         ]
+        if valueType is None:
+            logging.warn('ValueType is not specified')
+            return default
         if (valueType in valueList):
             return valueType
         else:

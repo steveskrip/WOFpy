@@ -2113,16 +2113,16 @@ class LatLonPointType(GeogLocationType):
     def validate_Latitude(self, value):
         # Validate type Latitude, a restriction on xsi:double.
         if value is not None and Validate_simpletypes_:
-            if value < -90.00:
+            if float(value) < -90.00:
                 warnings_.warn('Value "%(value)s" does not match xsd minInclusive restriction on Latitude' % {"value" : value} )
-            if value > 90.00:
+            if float(value) > 90.00:
                 warnings_.warn('Value "%(value)s" does not match xsd maxInclusive restriction on Latitude' % {"value" : value} )
     def validate_Longitude(self, value):
         # Validate type Longitude, a restriction on xsi:double.
         if value is not None and Validate_simpletypes_:
-            if value < -180.00:
+            if float(value) < -180.00:
                 warnings_.warn('Value "%(value)s" does not match xsd minInclusive restriction on Longitude' % {"value" : value} )
-            if value > 180.00:
+            if float(value) > 180.00:
                 warnings_.warn('Value "%(value)s" does not match xsd maxInclusive restriction on Longitude' % {"value" : value} )
     def hasContent_(self):
         if (
@@ -2232,16 +2232,16 @@ class LatLonBoxType(GeogLocationType):
     def validate_Latitude(self, value):
         # Validate type Latitude, a restriction on xsi:double.
         if value is not None and Validate_simpletypes_:
-            if value < -90.00:
+            if float(value) < -90.00:
                 warnings_.warn('Value "%(value)s" does not match xsd minInclusive restriction on Latitude' % {"value" : value} )
-            if value > 90.00:
+            if float(value) > 90.00:
                 warnings_.warn('Value "%(value)s" does not match xsd maxInclusive restriction on Latitude' % {"value" : value} )
     def validate_Longitude(self, value):
         # Validate type Longitude, a restriction on xsi:double.
         if value is not None and Validate_simpletypes_:
-            if value < -180.00:
+            if float(value) < -180.00:
                 warnings_.warn('Value "%(value)s" does not match xsd minInclusive restriction on Longitude' % {"value" : value} )
-            if value > 180.00:
+            if float(value) > 180.00:
                 warnings_.warn('Value "%(value)s" does not match xsd maxInclusive restriction on Longitude' % {"value" : value} )
     def hasContent_(self):
         if (
@@ -2463,16 +2463,16 @@ class CoordType(GeneratedsSuper):
     def validate_Latitude(self, value):
         # Validate type Latitude, a restriction on xsi:double.
         if value is not None and Validate_simpletypes_:
-            if value < -90.00:
+            if float(value) < -90.00:
                 warnings_.warn('Value "%(value)s" does not match xsd minInclusive restriction on Latitude' % {"value" : value} )
-            if value > 90.00:
+            if float(value) > 90.00:
                 warnings_.warn('Value "%(value)s" does not match xsd maxInclusive restriction on Latitude' % {"value" : value} )
     def validate_Longitude(self, value):
         # Validate type Longitude, a restriction on xsi:double.
         if value is not None and Validate_simpletypes_:
-            if value < -180.00:
+            if float(value) < -180.00:
                 warnings_.warn('Value "%(value)s" does not match xsd minInclusive restriction on Longitude' % {"value" : value} )
-            if value > 180.00:
+            if float(value) > 180.00:
                 warnings_.warn('Value "%(value)s" does not match xsd maxInclusive restriction on Longitude' % {"value" : value} )
     def hasContent_(self):
         if (

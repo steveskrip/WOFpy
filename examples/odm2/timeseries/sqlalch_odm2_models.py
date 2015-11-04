@@ -103,10 +103,10 @@ class DataValue(wof_base.BaseDataValue):
         self.UTCOffset = v.ValueDateTimeUTCOffset
         if aff_obj is not None:
             self.SourceID = '%d' % aff_obj.AffiliationID
-            self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
+            #self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
         self.CensorCode = v.CensorCodeCV
         self.MethodID = v.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
-        self.MethodCode = v.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
+        #self.MethodCode = v.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
         self.QualityControlLevelID = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelID
         #self.QualityControlLevel = QualityControlLevel(v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj)
         self.QualityControlLevel = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelCode

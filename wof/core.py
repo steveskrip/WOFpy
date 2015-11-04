@@ -22,6 +22,7 @@ logging.getLogger('spyne.model.complex').setLevel(logging.ERROR)
 logging.getLogger('spyne.interface._base').setLevel(logging.ERROR)
 logging.getLogger('spyne.util.appreg').setLevel(logging.ERROR)
 logging.getLogger('spyne.interface.xml_schema').setLevel(logging.ERROR)
+logging.getLogger('spyne.protocol.dictdoc.simple').setLevel(logging.ERROR)
 
 _SERVICE_PARAMS = {
     "r_type" : "rest",
@@ -38,11 +39,16 @@ def site_map(app):
     output = []
     for rule in app.url_map.iter_rules():
         methods = ','.join(rule.methods)
-        line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, rule))
+        #line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, rule))
+        line = urllib.unquote("{}".format(rule))
+        if '/static/' in line or '/rest/' in line:
+            continue
         output.append(line)
 
-    for line in sorted(output):
-        print(line)
+    #print "Acess Service Path at "
+    #for line in sorted(output):
+    #    print(line)
+    return sorted(output)
 
 def create_wof_flask_app(dao, config_file):
     """
@@ -98,8 +104,7 @@ def create_wof_flask_app(dao, config_file):
        '/'+ sensorNetwork+'/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
         })
 
-    site_map(app)
-
+    #site_map(app)
     return app
 
 def _get_iso8061_datetime_string(object, local_datetime_attr,

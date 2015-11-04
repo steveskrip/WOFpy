@@ -104,8 +104,8 @@ class DataValue(wof_base.BaseDataValue):
         self.DateTimeUTC = v.ValueDateTime.isoformat()
         self.UTCOffset = v.ValueDateTimeUTCOffset
         if aff_obj is not None:
-            self.SourceID = '%d' % aff_obj.AffiliationID
-            self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
+            self.SourceID = aff_obj.AffiliationID
+            #self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
 
         self.CensorCode = v.MeasurementResultObj.CensorCodeCV
         self.MethodID = v.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
@@ -114,7 +114,7 @@ class DataValue(wof_base.BaseDataValue):
         self.QualityControlLevel = v.MeasurementResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelCode
 
         #extra info
-        self.MethodCode = v.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
+        #self.MethodCode = v.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
         #self.VariableID = v.MeasurementResultObj.ResultObj.VariableID
         #self.UnitID = v.MeasurementResultObj.ResultObj.UnitsID
         #self.SampleMedium = v.MeasurementResultObj.ResultObj.SampledMediumCV
