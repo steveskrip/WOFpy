@@ -14,6 +14,10 @@ from spyne.protocol.xml import XmlDocument
 
 from wof.apps.spyned_1_0 import TWOFService as wml10
 from wof.apps.spyned_1_1 import TWOFService as wml11
+from wof.apps.waterml2 import TWOFService as wml2
+from  wof.WofWsdls import WofWSDL_1_0, WofWSDL_1_1
+
+
 import urllib
 
 import logging
@@ -57,6 +61,7 @@ def create_wof_flask_app(dao, config_file):
 
     wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
     wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+
     app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
     sensorNetwork=wof_obj_1_0.network.replace('/','')
 
@@ -91,18 +96,41 @@ def create_wof_flask_app(dao, config_file):
         in_protocol=HttpRpc(validator='soft'),
         out_protocol=XmlDocument(),
     )
+    # need to update template to 1_1 object.
+    # <gml:Definition gml:id="methodCode-{{ method_result.MethodID  }}">
+    #   File "C:\Users\valentin\venv_odm\lib\site-packages\jinja2\environment.py", line 408, in getattr
+    #     return getattr(obj, attribute)
+    # UndefinedError: 'method_result' is undefined
+    rest_app_2 = Application(
+        [wml2(wof_obj_1_0,AnyXml,_SERVICE_PARAMS["r_type"])],
+        tns=_SERVICE_PARAMS["wml11_tns"],
+        name=_SERVICE_PARAMS["wml11_rest_name"],
+        in_protocol=HttpRpc(validator='soft'),
+        out_protocol=XmlDocument(),
+    )
 
     rest_wsgi_wrapper_1_0 = WsgiApplication(rest_app_1_0)
     soap_wsgi_wrapper_1_0 = WsgiApplication(soap_app_1_0)
     rest_wsgi_wrapper_1_1 = WsgiApplication(rest_app_1_1)
     soap_wsgi_wrapper_1_1 = WsgiApplication(soap_app_1_1)
+    rest_wsgi_wrapper_2_0 = WsgiApplication(rest_app_2)
 
     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, {
        '/'+ sensorNetwork+'/rest/1_0': rest_wsgi_wrapper_1_0,
        '/'+ sensorNetwork+'/rest/1_1' : rest_wsgi_wrapper_1_1,
        '/'+ sensorNetwork+'/soap/wateroneflow': soap_wsgi_wrapper_1_0,
        '/'+ sensorNetwork+'/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
+        '/'+ sensorNetwork+'/rest/2' : rest_wsgi_wrapper_2_0,
         })
+
+    #  path: /{sensorNetwork}/soap/wateroneflow/.wsdl returns the WSDL.
+    # needs to be service_baseURL. in config wof_obj_1_0.service_wsdl
+    wsdl10= WofWSDL_1_0(soap_wsgi_wrapper_1_0.doc.wsdl11.interface)
+    soap_wsgi_wrapper_1_0._wsdl = wsdl10.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow') #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
+
+    #  path: /{sensorNetwork}/soap/wateroneflow_1_1/.wsdl returns the WSDL.
+    wsdl11= WofWSDL_1_1(soap_wsgi_wrapper_1_1.doc.wsdl11.interface)
+    soap_wsgi_wrapper_1_1._wsdl = wsdl11.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow_1_1') #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
 
     #site_map(app)
     return app
