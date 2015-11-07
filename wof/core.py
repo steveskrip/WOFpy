@@ -157,19 +157,17 @@ class WOFConfig(object):
                         self.default_west = config.get('Default_Params', 'West')
                     else:
                         self.default_west = -180
+                        
+            if config.has_option('WOFPY','Teamplates'):
+                self.TEMPLATES = config.get('WOFPY', 'Teamplates')
+            else:
+                self.TEMPLATES = '../../wof/apps/templates'
 
+""" returns an array of the applications """
+def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
 
-
-def create_wof_flask_app(dao, config_file):
-    """
-    Returns a fully instantiated WOF wsgi app (flask + apps)
-    """
-
-    wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
-    wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
-
-    # static URL's need to be deprecriated.
-    app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+    # wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
+    # wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
 
     sensorNetwork=wof_obj_1_0.network.replace('/','')
 
@@ -225,18 +223,15 @@ def create_wof_flask_app(dao, config_file):
     soap_wsgi_wrapper_1_1 = WsgiApplication(soap_app_1_1)
     rest_wsgi_wrapper_2_0 = WsgiApplication(rest_app_2)
 
-    app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, {
+    spyneApps =  {
        '/'+ sensorNetwork+'/rest/1_0': rest_wsgi_wrapper_1_0,
        '/'+ sensorNetwork+'/rest/1_1' : rest_wsgi_wrapper_1_1,
        '/'+ sensorNetwork+'/soap/wateroneflow': soap_wsgi_wrapper_1_0,
        '/'+ sensorNetwork+'/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
         '/'+ sensorNetwork+'/rest/2' : rest_wsgi_wrapper_2_0,
-        })
-
+        }
     templatesPath = os.path.abspath(wof_obj_1_1._config.TEMPLATES)
-    # logical server path. WSDL location
-
-    #  path: /{sensorNetwork}/soap/wateroneflow/.wsdl returns the WSDL.
+        #  path: /{sensorNetwork}/soap/wateroneflow/.wsdl returns the WSDL.
     # needs to be service_baseURL. in config wof_obj_1_0.service_wsdl
     wsdl10= WofWSDL_1_0(soap_wsgi_wrapper_1_0.doc.wsdl11.interface)
     soap_wsgi_wrapper_1_0._wsdl = wsdl10.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow',templatesPath) #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
@@ -245,9 +240,43 @@ def create_wof_flask_app(dao, config_file):
     wsdl11= WofWSDL_1_1(soap_wsgi_wrapper_1_1.doc.wsdl11.interface)
     soap_wsgi_wrapper_1_1._wsdl = wsdl11.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow_1_1',templatesPath) #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
 
-    #site_map(app)
+    return spyneApps
+
+
+def create_wof_flask_app(dao, config_file):
+    """
+    Returns a fully instantiated WOF wsgi app (flask + apps)
+    """
+
+    wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
+    wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+
+    # static URL's need to be deprecriated.
+    app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+
+    spyneapps = getSpyneApplications(wof_obj_1_0,wof_obj_1_1)
+    app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
     return app
 
+# class wofConfig(object):
+#     dao=None
+#     wofConfig=None
+#
+#
+# def create_wof_flask_multiple(dao, config_file):
+#     """
+#     Returns a fully instantiated WOF wsgi app (flask + apps)
+#     """
+#
+#     wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
+#     wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+#
+#     # static URL's need to be deprecriated.
+#     app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+#
+#     spyneapps = getSpyneApplications(wof_obj_1_0,wof_obj_1_1)
+#     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
+#     return app
 def _get_iso8061_datetime_string(object, local_datetime_attr,
                                  utc_datetime_attr):
     """

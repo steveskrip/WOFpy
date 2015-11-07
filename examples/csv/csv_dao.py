@@ -266,6 +266,11 @@ class CsvDao(BaseDao):
             methods.append(method)
         return methods
 
+    def get_method_by_id(self, method_id):
+        method = csv_model.Method()
+        methods = self.get_methods_by_ids({method_id})
+        return methods[0]
+
     def get_sources_by_ids(self, source_id_arr):
         sources = []
         if 1 in source_id_arr:

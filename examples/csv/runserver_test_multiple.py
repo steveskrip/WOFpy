@@ -3,7 +3,8 @@ import logging
 import wof
 
 from csv_dao import CsvDao
-
+from werkzeug.wsgi import DispatcherMiddleware
+from werkzeug.exceptions import NotFound
 CSV_CONFIG_FILE = 'csv_config.cfg'
 SITES_FILE = 'sites.csv'
 VALUES_FILE = 'data.csv'
@@ -14,20 +15,27 @@ def startServer(config=CSV_CONFIG_FILE,
                 sites_file=SITES_FILE,
                 values_file=VALUES_FILE):
     dao = CsvDao(sites_file, values_file)
-    app = wof.create_wof_flask_app(dao, config)
-    app.config['DEBUG'] = True
-    site_map = wof.site_map(app)
+    app1 = wof.create_wof_flask_app(dao, config)
+    app1.config['DEBUG'] = True
+    app2 = wof.create_wof_flask_app(dao, config)
+    app2.config['DEBUG'] = True
+    site_map = wof.site_map(app1)
+
+    combined_app = DispatcherMiddleware(NotFound, {
+        '/1': app1,
+        '/2': app2,
+    })
 
     openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Acess Service endpoints at "
-    for path in wof.site_map(app):
+    for path in wof.site_map(app1):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"
 
-    app.run(host='0.0.0.0', port=openPort, threaded=True)
+    combined_app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':
     # This must be an available port on your computer.  
