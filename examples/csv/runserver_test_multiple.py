@@ -6,53 +6,44 @@ from csv_dao import CsvDao
 from werkzeug.wsgi import DispatcherMiddleware
 from werkzeug.exceptions import NotFound
 CSV_CONFIG_FILE = 'csv_config.cfg'
+CSV_CONFIG_FILE2 = 'csv_config_multi.cfg'
 SITES_FILE = 'sites.csv'
 VALUES_FILE = 'data.csv'
 
 logging.basicConfig(level=logging.DEBUG)
 
-def startServer(config=CSV_CONFIG_FILE,
+def startServer(config=CSV_CONFIG_FILE,config2=CSV_CONFIG_FILE2,
                 sites_file=SITES_FILE,
                 values_file=VALUES_FILE):
-    dao = CsvDao(sites_file, values_file)
-    app1 = wof.create_wof_flask_app(dao, config)
-    app1.config['DEBUG'] = True
-    app2 = wof.create_wof_flask_app(dao, config)
-    app2.config['DEBUG'] = True
-    site_map = wof.site_map(app1)
 
-    combined_app = DispatcherMiddleware(NotFound, {
-        '/1': app1,
-        '/2': app2,
-    })
+    dao = CsvDao(sites_file, values_file)
+
+    conf1 = wof.core.wofConfig(dao, config)
+    conf2 = wof.core.wofConfig(dao, config2)
+
+    app= wof.core.create_wof_flask_multiple({conf1,conf2})
 
     openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
-    print "Acess Service endpoints at "
-    for path in wof.site_map(app1):
+    print "Service endpoints"
+    for path in wof.core.site_map_flask_wsgi_mount(app):
+        print "%s%s" % (url,path)
+
+    print "----------------------------------------------------------------"
+    print "----------------------------------------------------------------"
+    print "Acess HTML descriptions of endpoints at "
+    for path in wof.site_map(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"
 
-    combined_app.run(host='0.0.0.0', port=openPort, threaded=True)
+    app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':
     # This must be an available port on your computer.  
     # For example, if 8080 is already being used, try another port such as
     # 5000 or 8081.
-    import argparse
-
-    parser = argparse.ArgumentParser(description='start WOF for an ODM1 database.')
-    parser.add_argument('config',
-                       help='Configuration file', default=CSV_CONFIG_FILE)
-    parser.add_argument('--sites_file',
-                       help='csv file containing sites information',default=SITES_FILE)
-    parser.add_argument('--values_file',
-                       help='csv file containing values',default=VALUES_FILE)
 
 
-    args = parser.parse_args()
-    print(args)
-
-    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file)
+    startServer()

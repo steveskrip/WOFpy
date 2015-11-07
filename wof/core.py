@@ -56,6 +56,24 @@ def site_map(app):
     #    print(line)
     return sorted(output)
 
+def site_map_flask_wsgi_mount(app):
+    output = []
+    for mount in app.wsgi_app.mounts:
+        method = app.wsgi_app.mounts[mount].app.name
+        #methods = ','.join(mounts[.app.name)
+        #path = mount.key
+        #line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, rule))
+        line = urllib.unquote("{}".format(mount))
+        if '/static/' in line:
+            #or '/rest/' in line:
+            continue
+        output.append(line)
+
+    #print "Acess Service Path at "
+    #for line in sorted(output):
+    #    print(line)
+    return sorted(output)
+
 class WOFConfig(object):
         network = 'NETWORK'
         vocabulary = 'VOCABULARY'
@@ -174,7 +192,7 @@ def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
     soap_app_1_0 = Application(
         [wml10(wof_obj_1_0,Unicode,_SERVICE_PARAMS["s_type"])],
         tns=_SERVICE_PARAMS["wml10_tns"],
-        name=_SERVICE_PARAMS["wml10_soap_name"],
+        name=sensorNetwork+'_svc_'+ _SERVICE_PARAMS["wml10_soap_name"],
         in_protocol=Soap11(validator='lxml'),
         out_protocol=Soap11(),
     )
@@ -182,7 +200,7 @@ def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
     rest_app_1_0 = Application(
         [wml10(wof_obj_1_0,AnyXml,_SERVICE_PARAMS["r_type"])],
         tns=_SERVICE_PARAMS["wml10_tns"],
-        name=_SERVICE_PARAMS["wml10_rest_name"],
+        name=sensorNetwork+'_svc_'+  _SERVICE_PARAMS["wml10_rest_name"],
         in_protocol=HttpRpc(validator='soft'),
         out_protocol=XmlDocument(),
     )
@@ -190,7 +208,7 @@ def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
     soap_app_1_1 = Application(
         [wml11(wof_obj_1_1,Unicode,_SERVICE_PARAMS["s_type"])],
         tns=_SERVICE_PARAMS["wml11_tns"],
-        name=_SERVICE_PARAMS["wml11_soap_name"],
+        name=sensorNetwork+'_svc_'+  _SERVICE_PARAMS["wml11_soap_name"],
         in_protocol=Soap11(validator='lxml'),
         out_protocol=Soap11(),
     )
@@ -198,7 +216,7 @@ def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
     rest_app_1_1 = Application(
         [wml11(wof_obj_1_1,AnyXml,_SERVICE_PARAMS["r_type"])],
         tns=_SERVICE_PARAMS["wml11_tns"],
-        name=_SERVICE_PARAMS["wml11_rest_name"],
+        name=sensorNetwork+'_svc_'+  _SERVICE_PARAMS["wml11_rest_name"],
         in_protocol=HttpRpc(validator='soft'),
         out_protocol=XmlDocument(),
     )
@@ -210,7 +228,7 @@ def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
     rest_app_2 = Application(
         [wml2(wof_obj_1_0,Unicode,_SERVICE_PARAMS["r_type"])],
         tns=_SERVICE_PARAMS["wml11_tns"],
-        name=_SERVICE_PARAMS["wml11_rest_name"],
+        name=sensorNetwork+'_svc_'+ _SERVICE_PARAMS["wml11_rest_name"],
         in_protocol=HttpRpc(validator='soft'),
         #out_protocol=XmlDocument(),
         out_protocol=HttpRpc(mime_type='text/xml'),
@@ -243,40 +261,55 @@ def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
     return spyneApps
 
 
+class wofConfig(object):
+    dao=None
+    config=None
+    def __init__(self, dao=None,wofConfig=None):
+        self.config = wofConfig
+        self.dao = dao
+
 def create_wof_flask_app(dao, config_file):
     """
     Returns a fully instantiated WOF wsgi app (flask + apps)
     """
 
-    wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
-    wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+    # wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
+    # wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+    #
+    # # static URL's need to be deprecriated.
+    # app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+    #
+    # spyneapps = getSpyneApplications(wof_obj_1_0,wof_obj_1_1)
+    # app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
+    wConf = wofConfig(dao=dao,  wofConfig=config_file)
+    app = create_wof_flask_multiple({wConf})
+    return app
 
-    # static URL's need to be deprecriated.
-    app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
 
-    spyneapps = getSpyneApplications(wof_obj_1_0,wof_obj_1_1)
+
+def create_wof_flask_multiple(wofConfig=[]):
+    """
+    Returns a fully instantiated WOF wsgi app (flask + apps)
+    """
+    app = wof.flask.create_simple_app()
+    spyneapps = {}
+    for wConf in wofConfig:
+        wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config)
+        wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config)
+
+        spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1) )
+        path = wof_obj_1_0.network
+        servicesPath =  '/'+wof_obj_1_0.network
+
+        wof.flask.add_flask_routes(app,path, servicesPath,
+                     wof_obj_1_0,
+                     wof_obj_1_1,
+                     soap_service_url=None,
+                     soap_service_1_1_url=None)
+
     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
     return app
 
-# class wofConfig(object):
-#     dao=None
-#     wofConfig=None
-#
-#
-# def create_wof_flask_multiple(dao, config_file):
-#     """
-#     Returns a fully instantiated WOF wsgi app (flask + apps)
-#     """
-#
-#     wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
-#     wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
-#
-#     # static URL's need to be deprecriated.
-#     app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
-#
-#     spyneapps = getSpyneApplications(wof_obj_1_0,wof_obj_1_1)
-#     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
-#     return app
 def _get_iso8061_datetime_string(object, local_datetime_attr,
                                  utc_datetime_attr):
     """
