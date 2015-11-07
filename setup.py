@@ -35,6 +35,10 @@ setup(
         'nose',
         'python-dateutil==1.5.0'
     ],
+    extras_require = {
+        'odm1':  ["sqlalchemy",'pyodbc'],
+        'odm2':  ["sqlalchemy", "geoalchemy"],
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',

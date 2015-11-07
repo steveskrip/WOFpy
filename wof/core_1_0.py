@@ -24,31 +24,32 @@ class WOF(object):
     default_unitid = None
     default_samplemedium = None
 
+    _config = None
+
     def __init__(self, dao, config_file=None):
         self.dao = dao
         if config_file:
             self.config_from_file(config_file)
 
     def config_from_file(self, file_name):
-        config = ConfigParser.RawConfigParser()
-        config.read(file_name)
+        config = core.WOFConfig(file_name)
+        self._config = config
 
-        self.network = config.get('WOF', 'Network')
-        self.vocabulary = config.get('WOF', 'Vocabulary')
-        self.menu_group_name = config.get('WOF', 'Menu_Group_Name')
-        self.service_wsdl = config.get('WOF', 'Service_WSDL')
-        self.timezone = config.get('WOF', 'Timezone')
-        self.timezone_abbr = config.get('WOF', 'TimezoneAbbreviation')
 
-        if config.has_section('Default_Params'):
-            self.default_site = config.get('Default_Params', 'Site')
-            self.default_variable = config.get('Default_Params', 'Variable')
-            self.default_start_date = config.get('Default_Params', 'StartDate')
-            self.default_end_date = config.get('Default_Params', 'EndDate')
-            if config.has_option('Default_Params','UnitID'):
-                self.default_unitid = config.get('Default_Params','UnitID')
-            if config.has_option('Default_Params','SampleMedium'):
-                self.default_samplemedium = config.get('Default_Params','SampleMedium')
+        self.network = config.network
+        self.vocabulary = config.vocabulary
+        self.menu_group_name = config.menu_group_name
+        self.service_wsdl = config.service_wsdl
+        self.timezone = config.timezone
+        self.timezone_abbr = config.timezone_abbr
+
+
+        self.default_site = config.default_site
+        self.default_variable = config.default_variable
+        self.default_start_date = config.default_start_date
+        self.default_end_date = config.default_end_date
+        self.default_unitid = config.default_unitid
+        self.default_samplemedium = config.default_samplemedium
 
     def create_get_site_response(self, siteArg=None):
 

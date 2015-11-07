@@ -1,4 +1,6 @@
 import datetime
+import ConfigParser
+import os
 
 import werkzeug
 import wof.flask
@@ -54,6 +56,110 @@ def site_map(app):
     #    print(line)
     return sorted(output)
 
+class WOFConfig(object):
+        network = 'NETWORK'
+        vocabulary = 'VOCABULARY'
+        menu_group_name = 'MENU_GROUP_NAME'
+        service_wsdl = 'SERVICE_WSDL'
+        timezone = None
+        timezone_abbr = None
+
+        default_site = None
+        default_variable = None
+        default_start_date = None
+        default_end_date = None
+        default_unitid = None
+        default_samplemedium = None
+
+        default_west = None
+        default_south = None
+        default_north = None
+        default_east = None
+
+        TEMPLATES = '../../wof/apps/templates'
+
+        def __init__(self, file_name):
+            config = ConfigParser.RawConfigParser()
+            config.read(file_name)
+
+            if config.has_option('WOF_1_1','Network'):
+                self.network = config.get('WOF_1_1', 'Network')
+            else:
+                self.network = config.get('WOF', 'Network')
+            if config.has_option('WOF_1_1','Vocabulary'):
+                self.vocabulary = config.get('WOF_1_1', 'Vocabulary')
+            else:
+                self.vocabulary = config.get('WOF', 'Vocabulary')
+            if config.has_option('WOF_1_1','Menu_Group_Name'):
+                self.menu_group_name = config.get('WOF_1_1', 'Menu_Group_Name')
+            else:
+                self.menu_group_name = config.get('WOF', 'Menu_Group_Name')
+            if config.has_option('WOF_1_1','Service_WSDL'):
+                self.service_wsdl = config.get('WOF_1_1', 'Service_WSDL')
+            else:
+                self.service_wsdl = config.get('WOF', 'Service_WSDL')
+            if config.has_option('WOF_1_1','Timezone'):
+                self.timezone = config.get('WOF_1_1', 'Timezone')
+            else:
+                self.timezone = config.get('WOF', 'Timezone')
+            if config.has_option('WOF_1_1','TimezoneAbbreviation'):
+                self.timezone_abbr = config.get('WOF_1_1', 'TimezoneAbbreviation')
+            else:
+                self.timezone_abbr = config.get('WOF', 'TimezoneAbbreviation')
+
+            if config.has_section('Default_Params'):
+                if config.has_option('Default_Params','UnitID'):
+                    self.default_unitid = config.get('Default_Params','UnitID')
+                if config.has_option('Default_Params','SampleMedium'):
+                    self.default_samplemedium = config.get('Default_Params','SampleMedium')
+
+                if config.has_option('Default_Params_1_1','Site'):
+                    self.default_site = config.get('Default_Params_1_1', 'Site')
+                else:
+                    self.default_site = config.get('Default_Params', 'Site')
+                if config.has_option('Default_Params_1_1','Variable'):
+                    self.default_variable = config.get('Default_Params_1_1', 'Variable')
+                else:
+                    self.default_variable = config.get('Default_Params', 'Variable')
+                if config.has_option('Default_Params_1_1','StartDate'):
+                    self.default_start_date = config.get('Default_Params_1_1', 'StartDate')
+                else:
+                    self.default_start_date = config.get('Default_Params', 'StartDate')
+                if config.has_option('Default_Params_1_1','EndDate'):
+                    self.default_end_date = config.get('Default_Params_1_1', 'EndDate')
+                else:
+                    self.default_end_date = config.get('Default_Params', 'EndDate')
+                if config.has_option('Default_Params_1_1','East'):
+                    self.default_east = config.get('Default_Params_1_1', 'East')
+                else:
+                    if config.has_option('Default_Params','East'):
+                        self.default_east = config.get('Default_Params', 'East')
+                    else:
+                        self.default_east = 180
+                if config.has_option('Default_Params_1_1','North'):
+                    self.default_north = config.get('Default_Params_1_1','North')
+                else:
+                    if config.has_option('Default_Params','North'):
+                        self.default_north = config.get('Default_Params', 'North')
+                    else:
+                        self.default_north = 90
+                if config.has_option('Default_Params_1_1','South'):
+                    self.default_south = config.get('Default_Params_1_1', 'South')
+                else:
+                    if config.has_option('Default_Params','South'):
+                        self.default_south= config.get('Default_Params', 'South')
+                    else:
+                        self.default_south = -90
+                if config.has_option('Default_Params_1_1','West'):
+                    self.default_west = config.get('Default_Params_1_1', 'West')
+                else:
+                    if config.has_option('Default_Params','West'):
+                        self.default_west = config.get('Default_Params', 'West')
+                    else:
+                        self.default_west = -180
+
+
+
 def create_wof_flask_app(dao, config_file):
     """
     Returns a fully instantiated WOF wsgi app (flask + apps)
@@ -62,7 +168,9 @@ def create_wof_flask_app(dao, config_file):
     wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
     wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
 
+    # static URL's need to be deprecriated.
     app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+
     sensorNetwork=wof_obj_1_0.network.replace('/','')
 
     soap_app_1_0 = Application(
@@ -102,11 +210,13 @@ def create_wof_flask_app(dao, config_file):
     #     return getattr(obj, attribute)
     # UndefinedError: 'method_result' is undefined
     rest_app_2 = Application(
-        [wml2(wof_obj_1_0,AnyXml,_SERVICE_PARAMS["r_type"])],
+        [wml2(wof_obj_1_0,Unicode,_SERVICE_PARAMS["r_type"])],
         tns=_SERVICE_PARAMS["wml11_tns"],
         name=_SERVICE_PARAMS["wml11_rest_name"],
         in_protocol=HttpRpc(validator='soft'),
-        out_protocol=XmlDocument(),
+        #out_protocol=XmlDocument(),
+        out_protocol=HttpRpc(mime_type='text/xml'),
+
     )
 
     rest_wsgi_wrapper_1_0 = WsgiApplication(rest_app_1_0)
@@ -123,14 +233,17 @@ def create_wof_flask_app(dao, config_file):
         '/'+ sensorNetwork+'/rest/2' : rest_wsgi_wrapper_2_0,
         })
 
+    templatesPath = os.path.abspath(wof_obj_1_1._config.TEMPLATES)
+    # logical server path. WSDL location
+
     #  path: /{sensorNetwork}/soap/wateroneflow/.wsdl returns the WSDL.
     # needs to be service_baseURL. in config wof_obj_1_0.service_wsdl
     wsdl10= WofWSDL_1_0(soap_wsgi_wrapper_1_0.doc.wsdl11.interface)
-    soap_wsgi_wrapper_1_0._wsdl = wsdl10.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow') #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
+    soap_wsgi_wrapper_1_0._wsdl = wsdl10.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow',templatesPath) #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
 
     #  path: /{sensorNetwork}/soap/wateroneflow_1_1/.wsdl returns the WSDL.
     wsdl11= WofWSDL_1_1(soap_wsgi_wrapper_1_1.doc.wsdl11.interface)
-    soap_wsgi_wrapper_1_1._wsdl = wsdl11.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow_1_1') #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
+    soap_wsgi_wrapper_1_1._wsdl = wsdl11.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow_1_1',templatesPath) #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
 
     #site_map(app)
     return app

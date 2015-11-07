@@ -3,7 +3,7 @@ import logging
 from jinja2 import Environment, Template, PackageLoader, FileSystemLoader
 
 # from sypne/interface/wsdl/wsdl1.py
-TEMPLATES = 'D:/dev_odm/WOFpy/wof/apps/templates'
+
 def check_method_port(service, method):
     if len(service.__port_types__) != 0 and method.port_type is None:
         raise ValueError("""
@@ -32,7 +32,7 @@ class WofWSDL_1_0(InterfaceDocumentBase):
     def __init__(self, interface=None, _with_partnerlink=False):
         super(WofWSDL_1_0, self).__init__(interface)
 
-    def build_interface_document(self, url):
+    def build_interface_document(self, url, templates):
         """This function is supposed to be called just once, as late as possible
         into the process start. It builds the interface document and caches it
         somewhere. The overriding function should never call the overridden
@@ -45,7 +45,7 @@ class WofWSDL_1_0(InterfaceDocumentBase):
         #         #                                    service_name, cb_binding)
         #         cb_binding = self.add_bindings_for_methods(s, None,
         #                                            None, cb_binding)
-        doc = self.get_wsdl_1_0( url )
+        doc = self.get_wsdl_1_0( url, templates )
         return doc
 
     def get_interface_document(self):
@@ -208,8 +208,8 @@ class WofWSDL_1_0(InterfaceDocumentBase):
     #     addr = SubElement(wsdl_port, WSDL11_SOAP("address"))
     #     addr.set('location', self.url)
 
-    def get_wsdl_1_0(self, url ):
-            env = Environment(loader=FileSystemLoader(TEMPLATES))
+    def get_wsdl_1_0(self, url, templates ):
+            env = Environment(loader=FileSystemLoader(templates))
             template = env.get_template('wsdl_temp.wsdl')
             response = template.render(serv_loc=url)
             response = response.encode('utf-8')
@@ -221,13 +221,13 @@ class WofWSDL_1_1(InterfaceDocumentBase):
     def __init__(self, interface=None, _with_partnerlink=False):
         super(WofWSDL_1_1, self).__init__(interface)
 
-    def build_interface_document(self, url):
+    def build_interface_document(self, url, templates):
         """This function is supposed to be called just once, as late as possible
         into the process start. It builds the interface document and caches it
         somewhere. The overriding function should never call the overridden
         function as this may result in the same event firing more than once.
         """
-        doc = self.get_wsdl_1_1( url )
+        doc = self.get_wsdl_1_1( url, templates )
         return doc
 
     def get_interface_document(self):
@@ -250,8 +250,9 @@ class WofWSDL_1_1(InterfaceDocumentBase):
     #     addr = SubElement(wsdl_port, WSDL11_SOAP("address"))
     #     addr.set('location', self.url)
 
-    def get_wsdl_1_1(self, url ):
-            env = Environment(loader=FileSystemLoader(TEMPLATES))
+    def get_wsdl_1_1(self, url, templates ):
+
+            env = Environment(loader=FileSystemLoader(templates))
             template = env.get_template('wsdl_1_1_template.wsdl')
             response = template.render(serv_loc=url)
             response = response.encode('utf-8')
