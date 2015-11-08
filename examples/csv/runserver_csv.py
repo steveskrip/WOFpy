@@ -4,6 +4,16 @@ import wof
 
 from csv_dao import CsvDao
 
+"""
+    python runserver_csv.py
+    Will run the exact example
+
+    python runserver_csv.py
+    --config=csv_config.cfg
+    --sites_file=sites.csv
+    --values_file=data.csv
+
+"""
 CSV_CONFIG_FILE = 'csv_config.cfg'
 SITES_FILE = 'sites.csv'
 VALUES_FILE = 'data.csv'

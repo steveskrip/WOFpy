@@ -182,7 +182,7 @@ class WOFConfig(object):
                 self.TEMPLATES = '../../wof/apps/templates'
 
 """ returns an array of the applications """
-def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
+def getSpyneApplications(wof_obj_1_0,wof_obj_1_1, templates=None):
 
     # wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
     # wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
@@ -248,7 +248,10 @@ def getSpyneApplications(wof_obj_1_0,wof_obj_1_1):
        '/'+ sensorNetwork+'/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
         '/'+ sensorNetwork+'/rest/2' : rest_wsgi_wrapper_2_0,
         }
-    templatesPath = os.path.abspath(wof_obj_1_1._config.TEMPLATES)
+    if templates is None:
+        templatesPath = os.path.abspath(wof_obj_1_1._config.TEMPLATES)
+    else:
+        templatesPath = os.path.abspath(templates)
         #  path: /{sensorNetwork}/soap/wateroneflow/.wsdl returns the WSDL.
     # needs to be service_baseURL. in config wof_obj_1_0.service_wsdl
     wsdl10= WofWSDL_1_0(soap_wsgi_wrapper_1_0.doc.wsdl11.interface)
@@ -287,7 +290,7 @@ def create_wof_flask_app(dao, config_file):
 
 
 
-def create_wof_flask_multiple(wofConfig=[]):
+def create_wof_flask_multiple(wofConfig=[], templates=None):
     """
     Returns a fully instantiated WOF wsgi app (flask + apps)
     """
@@ -297,7 +300,7 @@ def create_wof_flask_multiple(wofConfig=[]):
         wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config)
         wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config)
 
-        spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1) )
+        spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1,templates=templates) )
         path = wof_obj_1_0.network
         servicesPath =  '/'+wof_obj_1_0.network
 

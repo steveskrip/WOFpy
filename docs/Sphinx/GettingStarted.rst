@@ -12,19 +12,36 @@ Installation
 Follow the steps below to install WOFpy and its prerequisites on a Windows
 computer.
 
-#. Install **Python 2.6**.  The 32-bit installer is recommended.
+#. Install **Python 2.7**.  The 32-bit installer is recommended.
 #. Add the **Python** folder to your **Path** environment variable.
 #. Install **setuptools**. This allows the setup script to be run.
 #. Add the **Python/scripts** folder to your **Path** environment variable.
 #. Open a command window (run cmd), navigate to the WOFpy folder (with setup.py
    in it), and enter this command: ``python setup.py install``
 
+
 The wof package (in the subfolder named **wof**) is now accessible from any
 directory.
 
-.. note::
     If you edit code in the **wof** folder, you may need to run setup.py again
     to apply the changes to your system.
+
+Database Support
+================
+You may need to install additional components to connect to your database.
+* sqlalhchemy
+* pydobc (for ODM1, sqlserverand ODM2)
+* ODM2API (for ODM2 example)
+* other database drivers: postgres, sqllite, mysql.
+
+
+PIP Installs
+============
+TBD: ONCE a Package is created and packaged.
+
+If you are using ODM, or ODM2, then you need to run the extras (ODM1, or ODM2)
+``pip install -e .[ODM2]``
+
 
 .. _examples:
 
@@ -131,18 +148,19 @@ Follow the steps below to run this example.
 #. Attach the database to SQL Server.
 #. Grant a SQL Server account **select** privileges on the database.  WOFpy
    will use this account to connect to the database.
-#. In the odm_sqlserver folder, create a file named **private_config.py** with
-   a variable named **lbr_connection_string** set to a SQLAlchemy-compatible
+#. Determine the database connection string. **lbr_connection_string** set to a SQLAlchemy-compatible
    database connection string for the Little Bear River database, e.g.,
-   ``lbr_connection_string =
-   'mssql+pyodbc://username:password@(local)/LittleBear11'``
+   'mssql+pyodbc://webservice:webservice@localhost/LittleBear11?driver=SQL+Server+Native+Client+10.0'``
 #. In the **examples/odm_sqlserver** folder, edit the value of the **openPort**
    variable in **runserver_lbr.py** to match an open port on your computer,
-   if necessary.  Then save and close the file. 
+   if necessary.  Then save and close the file.
 #. Open a command window in the **examples/odm_sqlserver** folder and enter:
-   ``python runserver_lbr.py``
+   ``python runserver_odm11.py
+    --config=lbr_config.cfg
+    --connection=mssql+pyodbc://{user}:{password}@{host}/{db}?driver=SQL+Server+Native+Client+10.0y``
 #. In your command window you should see a message indicating that the service
-   is running along with instructions for accessing the service.  
+   is running along with instructions for accessing the service.
+
 
 CBI External Service Example
 ----------------------------
