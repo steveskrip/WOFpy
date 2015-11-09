@@ -98,14 +98,16 @@ program.  To test with soapUI:
 #. Install soapUI.
 #. Run WOFpy, perhaps using one of the :ref:`examples <examples>`.
 #. Start soapUI.
-#. In soapUI, click **File**, and then click **New soapUI Project**.
-#. Give your project any name, input the URI to your SOAP endpoint, and click
-   **OK**.
-#. Expand the example request for **GetSiteInfoObject** and double-click
-   **Request1** to open that request.
-#. Input a valid network:site_code in the **site** parameter.  You can use the
-   default parameter provided on the Web page for the REST endpoint of your
-   service.
+#. In soapUI, click **File**, and then click **Import Project**.
+#. Go to test\wofpy-1-1-soapui-project.xml
+#. Expand the example request for **GetSites** and double-click
+   **GetAllSites** to open that request.
+#. At the top of the window, there is a menu with url  like **http://127.0.0.1:8080/TxRivers/soap/wateroneflow/**
+   click, select the url for the example, or if you have a new service, **[add new endpoint]**
+#. Expand **WOF11 Soap TestSuite**, Double Click **Run Test Case**
+#. In window, select URL icon. Run
 #. Click the play button to issue the request.  A new window should open with
    the SOAP response showing information about the site.
+   **note. presently some errors.**
+
 
