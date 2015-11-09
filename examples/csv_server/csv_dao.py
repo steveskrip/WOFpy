@@ -6,6 +6,7 @@ from dateutil.tz import tzoffset as tz
 
 from wof.dao import BaseDao
 import wof.models as wof_base
+import os
 
 import csv_model
 
@@ -14,9 +15,12 @@ class CsvDao(BaseDao):
     utc_time_zone = tz(None,0)
 
     def __init__(self, sites_file_path, values_file_path):
-        self.sites_file_path = sites_file_path
-        self.values_file_path = values_file_path
-        
+        #self.sites_file_path = sites_file_path
+        #self.values_file_path = values_file_path
+
+        self.sites_file_path = os.path.abspath(sites_file_path)
+        self.values_file_path = os.path.abspath(values_file_path)
+
         # Build a dictionary of variables indexed by code
         variable_dict = {}
 

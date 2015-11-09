@@ -12,7 +12,7 @@ import wof
 
 from examples.swis.swis_dao import SwisDao
 from examples.barebones.LCM_dao import LCMDao
-from examples.csv.csv_dao import CsvDao
+from examples.csv_server.csv_dao import CsvDao
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -23,9 +23,9 @@ def startServer():
                        database_uri='sqlite:///swis/swis2.db')
     lcm_dao = LCMDao('sqlite:///barebones/LCM_Data/LCM.db',
                          'barebones/LCM_config.cfg')
-    CSV_CONFIG_FILE = 'csv/csv_config.cfg'
-    SITES_FILE = 'csv/sites.csv'
-    VALUES_FILE = 'csv/data.csv'
+    CSV_CONFIG_FILE = 'csv_server/csv_config.cfg'
+    SITES_FILE = 'csv_server/sites.csv'
+    VALUES_FILE = 'csv_server/data.csv'
     csv_doa = CsvDao(SITES_FILE, VALUES_FILE)
 
     # swis_wof = WOF(swis_dao)
