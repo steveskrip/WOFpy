@@ -2,6 +2,7 @@
 ODM2 PostgreSQL Server
 **********************
 A single service can be run from the command line.
+
 #. ODM2 Measurement data use case
 
     ``python runserver_odm2_measurement.py
@@ -14,6 +15,7 @@ A single service can be run from the command line.
     --connection=postgresql+psycopg2://username:password/db_name``
 
 Multiple services can be run from the command line
+
     ``python runserver_multiple.py``
 
 Detailed Instructions
