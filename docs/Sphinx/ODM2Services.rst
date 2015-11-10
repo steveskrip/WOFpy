@@ -38,7 +38,7 @@ Follow the steps below to run this example.
    if necessary.  Then save and close the file.
 #. In case of ODM2 measurement data use case, open a command window in the **examples/odm2/measurement** folder and enter:
 
-   ``python runserver_odm2_measurement.py
+    ``python runserver_odm2_measurement.py
     --config=odm2_config_measurement.cfg
     --connection=postgresql+psycopg2://username:password/db_name``
 #. In case of ODM2 timeseries data use case, open a command window in the **examples/odm2/timeseries** folder and enter:
