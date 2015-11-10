@@ -41,16 +41,20 @@ def TWOFService(wof_inst,T, T_name):
                 siteCode = location.replace(wof_inst.network + ':', '')
                 varCode = variable.replace(wof_inst.network + ':', '')
 
-                data_values = wof_inst.dao.get_datavalues(siteCode, varCode,
-                                                                      startDate,
-                                                                      endDatee)
+                data_values = wof_inst.dao.get_datavalues(siteCode,
+                                                          varCode,
+                                                          startDate,
+                                                          endDatee)
 
                 site_result = wof_inst.dao.get_site_by_code(siteCode)
                 variable_result = wof_inst.dao.get_variable_by_code(varCode)
-
                 current_date = str(datetime.datetime.now())
 
                 if (data_values is not None):
+                    if isinstance(data_values,dict):
+                        for key in data_values.keys():
+                            data_values = data_values[key]
+                            break
                     firstMethod = data_values[0].MethodID
                     method_result = wof_inst.dao.get_method_by_id(firstMethod)
 

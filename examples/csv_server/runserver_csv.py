@@ -26,7 +26,6 @@ def startServer(config=CSV_CONFIG_FILE,
     dao = CsvDao(sites_file, values_file)
     app = wof.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
-    site_map = wof.site_map(app)
 
     openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)

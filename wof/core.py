@@ -96,7 +96,7 @@ class WOFConfig(object):
 
         TEMPLATES = '../../wof/apps/templates'
 
-        def __init__(self, file_name):
+        def __init__(self, file_name,templates=None):
             config = ConfigParser.RawConfigParser()
             config.read(file_name)
 
@@ -175,14 +175,15 @@ class WOFConfig(object):
                         self.default_west = config.get('Default_Params', 'West')
                     else:
                         self.default_west = -180
-                        
-            if config.has_option('WOFPY','Teamplates'):
-                self.TEMPLATES = config.get('WOFPY', 'Teamplates')
+            if templates:
+                self.TEMPLATES = templates
+            elif config.has_option('WOFPY','Templates'):
+                self.TEMPLATES = config.get('WOFPY', 'Templates')
             else:
                 self.TEMPLATES = '../../wof/apps/templates'
 
 """ returns an array of the applications """
-def getSpyneApplications(wof_obj_1_0,wof_obj_1_1, templates=None):
+def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
 
     # wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
     # wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
@@ -297,8 +298,8 @@ def create_wof_flask_multiple(wofConfig=[], templates=None):
     app = wof.flask.create_simple_app()
     spyneapps = {}
     for wConf in wofConfig:
-        wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config)
-        wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config)
+        wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config, templates=templates)
+        wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config,templates=templates)
 
         spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1,templates=templates) )
         path = wof_obj_1_0.network

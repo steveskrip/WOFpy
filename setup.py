@@ -35,7 +35,7 @@ setup(
         'nose',
         'python-dateutil==1.5.0',
         'jinja2',
-        'sqlite3'
+        'pysqlite' #'sqlite3
     ],
     extras_require = {
         'odm1':  ["sqlalchemy", 'pyodbc'],

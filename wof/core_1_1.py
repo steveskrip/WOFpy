@@ -28,14 +28,20 @@ class WOF_1_1(object):
     default_east = None
 
     _config = None
+    _templates = None
 
-    def __init__(self, dao, config_file=None):
+    def __init__(self, dao, config_file=None, templates=None):
         self.dao = dao
+        if templates:
+            self._templates = templates
         if config_file:
             self.config_from_file(config_file)
 
     def config_from_file(self, file_name):
-        config = core.WOFConfig(file_name)
+        if self._templates:
+            config = core.WOFConfig(file_name,self._templates)
+        else:
+            config = core.WOFConfig(file_name)
         self._config = config
 
         self.network = config.network
