@@ -3,20 +3,18 @@ import logging
 import wof
 
 from odm2_timeseries_dao import Odm2Dao
-import private_config
-ODM2_CONFIG_FILE = 'odm2_config_timeseries.cfg'
+#import private_config
 
-""" Before running this script, create a private_config.py file with the 
-    connection string to your ODM database in SQL Server.  For example:
-    
-    odm2_connection_string = \
-    'postgresql+psycopg2://username:password/db_name'
 """
+    python runserver_odm2_timeseries.py
+    --config=odm2_config_timeseries.cfg
+    --connection=postgresql+psycopg2://username:password/db_name
 
+"""
 logging.basicConfig(level=logging.DEBUG)
 
-def startServer(config=ODM2_CONFIG_FILE):
-    dao = Odm2Dao(private_config.odm2_connection_string)
+def startServer(config='odm2_config_timeseries.cfg',connection=None):
+    dao = Odm2Dao(connection)
     app = wof.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
@@ -32,4 +30,15 @@ def startServer(config=ODM2_CONFIG_FILE):
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':
-    startServer()
+    import argparse
+
+    parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
+    parser.add_argument('--config',
+                       help='Configuration file')
+    parser.add_argument('--connection',
+                       help='Connection String eg: "postgresql+psycopg2://username:password/db_name"')
+
+    args = parser.parse_args()
+    print(args)
+
+    startServer(config=args.config,connection=args.connection)
