@@ -16,7 +16,7 @@ from odm_dao import OdmDao
 """
 logging.basicConfig(level=logging.DEBUG)
 
-def startServer(config='lbr_config.cfg',connection=None):
+def startServer(config='lbr_config.cfg',connection=None,openPort=8080):
 
     dao = OdmDao(connection)
     app = wof.create_wof_flask_app(dao, config)
@@ -24,7 +24,6 @@ def startServer(config='lbr_config.cfg',connection=None):
 
     configFile = WOFConfig(config)
 
-    openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Acess Service endpoints at "
@@ -44,7 +43,9 @@ if __name__ == '__main__':
     parser.add_argument('--connection',
                        help='Connection String eg: "mssql+pyodbc://username:password@localhost/LittleBear11?driver=SQL+Server+Native+Client+10.0"')
 
+    parser.add_argument('--port',
+                       help='Open port for server."', default=8080)
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,connection=args.connection)
+    startServer(config=args.config,connection=args.connection,openPort=args.port)

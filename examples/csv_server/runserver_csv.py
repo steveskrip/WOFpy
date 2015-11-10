@@ -22,12 +22,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 def startServer(config=CSV_CONFIG_FILE,
                 sites_file=SITES_FILE,
-                values_file=VALUES_FILE):
+                values_file=VALUES_FILE,
+                openPort=8080):
     dao = CsvDao(sites_file, values_file)
     app = wof.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
-    openPort = 8080
+
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Acess Service endpoints at "
@@ -39,7 +40,7 @@ def startServer(config=CSV_CONFIG_FILE,
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':
-    # This must be an available port on your computer.  
+    # This must be an available port on your computer.
     # For example, if 8080 is already being used, try another port such as
     # 5000 or 8081.
     import argparse
@@ -51,9 +52,10 @@ if __name__ == '__main__':
                        help='csv file containing sites information',default=SITES_FILE)
     parser.add_argument('--values_file',
                        help='csv file containing values',default=VALUES_FILE)
-
+    parser.add_argument('--port',
+                       help='Open port for server."', default=8080)
 
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file)
+    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file, openPort=args.port)

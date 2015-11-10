@@ -14,14 +14,13 @@ logging.basicConfig(level=logging.DEBUG)
 # app = wof.create_wof_flask_app(swis_dao, SWIS_CONFIG_FILE)
 # app.config['DEBUG'] = True
 
-def startServer(config=SWIS_CONFIG_FILE,connection=SWIS_DATABASE_URI):
+def startServer(config=SWIS_CONFIG_FILE,connection=SWIS_DATABASE_URI, openPort=8080):
 
-    swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri=SWIS_DATABASE_URI)
+    swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri=connection)
     app = wof.create_wof_flask_app(swis_dao, config)
     app.config['DEBUG'] = True
 
 
-    openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Acess Service endpoints at "
@@ -41,7 +40,9 @@ if __name__ == '__main__':
     parser.add_argument('--connection',
                        help='Connection String eg: "sqlite:///LCM_Data/LCM.db"', default=SWIS_DATABASE_URI)
 
+    parser.add_argument('--port',
+                       help='Open port for server."', default=8080)
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,connection=args.connection)
+    startServer(config=args.config,connection=args.connection, openPort=args.port)

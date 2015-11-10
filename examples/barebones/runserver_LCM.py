@@ -60,14 +60,13 @@ CONFIG='LCM_config.cfg'
 #      '/soap/wateroneflow': soap_wsgi_app,
 #     })
 
-def startServer(config='LCM_config.cfg',connection='sqlite:///LCM_Data/LCM.db'):
+def startServer(config='LCM_config.cfg',connection='sqlite:///LCM_Data/LCM.db', openPort=8080):
 
     dao = LCMDao(connection,config)
     app = wof.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
 
-    openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Acess Service endpoints at "
@@ -86,8 +85,9 @@ if __name__ == '__main__':
                        help='Configuration file', default=CONFIG)
     parser.add_argument('--connection',
                        help='Connection String eg: "sqlite:///LCM_Data/LCM.db"', default=LCM_connection_string)
-
+    parser.add_argument('--port',
+                       help='Open port for server."', default=8080)
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,connection=args.connection)
+    startServer(config=args.config,connection=args.connection, openPort=args.port)
