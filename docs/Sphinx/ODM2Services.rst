@@ -41,13 +41,11 @@ Follow the steps below to run this example.
    ``python runserver_odm2_measurement.py
     --config=odm2_config_measurement.cfg
     --connection=postgresql+psycopg2://username:password/db_name``
-
 #. In case of ODM2 timeseries data use case, open a command window in the **examples/odm2/timeseries** folder and enter:
 
     ``python runserver_odm2_timeseries.py
     --config=odm2_config_timeseries.cfg
     --connection=postgresql+psycopg2://username:password/db_name``
-
 #. In case of multiple services, open a command window in the **examples/odm2/** folder and enter:
 
     ``python runserver_multiple.py``
