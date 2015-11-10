@@ -1161,7 +1161,29 @@
 //wml:series[1]/wml:variable[1]/wml:variableCode[1]</con:sourcePath><con:targetType>varcode</con:targetType><con:targetStep>series params</con:targetStep><con:upgraded>true</con:upgraded></con:transfers><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>vocabulary</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>GetSiteInfoObject</con:sourceStep><con:sourcePath>declare namespace wml="http://www.cuahsi.org/waterML/1.0/";
 //wml:series[1]/wml:variable[1]/wml:variableCode[1]/@vocabulary</con:sourcePath><con:targetType>vocabulary</con:targetType><con:targetStep>series params</con:targetStep><con:upgraded>true</con:upgraded></con:transfers><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>startdate</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>GetSiteInfoObject</con:sourceStep><con:sourcePath>declare namespace wml="http://www.cuahsi.org/waterML/1.0/";
 //wml:series[1]/wml:variableTimeInterval[1]/wml:beginDateTime</con:sourcePath><con:targetType>startdate</con:targetType><con:targetStep>series params</con:targetStep><con:upgraded>true</con:upgraded></con:transfers><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>enddate</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>GetSiteInfoObject</con:sourceStep><con:sourcePath>declare namespace wml="http://www.cuahsi.org/waterML/1.0/";
-//wml:series[1]/wml:variableTimeInterval[1]/wml:endDateTime</con:sourcePath><con:targetType>enddate</con:targetType><con:targetStep>series params</con:targetStep><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="properties" name="series params" id="55f31e57-a480-4ad2-9a28-12061d64dccf"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>varcode</con:name><con:value>AirtTemp_Avg</con:value></con:property><con:property><con:name>vocabulary</con:name><con:value>ODM2Timeseries</con:value></con:property><con:property><con:name>startdate</con:name><con:value>2015-04-28T00:00:00</con:value></con:property><con:property><con:name>enddate</con:name><con:value>2015-11-10T16:53:34.641124</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="request" id="4382f7db-bb3c-4900-bc57-d8f122abd6b1" name="GetValuesObject"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>WaterOneFlow</con:interface><con:operation>GetValuesObject</con:operation><con:request name="GetValuesObject" id="bef878ce-7a2d-49db-b607-2a4aa9ace382"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://sis-devel.cloudapp.net:8080/ODM2Timeseries/soap/wateroneflow</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://www.cuahsi.org/his/1.0/ws/">\r
+//wml:series[1]/wml:variableTimeInterval[1]/wml:endDateTime</con:sourcePath><con:targetType>enddate</con:targetType><con:targetStep>series params</con:targetStep><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="properties" name="series params" id="55f31e57-a480-4ad2-9a28-12061d64dccf"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>varcode</con:name><con:value>AirtTemp_Avg</con:value></con:property><con:property><con:name>vocabulary</con:name><con:value>ODM2Timeseries</con:value></con:property><con:property><con:name>startdate</con:name><con:value>2015-04-28T00:00:00</con:value></con:property><con:property><con:name>enddate</con:name><con:value>2015-11-10T18:03:26.632504</con:value></con:property><con:property><con:name>twodays</con:name><con:value>2015-04-30</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="groovy" name="AddDay" id="13700330-bfa0-4ad3-99f6-78285850673d"><con:settings/><con:config><script>def groovyUtils = new com.eviware.soapui.support.GroovyUtils( context );
+
+def beginDate =   testRunner.testCase.testSteps["series params"].getPropertyValue( "startdate" )
+
+//log.info("beginDate" + beginDate);
+//log.info("other date" + testSuiteProperty);
+Calendar cal = Calendar.getInstance();
+sdf = new java.text.SimpleDateFormat('yyyy-MM-dd');
+
+//log.info("substring"+beginDate.substring(0,10));
+def begin = sdf.parse(beginDate.substring(0,10));
+//log.info("day" + begin.getDate());
+//log.info("month" + begin.getMonth());
+//log.info("year" + begin.getYear());
+cal.set(begin.getYear()+1900,begin.getMonth(),begin.getDate());
+//log.info("Begining Date" + sdf.format(cal.getTime()));
+//cal.set(begin);
+cal.add(Calendar.DAY_OF_YEAR, 2);
+log.info("Calendar Date" + sdf.format(cal.getTime()));
+//
+testRunner.testCase.testSteps["series params"].setPropertyValue( "twodays", sdf.format(cal.getTime())); 
+
+</script></con:config></con:testStep><con:testStep type="request" id="4382f7db-bb3c-4900-bc57-d8f122abd6b1" name="GetValuesObject"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>WaterOneFlow</con:interface><con:operation>GetValuesObject</con:operation><con:request name="GetValuesObject" id="bef878ce-7a2d-49db-b607-2a4aa9ace382"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://sis-devel.cloudapp.net:8080/ODM2Timeseries/soap/wateroneflow</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://www.cuahsi.org/his/1.0/ws/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <ws:GetValuesObject>\r
@@ -1172,7 +1194,7 @@
          <!--Optional:-->\r
          <ws:startDate>${series params#startdate}</ws:startDate>\r
          <!--Optional:-->\r
-         <ws:endDate>${series params#startdate}</ws:endDate>\r
+         <ws:endDate>${series params#twodays}</ws:endDate>\r
 
       </ws:GetValuesObject>\r
    </soapenv:Body>\r
