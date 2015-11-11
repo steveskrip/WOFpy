@@ -17,7 +17,7 @@ def TWSDLService(wof_inst,T, T_name):
     class WSDLService(ServiceBase):
         @rpc( _returns=T)
        #@wsdl.route('/soap/wateroneflow.wsdl')
-        def get_wsdl_1_0(ctx ):
+        def get_wsdl_1_0(self, ctx ):
             aPath = os.path.abspath(wof_inst._config.TEMPLATES)
 
             env = Environment(loader=FileSystemLoader(aPath))
@@ -42,7 +42,7 @@ def TWSDLService(wof_inst,T, T_name):
             return response
 
         @rpc( _returns=T)
-        def get_wsdl_1_1(ctx ):
+        def get_wsdl_1_1(self,ctx ):
                 aPath = os.path.abspath(wof_inst._config.TEMPLATES)
 
                 env = Environment(loader=FileSystemLoader(aPath))
