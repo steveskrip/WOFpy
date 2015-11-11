@@ -92,7 +92,7 @@ def TWOFService(wof_inst,T, T_name):
             return siteinfoResult.replace('\n', '')
 
         @rpc(Array(Unicode), Unicode, _returns=AnyXml)
-        def GetSiteInfoMultipleObject(ctx, site, authToken=None):
+        def GetSiteInfoMultpleObject(ctx, site, authToken=None):
             if site is not None:
                 siteArg = ','.join(str(s) for s in site)
             else:
@@ -226,7 +226,7 @@ def TWOFService(wof_inst,T, T_name):
                 'GetVariableInfoObjectResult',
                 'GetValuesObjectResult',
                 'GetSitesByBoxObjectResult',
-                'GetSiteInfoMultipleObjectResult',
+                'GetSiteInfoMultpleObjectResult',
                 'GetVariablesObjectResult',
                 'GetValuesForASiteObjectResult']
             element = ctx.out_document
