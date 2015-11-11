@@ -8,7 +8,7 @@ A single service can be run from the command line.
     ``python runserver_odm2_measurement.py
     --config=odm2_config_measurement.cfg
     --connection=postgresql+psycopg2://username:password/db_name``
-#. ODM2 timeseries data use case
+#. ODM2 Timeseries data use case
 
     ``python runserver_odm2_timeseries.py
     --config=odm2_config_timeseries.cfg
