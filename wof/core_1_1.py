@@ -260,9 +260,9 @@ class WOF_1_1(object):
 
         valueResultArr = self.dao.get_datavalues(siteCode, varCode,
                                                  startDateTime, endDateTime)
-        if not valueResultArr:
-            raise Exception("ERROR: No data found for %s:%s for dates %s - %s" % (
-                siteCode, varCode, startDateTime, endDateTime))
+        #if not valueResultArr:
+        #    raise Exception("ERROR: No data found for %s:%s for dates %s - %s" % (
+        #        siteCode, varCode, startDateTime, endDateTime))
 
         timeSeriesResponse = WaterML.TimeSeriesResponseType()
 
@@ -283,6 +283,11 @@ class WOF_1_1(object):
         #queryInfo.add_note(queryInfoNote)
         #queryInfo.set_extension('')
         timeSeriesResponse.set_queryInfo(queryInfo)
+
+        if not valueResultArr:
+            timeSeries = WaterML.TimeSeriesType()
+            timeSeriesResponse.add_timeSeries(timeSeries)
+            return timeSeriesResponse
 
         if isinstance(valueResultArr,dict):
             for key in valueResultArr.keys():
