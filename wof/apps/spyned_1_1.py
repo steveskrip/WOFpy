@@ -70,7 +70,7 @@ def TWOFService(wof_inst,T, T_name):
             return sitesResult.replace('\n', '')
 
         @rpc(Unicode, Unicode, _returns=AnyXml)
-        def GetSiteInfoObject(ctx, site, authToken):
+        def GetSiteInfoObject(ctx, site, authToken=None):
             try:
                 siteInfoResponse = \
                     wof_inst.create_get_site_info_response(site)
@@ -85,14 +85,14 @@ def TWOFService(wof_inst,T, T_name):
                     raise Fault(faultstring=str(inst))
 
         @rpc(Unicode, Unicode, _returns=T)
-        def GetSiteInfo(ctx, site, authToken):
+        def GetSiteInfo(ctx, site, authToken=None):
             siteinfoResult = WOFService.GetSiteInfoObject(ctx,site,authToken)
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return siteinfoResult
             return siteinfoResult.replace('\n', '')
 
         @rpc(Array(Unicode), Unicode, _returns=AnyXml)
-        def GetSiteInfoMultipleObject(ctx, site, authToken):
+        def GetSiteInfoMultipleObject(ctx, site, authToken=None):
             if site is not None:
                 siteArg = ','.join(str(s) for s in site)
             else:
@@ -111,14 +111,14 @@ def TWOFService(wof_inst,T, T_name):
                     raise Fault(faultstring=str(inst))
 
         @rpc(Array(Unicode), Unicode, _returns=T)
-        def GetSiteInfoMultiple(ctx, site, authToken):
+        def GetSiteInfoMultiple(ctx, site, authToken=None):
             sitesinfoResult = WOFService.GetSiteInfoMultipleObject(ctx,site,authToken)
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return sitesinfoResult
             return sitesinfoResult.replace('\n', '')
 
         @rpc(Unicode, Unicode, _returns=AnyXml)
-        def GetVariableInfoObject(ctx, variable, authToken):
+        def GetVariableInfoObject(ctx, variable, authToken=None):
             try:
                 variableInfoResponse = \
                     wof_inst.create_get_variable_info_response(variable)
@@ -134,7 +134,7 @@ def TWOFService(wof_inst,T, T_name):
                     raise Fault(faultstring=str(inst))
 
         @rpc(Unicode, Unicode, _returns=T)
-        def GetVariableInfo(ctx, variable, authToken):
+        def GetVariableInfo(ctx, variable, authToken=None):
             varinfoResult = WOFService.GetVariableInfoObject(ctx,variable,authToken)
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return varinfoResult
@@ -163,8 +163,8 @@ def TWOFService(wof_inst,T, T_name):
                 return varsResult
             return varsResult.replace('\n', '')
 
-        @rpc(Unicode, Unicode, Unicode, Unicode, _returns=AnyXml)
-        def GetValuesObject(ctx, location, variable, startDate, endDate):
+        @rpc(Unicode, Unicode, Unicode, Unicode, Unicode, _returns=AnyXml)
+        def GetValuesObject(ctx, location, variable, startDate=None, endDate=None, authToken=None):
             try:
                 timeSeriesResponse = wof_inst.create_get_values_response(
                         location, variable, startDate, endDate)
@@ -179,15 +179,15 @@ def TWOFService(wof_inst,T, T_name):
                 else:
                     raise Fault(faultstring=str(inst))
 
-        @rpc(Unicode, Unicode, Unicode, Unicode, _returns=T)
-        def GetValues(ctx, location, variable, startDate, endDate):
-            valuesResult = WOFService.GetValuesObject(ctx,location,variable,startDate,endDate)
+        @rpc(Unicode, Unicode, Unicode, Unicode, Unicode, _returns=T)
+        def GetValues(ctx, location, variable, startDate=None, endDate=None, authToken=None):
+            valuesResult = WOFService.GetValuesObject(ctx,location,variable,startDate,endDate,authToken)
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return valuesResult
             return valuesResult.replace('\n', '')
 
         @rpc(Unicode, Unicode, Unicode, Unicode, _returns=AnyXml)
-        def GetValuesForASiteObject(ctx, site, startDate, endDate, authToken=None):
+        def GetValuesForASiteObject(ctx, site, startDate=None, endDate=None, authToken=None):
             try:
                 timeSeriesResponse = wof_inst.create_get_values_site_response(
                         site, startDate, endDate)
