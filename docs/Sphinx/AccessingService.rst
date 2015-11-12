@@ -4,8 +4,8 @@ The services will be run. At start, a set of HTML pages with examples is generat
 * http://127.0.0.1:8080/{network}/rest_1_0/
 * http://127.0.0.1:8080/{network}/rest_1_1/
 * http://127.0.0.1:8080/{network}/rest_2/
-* http://127.0.0.1:8080/{network}/soap/wateroneflow.wsdl
-* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1.wsdl
+* http://127.0.0.1:8080/{network}/soap/wateroneflow/.wsdl
+* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1/.wsdl
 
 The services can  be found:
 * http://127.0.0.1:8080/{network}/rest/1_0
@@ -84,13 +84,11 @@ and WaterML responses are described on the HIS website at
 http://his.cuahsi.org/wofws.html.
 
 WSDL Endpoints:
-* http://127.0.0.1:8080/{network}/soap/wateroneflow.wsdl
-* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1.wsdl
-* http://127.0.0.1:8080/{network}/soap/wateroneflow/.wsdl (Note needs work. Location is wrong)
-* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1/.wsdl (Note needs work. Location is wrong)
+* http://127.0.0.1:8080/{network}/soap/wateroneflow/.wsdl
+* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1/.wsdl
 These correspond to SOAP endpoints:
-* http://127.0.0.1:8080/{network}/soap/wateroneflow/
-* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1/
+* http://127.0.0.1:8080/{network}/soap/wateroneflow
+* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1
 
 One of the easiest ways to test the SOAP endpoint is to use the free soapUI
 program.  To test with soapUI:
@@ -108,6 +106,6 @@ program.  To test with soapUI:
 #. In window, select URL icon. Run
 #. Click the play button to issue the request.  A new window should open with
    the SOAP response showing information about the site.
-   **note. presently some errors.**
+
 
 

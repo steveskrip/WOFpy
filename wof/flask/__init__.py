@@ -38,8 +38,8 @@ def add_flask_routes(app,path, servicesPath,
                                rest10=path+'/rest_1_0/',
                                rest11=path+'/rest_1_1/',
                                rest2=path+'/rest_2/',
-                               soap10=path+'/soap/wateroneflow.wsdl',
-                               soap11=path+'/soap/wateroneflow_1_1.wsdl',
+                               soap10=path+'/soap/wateroneflow/.wsdl',
+                               soap11=path+'/soap/wateroneflow_1_1/.wsdl',
                                p=wof_inst.network)
 
     app.add_url_rule(servicesPath+'/', wof_inst.network+'index', index)
@@ -75,26 +75,26 @@ def add_flask_routes(app,path, servicesPath,
 
 
 
-        #@app.route('/soap/wateroneflow.wsdl')
-        def get_wsdl():
-        #TODO: The WSDL should be served separately from the Flask application.
-        # Come up with a better way to do this.
-            network = wof_inst.network.lower()
-
-            try:
-                serv_loc = app.config['SOAP_SERVICE_URL']
-            except KeyError:
-                serv_loc = app.config.get(
-                    'SOAP_SERVICE_URL',
-                    '%s/wateroneflow/' % request.url.rsplit('/', 1)[0])
-
-            response = make_response(render_template('wsdl_temp.wsdl',
-                                             serv_loc=serv_loc,
-                                             network=network))
-
-            response.headers['Content-Type'] = 'text/xml'
-            return response
-        app.add_url_rule(servicesPath+'/soap/wateroneflow.wsdl', wof_inst.network+'get_wsdl', get_wsdl)
+        # #@app.route('/soap/wateroneflow.wsdl')
+        # def get_wsdl():
+        # #TODO: The WSDL should be served separately from the Flask application.
+        # # Come up with a better way to do this.
+        #     network = wof_inst.network.lower()
+        #
+        #     try:
+        #         serv_loc = app.config['SOAP_SERVICE_URL']
+        #     except KeyError:
+        #         serv_loc = app.config.get(
+        #             'SOAP_SERVICE_URL',
+        #             '%s/wateroneflow/' % request.url.rsplit('/', 1)[0])
+        #
+        #     response = make_response(render_template('wsdl_temp.wsdl',
+        #                                      serv_loc=serv_loc,
+        #                                      network=network))
+        #
+        #     response.headers['Content-Type'] = 'text/xml'
+        #     return response
+        # app.add_url_rule(servicesPath+'/soap/wateroneflow.wsdl', wof_inst.network+'get_wsdl', get_wsdl)
 
     if wof_inst_1_1 is not None:
         if not 'SOAP_SERVICE_URL_1_1' in app.config and soap_service_1_1_url:
@@ -116,25 +116,25 @@ def add_flask_routes(app,path, servicesPath,
         app.add_url_rule(servicesPath+'/rest_1_1/', wof_inst.network+'index_1_1', index_1_1)
 
         #@app.route('/soap/wateroneflow_1_1.wsdl')
-        def get_wsdl_1_1():
-        #TODO: The WSDL should be served separately from the Flask application.
-        # Come up with a better way to do this.
-            network = wof_inst_1_1.network.lower()
-
-            try:
-                serv_loc = app.config['SOAP_SERVICE_URL_1_1']
-            except KeyError:
-                serv_loc = app.config.get(
-                    'SOAP_SERVICE_URL_1_1',
-                    '%s/wateroneflow_1_1/' % request.url.rsplit('/', 1)[0])
-
-            response = make_response(render_template('wsdl_1_1_template.wsdl',
-                                             serv_loc=serv_loc,
-                                             network=network))
-
-            response.headers['Content-Type'] = 'text/xml'
-            return response
-        app.add_url_rule(servicesPath+'/soap/wateroneflow_1_1.wsdl', wof_inst.network+'get_wsdl_1_1', get_wsdl_1_1)
+        # def get_wsdl_1_1():
+        # #TODO: The WSDL should be served separately from the Flask application.
+        # # Come up with a better way to do this.
+        #     network = wof_inst_1_1.network.lower()
+        #
+        #     try:
+        #         serv_loc = app.config['SOAP_SERVICE_URL_1_1']
+        #     except KeyError:
+        #         serv_loc = app.config.get(
+        #             'SOAP_SERVICE_URL_1_1',
+        #             '%s/wateroneflow_1_1/' % request.url.rsplit('/', 1)[0])
+        #
+        #     response = make_response(render_template('wsdl_1_1_template.wsdl',
+        #                                      serv_loc=serv_loc,
+        #                                      network=network))
+        #
+        #     response.headers['Content-Type'] = 'text/xml'
+        #     return response
+        # app.add_url_rule(servicesPath+'/soap/wateroneflow_1_1.wsdl', wof_inst.network+'get_wsdl_1_1', get_wsdl_1_1)
 
 
     return app
