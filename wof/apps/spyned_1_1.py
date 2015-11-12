@@ -10,6 +10,7 @@ from spyne.service import ServiceBase
 from spyne.model.fault import Fault
 from spyne.util import memoize
 import wof
+from lxml import etree
 
 logger = logging.getLogger(__name__)
 
@@ -219,6 +220,13 @@ def TWOFService(wof_inst,T, T_name):
         #TODO: how do we determine which method is being returned from?
         # Since I don't know, I am doing a dumb test for each one
 
+        if ctx._MethodContext__descriptor.name == 'GetValuesObject':
+            modify_method_getValueObject(ctx)
+            return ctx
+        if ctx._MethodContext__descriptor.name == 'GetVariableInfoObject':
+            modify_method_getVariableInfoObject(ctx)
+            return ctx
+
         if wof._SERVICE_PARAMS["s_type"] in list(ctx.out_protocol.type):
             result_element_name_list = [
                 'GetSitesObjectResult',
@@ -240,6 +248,52 @@ def TWOFService(wof_inst,T, T_name):
                     parent.replace(result_element, children[0])
                     return ctx
         return
+
+    def modify_method_getValueObject(ctx):
+        logger.info("Modify WOF11 GetValuesObject request")
+        result_element_name='GetValuesObjectResult'
+        response_element_name='GetValuesObjectResponse'
+        WML_NAMESPACE = "http://www.cuahsi.org/waterML/1.1/"
+        WML = "{%s}" % WML_NAMESPACE
+        NSMAP = {None :WML_NAMESPACE}
+        wrappingElement = etree.Element(WML+"TimeSeriesResponse",nsmap=NSMAP)
+
+        element = ctx.out_document
+        element.nsmap[None]=NSMAP
+        response_element = element.find('.//{%s}%s' % (element.nsmap['tns'], response_element_name))
+        result_element=element.find('.//{%s}%s' % (element.nsmap['tns'], result_element_name))
+        parent = response_element.getparent()
+        parent.append(wrappingElement) # add to tree
+        children = result_element.getchildren()
+        wrappingElement.append(children[0])
+        #parent.replace(result_element, children[0])
+
+        parent.remove(response_element)
+
+        return ctx
+
+    def modify_method_getVariableInfoObject(ctx):
+        logger.info("Modify WOF11 VariableInfoObject request")
+        result_element_name='GetVariableInfoObjectResult'
+        response_element_name='GetVariableInfoObjectResponse'
+        WML_NAMESPACE = "http://www.cuahsi.org/waterML/1.1/"
+        WML = "{%s}" % WML_NAMESPACE
+        NSMAP = {None :WML_NAMESPACE}
+        wrappingElement = etree.Element(WML+"VariablesResponse",nsmap=NSMAP)
+
+
+        element = ctx.out_document
+        element.nsmap[None]=NSMAP
+        response_element = element.find('.//{%s}%s' % (element.nsmap['tns'], response_element_name))
+        result_element=element.find('.//{%s}%s' % (element.nsmap['tns'], result_element_name))
+        parent = response_element.getparent()
+        parent.append(wrappingElement) # add to tree
+        children = result_element.getchildren()
+        wrappingElement.append(children[0])
+        #parent.replace(result_element, children[0])
+        parent.remove(response_element)
+
+        return ctx
 
     WOFService.event_manager.add_listener('method_return_document', _on_method_return_xml)
 
