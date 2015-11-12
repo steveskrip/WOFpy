@@ -111,8 +111,8 @@ def TWOFService(wof_inst,T, T_name):
                     raise Fault(faultstring=str(inst))
 
         @rpc(Array(Unicode), Unicode, _returns=T)
-        def GetSiteInfoMultiple(ctx, site, authToken=None):
-            sitesinfoResult = WOFService.GetSiteInfoMultipleObject(ctx,site,authToken)
+        def GetSiteInfoMultple(ctx, site, authToken=None):
+            sitesinfoResult = WOFService.GetSiteInfoMultpleObject(ctx,site,authToken)
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return sitesinfoResult
             return sitesinfoResult.replace('\n', '')
