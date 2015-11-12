@@ -114,12 +114,12 @@
                                     <gml:endPosition>{{ data_values[data_values|length-1].DateTimeUTC }}</gml:endPosition>
                             </gml:TimePeriod>
 			</om:phenomenonTime>
-	<!--		<om:resultTime>
+	        <om:resultTime>
 				<gml:TimeInstant gml:id="result_time">
-					<gml:timePosition></gml:timePosition> {# TODO: Figure out what this is #}
+					<gml:timePosition>{{ current_date }}</gml:timePosition> {# TODO: Figure out what this is #}
 				</gml:TimeInstant>
 			</om:resultTime>
-			-->
+
 			<om:procedure> {# TODO: Figure out what this is. Method. #}
 				<wml2:ObservationProcess gml:id="process-1">
 					<gml:description>Water chemistry grab sample collected by technicians in the field.</gml:description>
@@ -211,8 +211,12 @@
 					xlink:title="Surface Water"/>
 				<!-- wml2 descriptionReference pointer to a web page -->
 					<wml2:verticalDatum xlink:href="http://www.opengis.net/def/datum/EPSG/0/5102" xlink:title="NGVD29"/>
-					<wml2:timeZone ></wml2:timeZone>
-					<wml2:daylightSavingTimeZone></wml2:daylightSavingTimeZone>
+					<wml2:timeZone >
+                        <wml2:zoneOffset>+1</wml2:zoneOffset>
+                    </wml2:timeZone>
+					<wml2:daylightSavingTimeZone>
+                        <wml2:zoneOffset>0</wml2:zoneOffset>
+                    </wml2:daylightSavingTimeZone>
 			</wml2:MonitoringPoint>
 			</om:featureOfInterest>	
 			<om:result>
