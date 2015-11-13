@@ -95,20 +95,10 @@ class Odm2Dao(BaseDao):
 
         r_t_Arr = []
         if l_var_codes is None:
-            print 'variable all'
-            """
-            r_t = self.db_session.query(odm2_models.TimeSeriesResultValues,
-                                        odm2_models.TimeSeriesResults,
-                                        odm2_models.Results).\
-                filter(odm2_models.TimeSeriesResultValues.ResultID == odm2_models.TimeSeriesResults.ResultID,
-                       odm2_models.TimeSeriesResults.ResultID == odm2_models.Results.ResultID).\
-                group_by(odm2_models.Results.VariableID).all()
-            """
             r_t = self.db_session.query(odm2_models.TimeSeriesResultValues).\
                                         join(odm2_models.TimeSeriesResults).\
                                         join(odm2_models.Results).\
-                                group_by(odm2_models.Results.VariableID).all()
-            print 'length: %d' % len(r_t)
+                                        group_by(odm2_models.Results.VariableID).all()
             r_t_Arr.append(r_t)
         else:
             for item in l_var_codes:
