@@ -128,6 +128,11 @@ def TWOFService(wof_inst,T, T_name):
         #TODO: how do we determine which method is being returned from?
         # Since I don't know, I am doing a dumb test for each one
 
+        if 'xml' and not 'soap' in list(ctx.out_protocol.type):
+            logger.info("protocol types: %s" % list(ctx.out_protocol.type))
+            modify_return_xml_object(ctx)
+            return ctx
+
         if wof._SERVICE_PARAMS["s_type"] in list(ctx.out_protocol.type):
             result_element_name_list = [
                 'GetSitesResult',
@@ -146,6 +151,17 @@ def TWOFService(wof_inst,T, T_name):
                     parent.replace(result_element, children[0])
                     return ctx
         return
+
+    def modify_return_xml_object(ctx):
+        method_name = ctx._MethodContext__descriptor.name
+        logger.info("Modify WOF10 %s request" % method_name)
+        result_element_name='%sResult' % method_name
+        element = ctx.out_document
+        result_element=element.find('.//{%s}%s' % (element.nsmap['ns0'], result_element_name))
+        children = result_element.getchildren()
+        ctx.out_document = children[0]
+        return ctx
+
     WOFService.event_manager.add_listener('method_return_document', _on_method_return_xml)
 
     return WOFService

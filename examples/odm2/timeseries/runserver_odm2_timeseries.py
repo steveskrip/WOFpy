@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
     parser.add_argument('--config',
-                       help='Configuration file')
+                       help='Configuration file', default='odm2_config_timeseries.cfg')
     parser.add_argument('--connection',
                        help='Connection String eg: "postgresql+psycopg2://username:password/db_name"')
 

@@ -175,7 +175,8 @@ class WOFConfig(object):
                         self.default_west = config.get('Default_Params', 'West')
                     else:
                         self.default_west = -180
-            if templates:
+
+            if templates is not None:
                 self.TEMPLATES = templates
             elif config.has_option('WOFPY','Templates'):
                 self.TEMPLATES = config.get('WOFPY', 'Templates')
@@ -300,10 +301,10 @@ def create_wof_flask_multiple(wofConfig=[], templates=None):
     app = wof.flask.create_simple_app()
     spyneapps = {}
     for wConf in wofConfig:
-        wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config, templates=templates)
-        wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config,templates=templates)
+        wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config, templates)
+        wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config,templates)
 
-        spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1,templates=templates) )
+        spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1,templates) )
         path = wof_obj_1_0.network
         servicesPath =  '/'+wof_obj_1_0.network
 
