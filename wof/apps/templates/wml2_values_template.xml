@@ -21,8 +21,8 @@
 	gml:id="generated_collection_doc">
 	<wml2:metadata>
 		<wml2:DocumentMetadata gml:id="doc_md">
-			<wml2:generationDate>{{ current_date }}</wml2:generationDate>
-			<wml2:version xlink:href="http://www.opengis.net/waterml/2.0" xlink:title="WaterML 2.0 RFC"/>
+			<wml2:generationDate>{{ current_date|isoformat}}</wml2:generationDate>
+			<wml2:version xlink:href="http://www.opengis.net/waterml/2.0" xlink:title="WaterML 2.0"/>
 			<wml2:generationSystem>WOFpy Experimental/Demo WaterML2 Method</wml2:generationSystem>
 		</wml2:DocumentMetadata>
 	</wml2:metadata>
@@ -40,7 +40,7 @@
 		</gml:Dictionary>
 	</wml2:localDictionary>
 
-<!--	<wml2:localDictionary>
+<wml2:localDictionary>
 		<gml:Dictionary gml:id="quality">
 			<gml:identifier codeSpace="http://www.cuahsi.org/waterml2/dictionaries/">quality</gml:identifier>
 			<gml:dictionaryEntry>
@@ -50,16 +50,17 @@
 					<gml:remarks/>
 				</gml:Definition>
 			</gml:dictionaryEntry>
-			<gml:dictionaryEntry>
+<!--				<gml:dictionaryEntry>
 				<gml:Definition gml:id="qclevel-1">
 					<gml:identifier codeSpace="http://hiscentral.cuahsi.org/wml/qualityControlLevelCode">1</gml:identifier>
 					<gml:name codeSpace="http://hiscentral.cuahsi.org/wml/qualityControlLevelCode">Quality controlled data</gml:name>
 					<gml:remarks>Quality controlled data that have passed quality assurance procedures such as routine estimation of timing and sensor calibration or visual inspection and removal of obvious errors. An example is USGS published streamflow records following parsing through USGS quality control procedures.</gml:remarks>
 				</gml:Definition>
 			</gml:dictionaryEntry>
-		</gml:Dictionary>
-	</wml2:localDictionary>
---> 
+-->
+        </gml:Dictionary>
+</wml2:localDictionary>
+
 <!--		<wml2:localDictionary>
 		<gml:Dictionary gml:id="censorCode"><gml:identifier codeSpace="http://www.cuahsi.org/waterml2/dictionaries/">censorCode</gml:identifier>
 			<gml:dictionaryEntry>
@@ -103,31 +104,31 @@
 
 					<!--wml2:intendedSamplingInterval--><!--  wml2:status should be a mapping based on QC level... but there is no fixed qcvocab-->
 					<wml2:sampledMedium xlink:href="http://www.opengis.net/def/waterml/2.0/medium/SurfaceWater"
-						xlink:title="Surface Water"/>
+						xlink:title="{{ variable_result.SampleMedium }}"/>
 					<!--wml2:maximumGap-->
 				</wml2:ObservationMetadata>
 			</om:metadata>
 
 			<om:phenomenonTime>
                             <gml:TimePeriod gml:id="phen_time">
-                                    <gml:beginPosition>{{ data_values[0].DateTimeUTC }}</gml:beginPosition>
-                                    <gml:endPosition>{{ data_values[data_values|length-1].DateTimeUTC }}</gml:endPosition>
+                                    <gml:beginPosition>{{ data_values[0].DateTimeUTC|isoformat }}</gml:beginPosition>
+                                    <gml:endPosition>{{ data_values[data_values|length-1].DateTimeUTC|isoformat }}</gml:endPosition>
                             </gml:TimePeriod>
 			</om:phenomenonTime>
 	        <om:resultTime>
 				<gml:TimeInstant gml:id="result_time">
-					<gml:timePosition>{{ current_date }}</gml:timePosition> {# TODO: Figure out what this is #}
+					<gml:timePosition>{{ current_date|isoformat }}</gml:timePosition> {# TODO: Figure out what this is #}
 				</gml:TimeInstant>
 			</om:resultTime>
 
 			<om:procedure> {# TODO: Figure out what this is. Method. #}
 				<wml2:ObservationProcess gml:id="process-1">
-					<gml:description>Water chemistry grab sample collected by technicians in the field.</gml:description>
-					<gml:identifier codeSpace="http://hiscentral.cuahsi.org/wml/method">25</gml:identifier>
+					<gml:description>{{ method_result.MethodDescription }}</gml:description>
+					<gml:identifier codeSpace="http://hiscentral.cuahsi.org/wml/method">{{ method_result.MethodID }}</gml:identifier>
 					<wml2:processType xlink:href="http://www.opengis.net/def/waterml/2.0/processType/Unknown"
 						xlink:title="Unknown"/> 
-				<!--	<wml2:processReference xlink:href="http://hiscentral.cuahsi.org/methods/LittleBearRiver-25"
-						xlink:title="Water chemistry grab sample collected by technicians in the field."/>
+				<!--	<wml2:processReference xlink:href="[LINK TO SITE AND METHOD ]"
+						xlink:title="[TITLE OF METHOD ]"/>
 						-->
 					<wml2:parameter>
 						<om:NamedValue>
@@ -154,22 +155,22 @@
 							<om:value xsi:type="xsd:string">{{ variable_result.SampleMedium }}</om:value>
 						</om:NamedValue>
 					</wml2:parameter>
-				<!--	<wml2:parameter>
+				<wml2:parameter>
 						<om:NamedValue>
 							<om:name xlink:title="speciation"
 								xlink:href="http://hiscentral.cuahsi.org/wml/speciation"/>
-							<om:value xsi:type="xsd:string">{ variable_result.Speciation }}</om:value>
+							<om:value xsi:type="xsd:string">{{ variable_result.Speciation }}</om:value>
 						</om:NamedValue>
 					</wml2:parameter> 
-					-->
+
 				</wml2:ObservationProcess>
 			</om:procedure>
 			<om:observedProperty xlink:href="{{ variable_result.VariableCode}}" xlink:title="{{ variable_result.VariableName }}"/>
 		<!--	<om:featureOfInterest xlink:href="{{ site_result.SiteCode }}" xlink:title="{{ site_result.SiteName }}"/> -->
 			<om:featureOfInterest>
-				<wml2:MonitoringPoint gml:id="LittleBearRiver-USU-LBR-Wellsville">
-				<gml:identifier codeSpace="http://hiscentral.cuahsi.org/network/LittleBearRiver">USU-LBR-Wellsville</gml:identifier>
-				<gml:name>Little Bear River near Wellsville, Utah</gml:name>
+				<wml2:MonitoringPoint gml:id="{{ config.Netowrk }}_{{ site_result.SiteCode }}_mp">
+				<gml:identifier codeSpace="http://hiscentral.cuahsi.org/network/{{ config.Netowrk }}">{{ site_result.SiteCode }}</gml:identifier>
+				<gml:name>{{ site_result.SiteName }}</gml:name>
 				<!--We know the sampling point, but do not the actual physical "sampled feature"; eg which river,  stream, lake. --><!--as per https://www.seegrid.csiro.au/wiki/AppSchemas/ObservationsAndSampling#Unknown_features
        --><sam:sampledFeature xlink:title="Unsepecified Sampled Feature"
 					xlink:role="http://hiscentral.cuahsi.org/wml/site"
@@ -178,45 +179,50 @@
 					<om:NamedValue>
 						<om:name xlink:href="http://hiscentral.cuahsi.org/wml/siteProperty/elevation_m/"
 							xlink:title="elevation in meters"/>
-						<om:value xsi:type="xsd:string">1365m</om:value>
+						<om:value xsi:type="xsd:string">{{ site_result.Elevation_m  }}</om:value>
 					</om:NamedValue>
 				</sam:parameter>
 				<sam:parameter>
 					<om:NamedValue>
 						<om:name xlink:href="http://hiscentral.cuahsi.org/wml/siteProperty/County"
 							xlink:title="County"/>
-						<om:value xsi:type="xsd:string">Cache</om:value>
+						<om:value xsi:type="xsd:string">{{ site_result.County  }}</om:value>
 					</om:NamedValue>
 				</sam:parameter>
 				<sam:parameter>
 					<om:NamedValue>
 						<om:name xlink:href="http://hiscentral.cuahsi.org/wml/siteProperty/State"
 							xlink:title="State"/>
-						<om:value xsi:type="xsd:string">Utah</om:value>
+						<om:value xsi:type="xsd:string">{{ site_result.State  }}</om:value>
 					</om:NamedValue>
 				</sam:parameter>
 				<sam:parameter>
 					<om:NamedValue>
 						<om:name xlink:href="http://hiscentral.cuahsi.org/wml/siteProperty/Site_Comments"
 							xlink:title="Site Comments"/>
-						<om:value xsi:type="xsd:string">Located on the upstream side of State Highway 101 bridge.</om:value>
+						<om:value xsi:type="xsd:string">{{ site_result.Comments  }}</om:value>
 					</om:NamedValue>
 				</sam:parameter>
 				<sams:shape>
-					<gml:Point gml:id="LittleBearRiver-USU-LBR-Wellsville_pos">
-						<gml:pos srsName="EPSG:4269">41.643457 -111.917649</gml:pos>
+					<gml:Point gml:id="{{ config.Network }}_{{ site_result.SiteCode }}_pos">
+						<gml:pos srsName="EPSG:4269">{{ site_result.Latitude  }} {{ site_result.Longitude  }}</gml:pos>
 					</gml:Point>
 				</sams:shape>
 				<wml2:monitoringType xlink:href="http://www.cuahsi.org/waterml2/siteType/surfaceWater"
 					xlink:title="Surface Water"/>
 				<!-- wml2 descriptionReference pointer to a web page -->
 					<wml2:verticalDatum xlink:href="http://www.opengis.net/def/datum/EPSG/0/5102" xlink:title="NGVD29"/>
-					<wml2:timeZone >
-                        <wml2:zoneOffset>+1</wml2:zoneOffset>
+				<!--	<wml2:timeZone >
+                        <wml2:TimeZone>
+                          <wml2:zoneOffset>+1</wml2:zoneOffset>
+                        </wml2:TimeZone>
                     </wml2:timeZone>
 					<wml2:daylightSavingTimeZone>
-                        <wml2:zoneOffset>0</wml2:zoneOffset>
+                        <wml2:TimeZone>
+                            <wml2:zoneOffset>+1</wml2:zoneOffset>
+                        </wml2:TimeZone>
                     </wml2:daylightSavingTimeZone>
+                    -->
 			</wml2:MonitoringPoint>
 			</om:featureOfInterest>	
 			<om:result>
@@ -251,7 +257,7 @@
 					{% for dv in data_values %}
 					<wml2:point>
 						<wml2:MeasurementTVP>
-							<wml2:time>{{ dv.DateTimeUTC }}</wml2:time>
+							<wml2:time>{{ dv.DateTimeUTC|isoformat }}</wml2:time>
 							<wml2:value>{{ dv.DataValue }}</wml2:value>
 
 						</wml2:MeasurementTVP>

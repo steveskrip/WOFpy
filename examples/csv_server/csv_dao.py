@@ -8,11 +8,16 @@ from wof.dao import BaseDao
 import wof.models as wof_base
 import os
 
+from pytz import timezone
+import pytz
+
 import csv_model
 
 class CsvDao(BaseDao):
-    local_time_zone = tz(None, -21600)
-    utc_time_zone = tz(None,0)
+    #local_time_zone = tz(None, -21600)
+    local_time_zone = timezone('US/Central')
+    #utc_time_zone = tz(None,0)
+    utc_time_zone=pytz.utc
 
     def __init__(self, sites_file_path, values_file_path):
         #self.sites_file_path = sites_file_path
@@ -215,9 +220,9 @@ class CsvDao(BaseDao):
         #datavalue.LocalDateTime = value_date.isoformat()
         datavalue.LocalDateTime = value_date # Use the object
         #value_date = value_date + timedelta(hours=6)
-        delta = self.local_time_zone._offset
+        delta = self.local_time_zone._utcoffset
         value_date_utc = value_date - delta
-        value_date_utc = value_date_utc.replace (tzinfo=None)
+        value_date_utc = value_date_utc.replace (tzinfo=self.utc_time_zone)
         #datavalue.DateTimeUTC = value_date_utc.isoformat() + 'Z'
         datavalue.DateTimeUTC = value_date_utc    # Use the object
         return datavalue

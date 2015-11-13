@@ -34,7 +34,8 @@ setup(
         'spyne>=2.12.8',
         'nose',
         'python-dateutil==1.5.0',
-        'jinja2'
+        'jinja2',
+        'pytz'
     ],
     extras_require = {
         'odm1':  ["sqlalchemy", 'pyodbc'],

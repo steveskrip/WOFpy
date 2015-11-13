@@ -10,6 +10,7 @@ from spyne.service import ServiceBase
 from spyne.model.fault import Fault
 from spyne.util import memoize
 import wof
+from dateutil.parser import parse
 
 from jinja2 import Environment, Template, PackageLoader, FileSystemLoader
 
@@ -48,7 +49,7 @@ def TWOFService(wof_inst,T, T_name):
 
                 site_result = wof_inst.dao.get_site_by_code(siteCode)
                 variable_result = wof_inst.dao.get_variable_by_code(varCode)
-                current_date = str(datetime.datetime.now())
+                current_date = datetime.datetime.now()
 
                 if (data_values is not None):
                     if isinstance(data_values,dict):
@@ -66,12 +67,15 @@ def TWOFService(wof_inst,T, T_name):
                 aPath = os.path.abspath(wof_inst._config.TEMPLATES)
 
                 env = Environment(loader=FileSystemLoader(aPath))
+                env.filters['isoformat'] = isoformat
                 template = env.get_template('wml2_values_template.xml')
+
                 response = template.render(current_date=current_date,
                                             data_values=data_values,
                                             site_result=site_result,
                                             variable_result=variable_result,
-                                            method_result=method_result)
+                                            method_result=method_result,
+                                           config=wof_inst._config)
                 response = response.encode('utf-8')
                 #response.headers['Content-Type'] = 'text/xml'
 
@@ -79,3 +83,21 @@ def TWOFService(wof_inst,T, T_name):
 
 
     return WOFService
+
+#full format: %Y-%m-%dT%H:%M:%S.%f%z
+
+def isoformat(value, format='%Y-%m-%dT%H:%M:%S%z'):
+    if isinstance(value, basestring):
+        try:
+            value = parse(value)
+        except:
+            raise Exception('error converting string to  datetime: ' + value)
+
+    if isinstance(value, datetime.datetime):
+        try:
+            #dtiso = value.strftime(format)
+            dtiso = value.isoformat()
+        except:
+            dtiso= value
+
+    return dtiso

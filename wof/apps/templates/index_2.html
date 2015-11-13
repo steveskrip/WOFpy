@@ -4,7 +4,14 @@
 </head>
 <body>
 	<p>Visit one of these pages to obtain {{p}} observations data and metadata from the REST API for WOF written in Python:</p>
-	
+		<p>The WaterML2 is valid, but is not fully imlemented. Known issues:</p>
+    <ul>
+        <li>Fixed Metadata: QC Level: Raw Data</li>
+        <li>Fixed Metadata: Censor Code: Not Censored</li>
+         <li>No Value Metadata (Method Code, etc)</li>
+        <li>Unit of Measure may not be fully to best practice (using what is in ODM1 model)</li>
+        <li>interpolationType title is from ODMdb, but referenece is fixed to xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/Discontinuous"</li>
+    </ul>
 	<ul>
 
 		<li>
