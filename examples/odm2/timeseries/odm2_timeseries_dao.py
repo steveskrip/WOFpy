@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import create_engine, distinct, func
+from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.sql import and_
 
@@ -31,10 +31,10 @@ class Odm2Dao(BaseDao):
     def get_all_sites(self):
         s_rArr = self.db_session.query(odm2_models.Results,
                                        odm2_models.Sites).\
-            distinct(odm2_models.Sites.SamplingFeatureID).\
             join(odm2_models.FeatureActions).\
             join(odm2_models.SamplingFeatures).\
-            filter(odm2_models.SamplingFeatures.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID).all()
+            filter(odm2_models.SamplingFeatures.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID).\
+            group_by(odm2_models.Sites.SamplingFeatureID).all()
         s_Arr = []
         for s_r in s_rArr:
             s = model.Site(s_r.Sites)
@@ -70,14 +70,14 @@ class Odm2Dao(BaseDao):
         """
         s_rArr = self.db_session.query(odm2_models.Results,
                                        odm2_models.Sites).\
-            distinct(odm2_models.Sites.SamplingFeatureID).\
             join(odm2_models.FeatureActions).\
             join(odm2_models.SamplingFeatures).\
             filter(odm2_models.SamplingFeatures.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
                    odm2_models.Sites.Latitude >= south,
                    odm2_models.Sites.Latitude <= north,
                    odm2_models.Sites.Longitude >= west,
-                   odm2_models.Sites.Longitude <= east).all()
+                   odm2_models.Sites.Longitude <= east).\
+            group_by(odm2_models.Sites.SamplingFeatureID).all()
         s_Arr = []
         for s_r in s_rArr:
             s = model.Site(s_r.Sites)
@@ -95,19 +95,29 @@ class Odm2Dao(BaseDao):
 
         r_t_Arr = []
         if l_var_codes is None:
+            print 'variable all'
+            """
+            r_t = self.db_session.query(odm2_models.TimeSeriesResultValues,
+                                        odm2_models.TimeSeriesResults,
+                                        odm2_models.Results).\
+                filter(odm2_models.TimeSeriesResultValues.ResultID == odm2_models.TimeSeriesResults.ResultID,
+                       odm2_models.TimeSeriesResults.ResultID == odm2_models.Results.ResultID).\
+                group_by(odm2_models.Results.VariableID).all()
+            """
             r_t = self.db_session.query(odm2_models.TimeSeriesResultValues).\
-                    distinct(odm2_models.Results.VariableID).\
-                    join(odm2_models.TimeSeriesResults).\
-                    join(odm2_models.Results).all()
+                                        join(odm2_models.TimeSeriesResults).\
+                                        join(odm2_models.Results).\
+                                group_by(odm2_models.Results.VariableID).all()
+            print 'length: %d' % len(r_t)
             r_t_Arr.append(r_t)
         else:
             for item in l_var_codes:
                 r_t = self.db_session.query(odm2_models.TimeSeriesResultValues).\
-                        distinct(odm2_models.Variables.VariableID).\
                         join(odm2_models.TimeSeriesResults).\
                         join(odm2_models.Results).\
                         join(odm2_models.Variables).\
-                        filter(odm2_models.Variables.VariableCode == item).all()
+                        filter(odm2_models.Variables.VariableCode == item).\
+                    group_by(odm2_models.Variables.VariableID).all()
                 r_t_Arr.append(r_t)
         v_arr = []
         if len(r_t_Arr) is not 0:
@@ -140,10 +150,10 @@ class Odm2Dao(BaseDao):
 
     def get_series_by_sitecode(self, site_code):
         r = self.db_session.query(odm2_models.Results).\
-            distinct(odm2_models.Results.VariableID).\
             join(odm2_models.FeatureActions).\
             join(odm2_models.SamplingFeatures).\
-            filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).all()
+            filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).\
+            group_by(odm2_models.Results.VariableID).all()
         r_arr = []
         aff = None
         for i in range(len(r)):
@@ -156,12 +166,12 @@ class Odm2Dao(BaseDao):
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
         r = self.db_session.query(odm2_models.Results).\
-            distinct(odm2_models.Results.VariableID).\
             join(odm2_models.FeatureActions).\
             join(odm2_models.SamplingFeatures).\
             join(odm2_models.Variables).\
             filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
-                   odm2_models.Variables.VariableCode == var_code).all()
+                   odm2_models.Variables.VariableCode == var_code).\
+            group_by(odm2_models.Results.VariableID).all()
         r_arr = []
         aff = None
         for i in range(len(r)):
@@ -184,7 +194,8 @@ class Odm2Dao(BaseDao):
                         join(odm2_models.SamplingFeatures).\
                         join(odm2_models.Variables).\
                         filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
-                               odm2_models.Variables.VariableCode == var_code).all()
+                               odm2_models.Variables.VariableCode == var_code).\
+                        order_by(odm2_models.TimeSeriesResultValues.ValueDateTime).all()
             except:
                 valueResultArr = []
         else:
@@ -200,7 +211,8 @@ class Odm2Dao(BaseDao):
                         filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
                                odm2_models.Variables.VariableCode == var_code,
                                odm2_models.TimeSeriesResultValues.ValueDateTime >= begin_date_time,
-                               odm2_models.TimeSeriesResultValues.ValueDateTime <= end_date_time).all()
+                               odm2_models.TimeSeriesResultValues.ValueDateTime <= end_date_time).\
+                        order_by(odm2_models.TimeSeriesResultValues.ValueDateTime).all()
             except:
                 valueResultArr = []
         v_arr = []

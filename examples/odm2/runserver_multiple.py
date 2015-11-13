@@ -17,11 +17,15 @@ logging.basicConfig(level=logging.DEBUG)
 M_CONFIG_FILE = './measurement/odm2_config_measurement.cfg'
 T_CONFIG_FILE = './timeseries/odm2_config_timeseries.cfg'
 
-def startServer(m_config=M_CONFIG_FILE,t_config=T_CONFIG_FILE,connection=None, openPort=8080):
-    if connection is None:
+def startServer(m_config=M_CONFIG_FILE,
+                t_config=T_CONFIG_FILE,
+                m_connection=None,
+                t_connection=None,
+                openPort=8080):
+    if m_connection is None and t_connection is None:
         sys.exit("connection string must be provided")
-    m_dao = measurement(connection)
-    t_dao = timeseries(connection)
+    m_dao = measurement(m_connection)
+    t_dao = timeseries(t_connection)
 
     m_conf = wof.core.wofConfig(m_dao, m_config)
     t_conf = wof.core.wofConfig(t_dao, t_config)
@@ -52,7 +56,9 @@ if __name__ == '__main__':
                        help='Timeseries Configuration file', default=M_CONFIG_FILE)
     parser.add_argument('--measurement',
                        help='Measurement Configuration file', default=T_CONFIG_FILE)
-    parser.add_argument('--connection',
+    parser.add_argument('--timeseries_connection',
+                       help='Connection String eg: "mysql+mysqldb://username:password/db_name"')
+    parser.add_argument('--measurement_connection',
                        help='Connection String eg: "postgresql+psycopg2://username:password/db_name"')
     parser.add_argument('--port',
                        help='Open port for server."', default=8080)
@@ -61,7 +67,8 @@ if __name__ == '__main__':
 
     startServer( m_config=args.timeseries,
                  t_config=args.measurement,
-                connection=args.connection,
-                openPort=args.port )
+                 m_connection=args.measurement_connection,
+                 t_connection=args.timeseries_connection,
+                 openPort=args.port )
 
 

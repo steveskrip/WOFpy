@@ -32,7 +32,7 @@ class WOF_1_1(object):
 
     def __init__(self, dao, config_file=None, templates=None):
         self.dao = dao
-        if templates:
+        if templates is not None:
             self._templates = templates
         if config_file:
             self.config_from_file(config_file)
