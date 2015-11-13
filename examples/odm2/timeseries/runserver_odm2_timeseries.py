@@ -8,7 +8,7 @@ from odm2_timeseries_dao import Odm2Dao
 """
     python runserver_odm2_timeseries.py
     --config=odm2_config_timeseries.cfg
-    --connection=postgresql+psycopg2://username:password/db_name
+    --connection=mysql+mysqldb://username:password/db_name
 
 """
 logging.basicConfig(level=logging.DEBUG)
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     parser.add_argument('--config',
                        help='Configuration file', default='odm2_config_timeseries.cfg')
     parser.add_argument('--connection',
-                       help='Connection String eg: "postgresql+psycopg2://username:password/db_name"')
+                       help='Connection String eg: "mysql+mysqldb://username:password/db_name"')
 
     args = parser.parse_args()
     print(args)
