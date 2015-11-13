@@ -32,7 +32,7 @@ Follow the steps below to run this example.
 
 #. Install PostgreSQL or Mysql Server based on the data use cases.
 #. Download ODM2 database from the ODM2 github at above URLs.
-#. Install ODM2API (https://github.com/ODM2/ODM2PythonAPI/tree/setup).
+#. Download the ODM2API (https://github.com/ODM2/ODM2PythonAPI/tree/setup). At **src** folder, enter this command: ``python setup.py install``.
 #. Determine the database connection string. **odm2_connection_string** set to a SQLAlchemy-compatible
    database connection string for the ODM2 database, e.g.,
    'postgresql+psycopg2://username:passowkr@hostname:port/db_name' or, 'mysql+mysqldb://username:password/db_name'
