@@ -216,13 +216,15 @@ class CsvDao(BaseDao):
         # six hours behind UTC time.
         value_date = parse(row[1])
 
-        value_date = value_date.replace(tzinfo=self.local_time_zone)
+        #value_date = value_date.replace(tzinfo=self.local_time_zone)
+        value_date = self.local_time_zone.localize(value_date)
         #datavalue.LocalDateTime = value_date.isoformat()
         datavalue.LocalDateTime = value_date # Use the object
         #value_date = value_date + timedelta(hours=6)
-        delta = self.local_time_zone._utcoffset
-        value_date_utc = value_date - delta
-        value_date_utc = value_date_utc.replace (tzinfo=self.utc_time_zone)
+        #delta = self.local_time_zone._utcoffset
+        #value_date_utc = value_date - delta
+        #value_date_utc = value_date_utc.replace (tzinfo=self.utc_time_zone)
+        value_date_utc = value_date.astimezone(self.utc_time_zone)
         #datavalue.DateTimeUTC = value_date_utc.isoformat() + 'Z'
         datavalue.DateTimeUTC = value_date_utc    # Use the object
         return datavalue
