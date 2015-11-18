@@ -246,8 +246,8 @@ def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
     spyneApps =  {
        '/'+ sensorNetwork+'/rest/1_0': rest_wsgi_wrapper_1_0,
        '/'+ sensorNetwork+'/rest/1_1' : rest_wsgi_wrapper_1_1,
-       '/'+ sensorNetwork+'/soap/wateroneflow': soap_wsgi_wrapper_1_0,
-       '/'+ sensorNetwork+'/soap/wateroneflow_1_1': soap_wsgi_wrapper_1_1,
+       '/'+ sensorNetwork+'/soap/cuahsi_1_0': soap_wsgi_wrapper_1_0,
+       '/'+ sensorNetwork+'/soap/cuahsi_1_1': soap_wsgi_wrapper_1_1,
         '/'+ sensorNetwork+'/rest/2' : rest_wsgi_wrapper_2_0,
         }
 

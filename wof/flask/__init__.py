@@ -38,8 +38,8 @@ def add_flask_routes(app,path, servicesPath,
                                rest10=path+'/rest_1_0/',
                                rest11=path+'/rest_1_1/',
                                rest2=path+'/rest_2/',
-                               soap10=path+'/soap/wateroneflow/.wsdl',
-                               soap11=path+'/soap/wateroneflow_1_1/.wsdl',
+                               soap10=path+'/soap/cuahsi_1_0/.wsdl',
+                               soap11=path+'/soap/cuahsi_1_1/.wsdl',
                                p=wof_inst.network)
 
     app.add_url_rule(servicesPath+'/', wof_inst.network+'index', index)
