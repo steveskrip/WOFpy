@@ -1,10 +1,34 @@
 <html>
 <head>
 	<title>WaterOneFlow in Python</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-	<p>Visit one of these pages to obtain {{p}} observations data and metadata from the REST/SOAP APIs for WOF written in Python:</p>
-	
+	<p>Visit one of these pages to obtain {{p}} observations data and metadata from the REST/SOAP APIs for WOF written in Python.<br>
+    In HIS central, instead of getting WSDL location URLs, some clients use the service location endpoints for SOAP services.</p>
+    <table style="width: 750px;">
+        <tr>
+            <th>WSDL's location URL</th>
+            <th>Service location endpoint URL</th>
+        </tr>
+        <tr>
+            <td>http://127.0.0.1:8080/{network}/soap/cuahsi_1_0/.wsdl</td>
+            <td>http://127.0.0.1:8080/{network}/soap/cuahsi_1_0/</td>
+        </tr>
+        <tr>
+            <td>http://127.0.0.1:8080/{network}/soap/cuahsi_1_1/.wsdl</td>
+            <td>http://127.0.0.1:8080/{network}/soap/cuahsi_1_1/</td>
+        </tr>
+    </table>
 	<ul>
 		<li>
                     <a href="{{request.script_root|safe}}/{{ rest10 }}">
