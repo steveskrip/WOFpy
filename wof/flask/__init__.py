@@ -16,7 +16,7 @@ def create_app(wof_inst, wof_inst_1_1, soap_service_url=None, soap_service_1_1_u
     # app.config.from_object(config.Config)
     app = create_simple_app()
     path = wof_inst.network
-    servicesPath =  '/'+wof_inst.network
+    servicesPath =  '/'+wof_inst.network.lower()
     add_flask_routes(app,path,servicesPath,wof_inst,
                      wof_inst_1_1,soap_service_url=soap_service_url, soap_service_1_1_url=soap_service_1_1_url )
     return app
