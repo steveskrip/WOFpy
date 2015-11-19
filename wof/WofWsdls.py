@@ -30,10 +30,14 @@ def check_method_port(service, method):
 
 class WofWSDL_1_0(InterfaceDocumentBase):
     templates=None
+    network=None
+    version=None
 
-    def __init__(self, interface=None, _with_partnerlink=False, templates=None):
+    def __init__(self, interface=None, _with_partnerlink=False, templates=None,network=None,version=None):
         super(WofWSDL_1_0, self).__init__(interface)
         self.templates=templates
+        self.network=network
+        self.version=version
 
     def build_interface_document(self, url, templates):
         """This function is supposed to be called just once, as late as possible
@@ -75,7 +79,7 @@ class WofWSDL_1_0(InterfaceDocumentBase):
     def get_wsdl_1_0(self, url, templates ):
             env = Environment(loader=FileSystemLoader(templates))
             template = env.get_template('wsdl_temp.wsdl')
-            response = template.render(serv_loc=url)
+            response = template.render(serv_loc=url,network=self.network,version=self.version)
             response = response.encode('utf-8')
             #response.headers['Content-Type'] = 'text/xml'
 
@@ -85,7 +89,7 @@ class WofWSDL_1_0(InterfaceDocumentBase):
             env = Environment(loader=FileSystemLoader(self.templates))
             template = env.get_template('wsdl_temp.wsdl')
             reqstring = 'http://{0}{1}'.format(ctx.transport.req['HTTP_HOST'],ctx.transport.req['SCRIPT_NAME'])
-            response = template.render(serv_loc=reqstring)
+            response = template.render(serv_loc=reqstring,network=self.network,version=self.version)
             response = response.encode('utf-8')
             #response.headers['Content-Type'] = 'text/xml'
             ctx.transport.wsdl = response
@@ -94,10 +98,15 @@ class WofWSDL_1_0(InterfaceDocumentBase):
 class WofWSDL_1_1(InterfaceDocumentBase):
     templates=None
     templateName = 'wsdl_1_1_template.wsdl'
+    network=None
+    version=None
 
-    def __init__(self, interface=None, _with_partnerlink=False, templates=None):
+
+    def __init__(self, interface=None, _with_partnerlink=False, templates=None,network=None,version=None):
         super(WofWSDL_1_1, self).__init__(interface)
         self.templates=templates
+        self.network=network
+        self.version=version
 
     def build_interface_document(self, url, templates):
         """This function is supposed to be called just once, as late as possible
@@ -132,7 +141,7 @@ class WofWSDL_1_1(InterfaceDocumentBase):
 
             env = Environment(loader=FileSystemLoader(templates))
             template = env.get_template(self.templateName)
-            response = template.render(serv_loc=url)
+            response = template.render(serv_loc=url,network=self.network,version=self.version)
             response = response.encode('utf-8')
             #response.headers['Content-Type'] = 'text/xml'
 
@@ -142,7 +151,7 @@ class WofWSDL_1_1(InterfaceDocumentBase):
             env = Environment(loader=FileSystemLoader(self.templates))
             template = env.get_template(self.templateName)
             reqstring = 'http://{0}{1}'.format(ctx.transport.req['HTTP_HOST'],ctx.transport.req['SCRIPT_NAME'])
-            response = template.render(serv_loc=reqstring)
+            response = template.render(serv_loc=reqstring,network=self.network,version=self.version)
             response = response.encode('utf-8')
             #response.headers['Content-Type'] = 'text/xml'
             ctx.transport.wsdl = response

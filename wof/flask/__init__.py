@@ -1,5 +1,5 @@
 from flask import Flask, render_template, current_app, make_response, request
-
+import wof
 import config
 import datetime
 
@@ -40,7 +40,8 @@ def add_flask_routes(app,path, servicesPath,
                                rest2=path+'/rest_2/',
                                soap10=path+'/soap/cuahsi_1_0/',
                                soap11=path+'/soap/cuahsi_1_1/',
-                               p=wof_inst.network)
+                               p=wof_inst.network,
+                               v=wof._VERSION)
 
     app.add_url_rule(servicesPath+'/', wof_inst.network+'index', index)
 

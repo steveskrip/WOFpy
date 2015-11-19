@@ -30,6 +30,8 @@ logging.getLogger('spyne.util.appreg').setLevel(logging.ERROR)
 logging.getLogger('spyne.interface.xml_schema').setLevel(logging.ERROR)
 logging.getLogger('spyne.protocol.dictdoc.simple').setLevel(logging.ERROR)
 
+_VERSION= '2.0.x-alpha' #until we find a way to get from setup at runtime
+
 _SERVICE_PARAMS = {
     "r_type" : "rest",
     "s_type" : "soap",
@@ -260,12 +262,16 @@ def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
 
     if templatesPath:
         # needs to be service_baseURL. in config wof_obj_1_0.service_wsdl
-        wsdl10= WofWSDL_1_0(soap_wsgi_wrapper_1_0.doc.wsdl11.interface, templates=templatesPath)
+        wsdl10= WofWSDL_1_0(soap_wsgi_wrapper_1_0.doc.wsdl11.interface, templates=templatesPath
+                            , network=sensorNetwork,
+                            version=_VERSION)
 
         #soap_wsgi_wrapper_1_0._wsdl = wsdl10.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow',templatesPath) #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
         soap_wsgi_wrapper_1_0.event_manager.add_listener('wsdl', wsdl10.on_get_wsdl_1_0_)
         #  path: /{sensorNetwork}/soap/wateroneflow_1_1/.wsdl returns the WSDL.
-        wsdl11= WofWSDL_1_1(soap_wsgi_wrapper_1_1.doc.wsdl11.interface, templates=templatesPath)
+        wsdl11= WofWSDL_1_1(soap_wsgi_wrapper_1_1.doc.wsdl11.interface, templates=templatesPath
+                            , network=sensorNetwork,
+                            version=_VERSION)
         #soap_wsgi_wrapper_1_1._wsdl = wsdl11.build_interface_document('/'+ sensorNetwork+'/soap/wateroneflow_1_1',templatesPath) #.get_wsdl_1_0('/'+ sensorNetwork+'/soap/wateroneflow')
         soap_wsgi_wrapper_1_1.event_manager.add_listener('wsdl', wsdl11.on_get_wsdl_1_1_)
 
