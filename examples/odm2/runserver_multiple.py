@@ -61,7 +61,7 @@ if __name__ == '__main__':
     parser.add_argument('--measurement_connection',
                        help='Connection String eg: "postgresql+psycopg2://username:password/db_name"')
     parser.add_argument('--port',
-                       help='Open port for server."', default=8080)
+                       help='Open port for server."', default=8080, type=int)
     args = parser.parse_args()
     print(args)
 

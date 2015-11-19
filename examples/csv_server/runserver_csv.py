@@ -53,7 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('--values_file',
                        help='csv file containing values',default=VALUES_FILE)
     parser.add_argument('--port',
-                       help='Open port for server."', default=8080)
+                       help='Open port for server."', default=8080, type=int)
 
     args = parser.parse_args()
     print(args)

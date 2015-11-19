@@ -86,7 +86,7 @@ if __name__ == '__main__':
     parser.add_argument('--connection',
                        help='Connection String eg: "sqlite:///LCM_Data/LCM.db"', default=LCM_connection_string)
     parser.add_argument('--port',
-                       help='Open port for server."', default=8080)
+                       help='Open port for server."', default=8080, type=int)
     args = parser.parse_args()
     print(args)
 

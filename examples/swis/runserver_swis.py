@@ -41,7 +41,7 @@ if __name__ == '__main__':
                        help='Connection String eg: "sqlite:///LCM_Data/LCM.db"', default=SWIS_DATABASE_URI)
 
     parser.add_argument('--port',
-                       help='Open port for server."', default=8080)
+                       help='Open port for server."', default=8080, type=int)
     args = parser.parse_args()
     print(args)
 
