@@ -26,7 +26,13 @@ def startServer(config='lbr_config.cfg',connection=None,openPort=8080):
 
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
-    print "Acess Service endpoints at "
+    print "Service endpoints"
+    for path in wof.core.site_map_flask_wsgi_mount(app):
+        print "%s%s" % (url,path)
+
+    print "----------------------------------------------------------------"
+    print "----------------------------------------------------------------"
+    print "HTML Acess Service endpoints at "
     for path in wof.site_map(app):
         print "%s%s" % (url,path)
 

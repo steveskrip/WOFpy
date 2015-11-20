@@ -69,12 +69,17 @@ def startServer(config='LCM_config.cfg',connection='sqlite:///LCM_Data/LCM.db', 
 
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
-    print "Acess Service endpoints at "
+    print "Service endpoints"
+    for path in wof.core.site_map_flask_wsgi_mount(app):
+        print "%s%s" % (url,path)
+
+    print "----------------------------------------------------------------"
+    print "----------------------------------------------------------------"
+    print "HTML Acess Service endpoints at "
     for path in wof.site_map(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"
-
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':

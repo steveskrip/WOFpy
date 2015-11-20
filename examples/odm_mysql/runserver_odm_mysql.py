@@ -1,33 +1,36 @@
+
 import logging
 
 import wof
+from wof.core import WOFConfig
 
-from csv_dao import CsvDao
+from odm_dao import OdmDao
 
-"""
-    python runserver_csv.py
-    Will run the exact example
 
-    python runserver_csv.py
-    --config=csv_config.cfg
-    --sites_file=sites.csv
-    --values_file=data.csv
+import sys
 
 """
-CSV_CONFIG_FILE = 'csv_config.cfg'
-SITES_FILE = 'sites.csv'
-VALUES_FILE = 'data.csv'
+    python runserver_odm_mysql.py
+    --config=config.cfg
+    --connection=mysql://username:password@(local)/databasename
+
+    Also:
+    python runserver_odm_mysql.py
+    --config=../odm_sqlserver/lbr_config.cfg
+    --connection=mssql+pyodbc://username:password@localhost/databasename?driver=SQL+Server+Native+Client+10.0
+
+"""
 
 logging.basicConfig(level=logging.DEBUG)
 
-def startServer(config=CSV_CONFIG_FILE,
-                sites_file=SITES_FILE,
-                values_file=VALUES_FILE,
-                openPort=8080):
-    dao = CsvDao(sites_file, values_file)
+
+def startServer(config='config.cfg',connection=None,openPort=8080):
+
+    dao = OdmDao(connection)
     app = wof.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
+    configFile = WOFConfig(config)
 
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
@@ -46,22 +49,17 @@ def startServer(config=CSV_CONFIG_FILE,
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':
-    # This must be an available port on your computer.
-    # For example, if 8080 is already being used, try another port such as
-    # 5000 or 8081.
     import argparse
 
     parser = argparse.ArgumentParser(description='start WOF for an ODM1 database.')
-    parser.add_argument('config',
-                       help='Configuration file', default=CSV_CONFIG_FILE)
-    parser.add_argument('--sites_file',
-                       help='csv file containing sites information',default=SITES_FILE)
-    parser.add_argument('--values_file',
-                       help='csv file containing values',default=VALUES_FILE)
+    parser.add_argument('--config',
+                       help='Configuration file')
+    parser.add_argument('--connection',
+                       help='Connection String eg: "mssql+pyodbc://username:password@localhost/LittleBear11?driver=SQL+Server+Native+Client+10.0"')
+
     parser.add_argument('--port',
                        help='Open port for server."', default=8080, type=int)
-
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file, openPort=args.port)
+    startServer(config=args.config,connection=args.connection,openPort=args.port)
