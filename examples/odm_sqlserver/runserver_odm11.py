@@ -9,7 +9,7 @@ from odm_dao import OdmDao
 #import private_config
 
 """
-    python runserver_odm11.py
+    python examples/odm_sqlserver/runserver_odm11.py
     --config=lbr_config.cfg
     --connection=mssql+pyodbc://webservice:webservice@localhost/LittleBear11?driver=SQL+Server+Native+Client+10.0
 

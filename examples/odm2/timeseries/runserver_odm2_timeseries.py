@@ -13,12 +13,13 @@ from odm2_timeseries_dao import Odm2Dao
 """
 logging.basicConfig(level=logging.DEBUG)
 
-def startServer(config='odm2_config_timeseries.cfg',connection=None):
+def startServer(config='odm2_config_timeseries.cfg',connection=None,
+                    openPort = 8080):
     dao = Odm2Dao(connection)
     app = wof.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
-    openPort = 8080
+
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Acess Service endpoints at "
@@ -37,8 +38,9 @@ if __name__ == '__main__':
                        help='Configuration file', default='odm2_config_timeseries.cfg')
     parser.add_argument('--connection',
                        help='Connection String eg: "mysql+mysqldb://username:password/db_name"')
-
+    parser.add_argument('--port',
+                       help='Open port for server."', default=8080, type=int)
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,connection=args.connection)
+    startServer(config=args.config,connection=args.connection,openPort=args.port)

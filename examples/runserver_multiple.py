@@ -16,7 +16,7 @@ from examples.csv_server.csv_dao import CsvDao
 
 logging.basicConfig(level=logging.DEBUG)
 
-def startServer():
+def startServer(openPort):
     SWIS_CONFIG='swis/swis_config.cfg'
     LCM_CONFIG='barebones/LCM_config.cfg'
     swis_dao = SwisDao('swis/swis_config.cfg',
@@ -68,7 +68,7 @@ def startServer():
 
     app= wof.core.create_wof_flask_multiple({conf_swis,conf_lcm,conf_csv}, templates="../wof/apps/templates")
 
-    openPort = 8080
+
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
@@ -89,6 +89,12 @@ if __name__ == '__main__':
     # This must be an available port on your computer.
     # For example, if 8080 is already being used, try another port such as
     # 5000 or 8081.
+    import argparse
 
+    parser = argparse.ArgumentParser(description='start WOF multiple server example.')
+    parser.add_argument('--port',
+                       help='Open port for server."', default=8080, type=int)
+    args = parser.parse_args()
+    print(args)
 
-    startServer()
+    startServer(args.port)

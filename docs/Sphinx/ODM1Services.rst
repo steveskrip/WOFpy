@@ -3,7 +3,7 @@ ODM1 SQL Server
 ***************
 A single service can be run from the command line.
 
-    ``python runserver_odm11.py
+    ``python examples/odm_sqlserver/runserver_odm11.py
     --config=lbr_config.cfg
     --connection=mssql+pyodbc://{user}:{password}@{host}/{db}?driver=SQL+Server+Native+Client+10.0``
 
