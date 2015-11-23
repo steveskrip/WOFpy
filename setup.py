@@ -8,12 +8,28 @@ CUAHSI is the Consortium of Universities for the
 Advancement of Hydrologic Science, Inc.
 
 """
+import codecs
+import os
+import re
 
 from setuptools import Command, setup, find_packages
+here = os.path.abspath(os.path.dirname(__file__))
+
+def read(*parts):
+    return codecs.open(os.path.join(here, *parts), 'r').read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 setup(
     name='WOFpy',
-    version='2.0.0005-alpha',
+    version=find_version("wof","__init__.py"), #'2.0.0005-alpha',
     license='BSD',
     author='James Seppi',
     author_email='james.seppi@gmail.com',
