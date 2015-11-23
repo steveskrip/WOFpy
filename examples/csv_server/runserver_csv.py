@@ -64,4 +64,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file, openPort=args.port)
+    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file
+                , openPort=args.port)
