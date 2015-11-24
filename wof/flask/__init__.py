@@ -3,6 +3,12 @@ import wof
 import config
 import datetime
 
+try:
+    from wof import __version__
+    version = __version__
+except ImportError:
+    version = 'dev'
+
 def create_simple_app():
     app = Flask(__name__)
 
@@ -41,7 +47,7 @@ def add_flask_routes(app,path, servicesPath,
                                soap10=path+'/soap/cuahsi_1_0/',
                                soap11=path+'/soap/cuahsi_1_1/',
                                p=wof_inst.network,
-                               v=wof._VERSION)
+                               v=version)
 
     app.add_url_rule(servicesPath+'/', wof_inst.network+'index', index)
 
