@@ -26,6 +26,13 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
+import sys
+if not sys.version_info[0] == 2:
+    sys.exit("Sorry, Python 3 is not supported (yet)")
+if sys.version_info[0] == 2 and sys.version_info[1] < 7:
+    sys.exit("Sorry, Python  2.6 is not supported")
+if sys.version_info[0] == 2 and sys.version_info[1] == 7 and sys.version_info[2] == 6 :
+    sys.exit("Sorry, Issues with Python 2.7.6. Please upgrade to 2.7.10 or above ")
 
 setup(
     name='WOFpy',
