@@ -1,4 +1,4 @@
-private_config.py
+private.*
 *.pyc
 Get*.xml
 docs/Sphinx/_build/
