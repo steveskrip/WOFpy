@@ -1,5 +1,9 @@
-import logging
+import os, sys
 
+curr_folder = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, '%s/../../../' % curr_folder)
+
+import logging
 import wof
 
 from odm2_timeseries_dao import Odm2Dao

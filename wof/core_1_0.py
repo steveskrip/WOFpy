@@ -42,13 +42,12 @@ class WOF(object):
         self._config = config
 
 
-        self.network = config.network
-        self.vocabulary = config.vocabulary
+        self.network = config.network.lower()
+        self.vocabulary = config.vocabulary.lower()
         self.menu_group_name = config.menu_group_name
         self.service_wsdl = config.service_wsdl
         self.timezone = config.timezone
         self.timezone_abbr = config.timezone_abbr
-
 
         self.default_site = config.default_site
         self.default_variable = config.default_variable
@@ -248,22 +247,30 @@ class WOF(object):
         sourceIdSet = set()
         qualifierIdSet = set()
         offsetTypeIdSet = set()
+        qualitycontrollevelIdSet = set()
 
         for valueResult in valueResultArr:
+            if valueResult.QualityControlLevelID is not None:
+                qualitycontrollevelIdSet.add(valueResult.QualityControlLevelID)
+                qlevelResult = self.dao.get_qualcontrollvl_by_id(valueResult.QualityControlLevelID)
+                valueResult.QualityControlLevel = qlevelResult.Definition
             v = self.create_value_element(valueResult)
             values.add_value(v)
 
-            if valueResult.MethodID:
+            if valueResult.MethodID is not None:
                 methodIdSet.add(valueResult.MethodID)
 
-            if valueResult.SourceID:
+            if valueResult.SourceID is not None:
                 sourceIdSet.add(valueResult.SourceID)
 
-            if valueResult.QualifierID:
+            if valueResult.QualifierID is not None:
                 qualifierIdSet.add(valueResult.QualifierID)
 
-            if valueResult.OffsetTypeID:
+            if valueResult.OffsetTypeID is not None:
                 offsetTypeIdSet.add(valueResult.OffsetTypeID)
+
+            if valueResult.QualityControlLevelID is not None:
+                qualitycontrollevelIdSet.add(valueResult.QualityControlLevelID)
 
         #Add method elements for each unique methodID
         if methodIdSet:
@@ -303,9 +310,33 @@ class WOF(object):
                 offset = self.create_offset_element(offsetTypeResult)
                 values.add_offset(offset)
 
+        #Add qualitycontrollevel elements
+        if qualitycontrollevelIdSet:
+            qlevelIdIdArr = list(qualitycontrollevelIdSet)
+
+            try:
+                qlevelResultArr = self.dao.get_qualcontrollvls_by_ids(qlevelIdIdArr)
+                for qlevelResult in qlevelResultArr:
+                    qlevel = self.create_qlevel_element(qlevelResult)
+                    values.add_qualityControlLevel(qlevel)
+            except:
+                for qlevelID in qlevelIdIdArr:
+                    qlevel = WaterML.QualityControlLevelType(
+                        qualityControlLevelID=qlevelID)
+                    values.add_qualityControlLevel(qlevel)
+
         timeSeries.values = values
         timeSeriesResponse.set_timeSeries(timeSeries)
         return timeSeriesResponse
+
+    def create_qlevel_element(self, qlevelResult):
+        #qlevel = WaterML.QualityControlLevelType(
+        #            qualityControlLevelID=qlevelResult.QualityControlLevelID,
+        #            valueOf_=qlevelResult.QualityControlLevelCode)
+        qcode = WaterML.qualityControlLevel(qualityControlLevelCode=qlevelResult.QualityControlLevelCode,
+                                            qualityControlLevelID=str(qlevelResult.QualityControlLevelID)
+                                            )
+        return qcode
 
     def create_offset_element(self, offsetTypeResult):
         #TODO: where does offsetIsVertical come from

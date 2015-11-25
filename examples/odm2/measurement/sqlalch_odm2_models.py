@@ -7,6 +7,7 @@ class Variable(wof_base.BaseVariable):
         variable_key = '%s::%s-%s' % (v.VariableCode,
                                       v_unit.UnitsID,
                                       VarSampleMedium)
+        self.VariableID = v.VariableID
         self.VariableCode = variable_key
         self.VariableName = v.VariableNameCV
         self.VariableDescription = v.VariableDefinition

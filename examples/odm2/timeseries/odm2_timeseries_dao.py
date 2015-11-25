@@ -7,7 +7,7 @@ from dateutil.parser import parse
 
 from wof.dao import BaseDao
 import sqlalch_odm2_models as model
-import api.ODM2.models as odm2_models
+from api.ODM2 import models as odm2_models
 from sqlalchemy.orm import aliased
 from sqlalchemy import or_
 from sqlalchemy import and_

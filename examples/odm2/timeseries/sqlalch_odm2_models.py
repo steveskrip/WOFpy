@@ -1,9 +1,11 @@
-import wof.models as wof_base
+from wof import models as wof_base
+from datetime import datetime, timedelta
 
 class Variable(wof_base.BaseVariable):
 
     def __init__(self, v=None,
                  VarSampleMedium=None, v_unit=None, v_tunit=None, v_timeinterval=None):
+        self.VariableID = v.VariableID
         self.VariableCode = v.VariableCode
         self.VariableName = v.VariableNameCV
         self.VariableDescription = v.VariableDefinition
@@ -100,8 +102,10 @@ class DataValue(wof_base.BaseDataValue):
     def __init__(self,v,aff_obj=None):
         self.ValueID = v.ValueID
         self.DataValue = v.DataValue
-        self.DateTimeUTC = v.ValueDateTime.isoformat()
-        self.UTCOffset = v.ValueDateTimeUTCOffset
+        self.LocalDateTime = v.ValueDateTime.isoformat()
+        localtime = datetime.strptime(self.LocalDateTime, "%Y-%m-%dT%H:%M:%S")
+        self.DateTimeUTC = localtime+timedelta(hours=((-1)*int(v.ValueDateTimeUTCOffset)))
+        self.UTCOffset = self.create_iso_utc_offset(v.ValueDateTimeUTCOffset)
         if aff_obj is not None:
             self.SourceID = '%d' % aff_obj.AffiliationID
             #self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
@@ -111,6 +115,15 @@ class DataValue(wof_base.BaseDataValue):
         self.QualityControlLevelID = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelID
         #self.QualityControlLevel = QualityControlLevel(v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj)
         self.QualityControlLevel = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelCode
+
+    def create_iso_utc_offset(self, utc_offset_hrs):
+        hours = int(utc_offset_hrs)
+        minutes = int((float(utc_offset_hrs) % 1) * 60)
+
+        if hours == 0 and minutes == 0:
+            return 'Z'
+        else:
+            return '%+.2d:%.2d' % (hours, minutes)
 
 class Method(wof_base.BaseMethod):
     def __init__(self,m_obj):
