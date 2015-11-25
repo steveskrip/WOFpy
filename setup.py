@@ -2,7 +2,7 @@
 WOFpy
 -------
 
-WOFpy is a python library for serving CUAHSI's WaterOneflow 1.0 web services
+WOFpy is a python library for serving CUAHSI's WaterOneflow  web services
 
 CUAHSI is the Consortium of Universities for the
 Advancement of Hydrologic Science, Inc.
