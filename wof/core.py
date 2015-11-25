@@ -196,7 +196,7 @@ def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
     # wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
     # wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
 
-    sensorNetwork=wof_obj_1_0.network.replace('/','')
+    sensorNetwork=wof_obj_1_0.network.replace('/','').lower()
 
     soap_app_1_0 = Application(
         [wml10(wof_obj_1_0,Unicode,_SERVICE_PARAMS["s_type"])],
@@ -321,8 +321,8 @@ def create_wof_flask_multiple(wofConfig=[], templates=None):
         wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config,templates)
 
         spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1,templates) )
-        path = wof_obj_1_0.network
-        servicesPath =  '/'+wof_obj_1_0.network
+        path = wof_obj_1_0.network.lower()
+        servicesPath =  '/'+wof_obj_1_0.network.lower()
 
         wof.flask.add_flask_routes(app,path, servicesPath,
                      wof_obj_1_0,

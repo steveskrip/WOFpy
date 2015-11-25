@@ -42,8 +42,8 @@ class WOF(object):
         self._config = config
 
 
-        self.network = config.network.lower()
-        self.vocabulary = config.vocabulary.lower()
+        self.network = config.network
+        self.vocabulary = config.vocabulary
         self.menu_group_name = config.menu_group_name
         self.service_wsdl = config.service_wsdl
         self.timezone = config.timezone
