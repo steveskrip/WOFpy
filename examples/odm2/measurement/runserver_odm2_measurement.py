@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 def startServer(config='odm2_config_measurement.cfg',connection=None,
                     openPort = 8080):
-    dao = Odm2Dao(connection)
+    dao = Odm2Dao(connection.read())
     app = wof.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
@@ -36,8 +36,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
     parser.add_argument('--config',
                        help='Configuration file', default='odm2_config_measurement.cfg')
-    parser.add_argument('--connection',
-                       help='Connection String eg: "postgresql+psycopg2://username:password/db_name"')
+    parser.add_argument('--connection',type=argparse.FileType('r'),
+        help='The name of a file containing the Connection String eg: private.connection which has:'+
+            'Connection String eg: "postgresql+psycopg2://username:password/db_name"')
 
     parser.add_argument('--port',
                        help='Open port for server."', default=8080, type=int)

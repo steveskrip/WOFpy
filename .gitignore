@@ -1,4 +1,5 @@
 private.*
+*.connection
 *.pyc
 Get*.xml
 docs/Sphinx/_build/

@@ -23,9 +23,9 @@ def startServer(m_config=M_CONFIG_FILE,
                 t_connection=None,
                 openPort=8080):
     if m_connection is None and t_connection is None:
-        sys.exit("connection string must be provided")
-    m_dao = measurement(m_connection)
-    t_dao = timeseries(t_connection)
+        sys.exit("connection  must be provided")
+    m_dao = measurement(m_connection.read())
+    t_dao = timeseries(t_connection.read())
 
     m_conf = wof.core.wofConfig(m_dao, m_config)
     t_conf = wof.core.wofConfig(t_dao, t_config)
@@ -56,10 +56,12 @@ if __name__ == '__main__':
                        help='Timeseries Configuration file', default=M_CONFIG_FILE)
     parser.add_argument('--measurement',
                        help='Measurement Configuration file', default=T_CONFIG_FILE)
-    parser.add_argument('--timeseries_connection',
-                       help='Connection String eg: "mysql+mysqldb://username:password/db_name"')
-    parser.add_argument('--measurement_connection',
-                       help='Connection String eg: "postgresql+psycopg2://username:password/db_name"')
+    parser.add_argument('--timeseries_connection',type=argparse.FileType('r'),
+         help='The name of a file containing the Connection String eg: private.connection which has: mysql://username:password@localhost/database')
+
+    parser.add_argument('--measurement_connection',type=argparse.FileType('r'),
+         help='The name of a file containing the Connection String eg: private.connection which has:'+
+             'Connection String eg: "postgresql+psycopg2://username:password/db_name"')
     parser.add_argument('--port',
                        help='Open port for server."', default=8080, type=int)
     args = parser.parse_args()

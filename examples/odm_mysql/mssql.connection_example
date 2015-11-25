@@ -1,0 +1,1 @@
+mssql+pyodbc://{username}:{password}@localhost/{databasename}?driver=SQL+Server+Native+Client+10.0

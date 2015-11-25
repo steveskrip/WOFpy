@@ -31,8 +31,8 @@ if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     sys.exit("Sorry, Python  2.6 is not supported")
-if sys.version_info[0] == 2 and sys.version_info[1] == 7 and sys.version_info[2] == 6 :
-    sys.exit("Sorry, Issues with Python 2.7.6. Please upgrade to 2.7.10 or above ")
+if sys.version_info[0] == 2 and sys.version_info[1] == 7 and sys.version_info[2] < 8 :
+    sys.exit("Sorry, Issues with Python < 2.7.8. Please upgrade to 2.7.10 or above ")
 
 setup(
     name='WOFpy',
@@ -52,7 +52,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
-        'flask>=0.6.1',
+        'flask>=0.10.0',
         'lxml>=2.3',
         'spyne>=2.12.8',
         'nose',
