@@ -57,6 +57,17 @@ class WOF(object):
         self.default_unitid = config.default_unitid
         self.default_samplemedium = config.default_samplemedium
 
+    '''
+    For WML 1.0 many terms were embedded in the Schemas, which made them not expandable.
+    This provides a standard warning message
+    '''
+    def invalid_enum_message(self,name,value, default=None):
+        message = "WaterML 1.0 schema enum issue '{}' not in {}. Use the cuashi_1_1 endpoint ".format(value,name)
+        if default is not None:
+            message = "Substituted '"+ default +"'. " + message
+        return message
+
+
     def create_get_site_response(self, siteArg=None):
 
         if siteArg == None or siteArg == '':
@@ -384,7 +395,9 @@ class WOF(object):
         if (censorCode in valueList):
             return censorCode
         else:
+            logging.info(self.invalid_enum_message( 'censorCode', censorCode))
             return default
+
     def check_QualityControlLevel(self, QualityControlLevel):
         default = "Unknown"
         valueList = [
@@ -398,6 +411,7 @@ class WOF(object):
         if (QualityControlLevel in valueList):
             return QualityControlLevel
         else:
+            logging.info(self.invalid_enum_message( 'QualityControlLevel', QualityControlLevel))
             return default
 
     #TODO: lots more stuff to fill out here
@@ -602,7 +616,7 @@ class WOF(object):
         if (datatype in valueList):
             return datatype
         else:
-            logging.warn('value outside of enum for datatype ' + datatype)
+            logging.info(self.invalid_enum_message( 'datatype', datatype))
             return default
 
     def check_UnitsType(self, UnitsType):
@@ -635,7 +649,7 @@ class WOF(object):
         if (UnitsType in valueList):
             return UnitsType
         else:
-            logging.warn('value outside of enum for UnitsType ' + UnitsType)
+            logging.info(self.invalid_enum_message( 'UnitsType', UnitsType, default=default))
             return default
 
     def check_SampleMedium(self, SampleMedium):
@@ -659,7 +673,7 @@ class WOF(object):
         if (SampleMedium in valueList):
             return SampleMedium
         else:
-            logging.warn('default returned: value outside of enum for SampleMedium ' + SampleMedium)
+            logging.info(self.invalid_enum_message( 'SampleMedium', SampleMedium))
             return default
 
     def check_generalCategory(self, generalCategory):
@@ -679,8 +693,8 @@ class WOF(object):
         if (generalCategory in valueList):
             return generalCategory
         else:
-            logging.warn('default returned: value outside of enum for generalCategory ' + generalCategory)
-            return default
+             logging.info(self.invalid_enum_message( 'generalCategory', generalCategory))
+             return default
 
     def check_valueType(self, valueType):
         default = "Unknown"
@@ -697,8 +711,8 @@ class WOF(object):
         if (valueType in valueList):
             return valueType
         else:
-            logging.warn('default returned: value outside of enum for valueType ' + valueType)
-            return default
+             logging.info(self.invalid_enum_message( 'valueType', valueType))
+             return default
 
     def create_variable_element(self, variableResult):
         clean_datatype = self.check_dataTypeEnum( variableResult.DataType)
