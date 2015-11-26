@@ -36,7 +36,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 7 and sys.version_info[2]
 
 setup(
     name='WOFpy',
-    version=find_version("wof","__init__.py"), #'2.0.0005-alpha',
+    version=find_version("wof","__init__.py"),#'2.0.0005-alpha',
     license='BSD',
     author='James Seppi',
     author_email='james.seppi@gmail.com',
@@ -53,7 +53,7 @@ setup(
     platforms='any',
     install_requires=[
         'flask>=0.10.0',
-        'lxml>=2.3',
+        'lxml>=3.3,<=3.4.4',
         'spyne>=2.12.8',
         'nose',
         'python-dateutil==1.5.0',
