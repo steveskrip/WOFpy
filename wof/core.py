@@ -14,6 +14,16 @@ from spyne.protocol.soap import Soap11
 from spyne.protocol.http import HttpRpc
 from spyne.protocol.xml import XmlDocument
 
+from lxml import etree
+from spyne.server.http import HttpTransportContext
+import cgi
+from spyne.protocol.soap.mime import collapse_swa
+from lxml.etree import XMLParser
+from spyne.error import RequestNotAllowed
+from spyne.const.http import HTTP_405
+from lxml.etree import XMLSyntaxError
+from spyne.model.fault import Fault
+
 from wof.apps.spyned_1_0 import TWOFService as wml10
 from wof.apps.spyned_1_1 import TWOFService as wml11
 from wof.apps.waterml2 import TWOFService as wml2
@@ -190,6 +200,46 @@ class WOFConfig(object):
             else:
                 self.TEMPLATES = '../../wof/apps/templates'
 
+class wofSoap11(Soap11):
+    def _wof_parse_xml_string(self, xml_string, parser, charset=None):
+        string = b''.join(xml_string)
+        if charset:
+            #string = string.decode(charset)
+            string = string.decode('utf-8-sig') # remove BOM
+            string = string.encode(charset) # back to original encoding type
+        try:
+            try:
+                root, xmlids = etree.XMLID(string, parser)
+
+            except ValueError as e:
+                logger.debug('ValueError: Deserializing from unicode strings with '
+                         'encoding declaration is not supported by lxml.')
+                root, xmlids = etree.XMLID(string.encode(charset), parser)
+
+        except XMLSyntaxError as e:
+            logger_invalid.error("%r in string %r", e, string)
+            raise Fault('Client.XMLSyntaxError', str(e))
+
+        return root, xmlids
+
+    def create_in_document(self, ctx, charset=None):
+        if isinstance(ctx.transport, HttpTransportContext):
+            # according to the soap via http standard, soap requests must only
+            # work with proper POST requests.
+            content_type = ctx.transport.get_request_content_type()
+            http_verb = ctx.transport.get_request_method()
+            if content_type is None or http_verb != "POST":
+                ctx.transport.resp_code = HTTP_405
+                raise RequestNotAllowed(
+                        "You must issue a POST request with the Content-Type "
+                        "header properly set.")
+
+            content_type = cgi.parse_header(content_type)
+            collapse_swa(content_type, ctx.in_string)
+
+        ctx.in_document = self._wof_parse_xml_string(ctx.in_string,
+                                            XMLParser(**self.parser_kwargs),
+                                                                        charset)
 """ returns an array of the applications """
 def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
 
@@ -202,7 +252,7 @@ def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
         [wml10(wof_obj_1_0,Unicode,_SERVICE_PARAMS["s_type"])],
         tns=_SERVICE_PARAMS["wml10_tns"],
         name=sensorNetwork+'_svc_'+ _SERVICE_PARAMS["wml10_soap_name"],
-        in_protocol=Soap11(validator='lxml'),
+        in_protocol=wofSoap11(validator='lxml'),
         out_protocol=Soap11(),
     )
 
@@ -218,7 +268,7 @@ def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
         [wml11(wof_obj_1_1,Unicode,_SERVICE_PARAMS["s_type"])],
         tns=_SERVICE_PARAMS["wml11_tns"],
         name=sensorNetwork+'_svc_'+  _SERVICE_PARAMS["wml11_soap_name"],
-        in_protocol=Soap11(validator='lxml'),
+        in_protocol=wofSoap11(validator='lxml'),
         out_protocol=Soap11(),
     )
 
