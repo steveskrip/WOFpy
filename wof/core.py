@@ -38,6 +38,8 @@ logging.getLogger('spyne.interface._base').setLevel(logging.ERROR)
 logging.getLogger('spyne.util.appreg').setLevel(logging.ERROR)
 logging.getLogger('spyne.interface.xml_schema').setLevel(logging.ERROR)
 logging.getLogger('spyne.protocol.dictdoc.simple').setLevel(logging.ERROR)
+logger = logging.getLogger(__name__)
+logger_invalid = logging.getLogger(__name__ + ".invalid")
 
 try:
     from wof import __version__
@@ -212,7 +214,7 @@ class wofSoap11(Soap11):
                 root, xmlids = etree.XMLID(string, parser)
 
             except ValueError as e:
-                logger.debug('ValueError: Deserializing from unicode strings with '
+                logging.debug('ValueError: Deserializing from unicode strings with '
                          'encoding declaration is not supported by lxml.')
                 root, xmlids = etree.XMLID(string.encode(charset), parser)
 
