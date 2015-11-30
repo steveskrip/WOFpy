@@ -293,3 +293,11 @@ class CsvDao(BaseDao):
 
     def get_offsettypes_by_ids(self, offset_type_id_arr):
         return []
+
+    def get_qualcontrollvl_by_id(self, qualcontrollvl):
+        qcl = csv_model.QualityControlLevel()
+        return qcl
+
+
+    def get_qualcontrollvl_by_ids(self, qualcontrollvl_arr):
+        return []
