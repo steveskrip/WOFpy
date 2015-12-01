@@ -579,9 +579,11 @@ class WOF_1_1(object):
 
     #TODO: lots more stuff to fill out here
     def create_value_element(self, valueResult):
-        datetime_string = core._get_iso8061_datetime_string(
+        #datetime_string = core._get_datavalues_datetime(
+         #  valueResult, "LocalDateTime", "DateTimeUTC")
+        aDate = core._get_datavalues_datetime(
            valueResult, "LocalDateTime", "DateTimeUTC")
-        aDate= dateutil.parser.parse(datetime_string)
+        #aDate= dateutil.parser.parse(datetime_string)
 
         if not hasattr(valueResult,'MethodCode'):
             setattr(valueResult,'MethodCode',None)
@@ -722,9 +724,9 @@ class WOF_1_1(object):
         series.valueCount = WaterML.valueCountType(
             valueOf_=str(seriesResult.ValueCount))
 
-        beginDateTime = core._get_iso8061_datetime_string(
+        beginDateTime = core._get_datavalues_datetime(
             seriesResult, "BeginDateTime", "BeginDateTimeUTC")
-        endDateTime = core._get_iso8061_datetime_string(
+        endDateTime = core._get_datavalues_datetime(
             seriesResult, "EndDateTime", "EndDateTimeUTC")
         # WML1_1 wants a datetime, no zone. breaks the conversion
         try:

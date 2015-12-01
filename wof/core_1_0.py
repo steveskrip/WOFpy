@@ -277,8 +277,9 @@ class WOF(object):
                 qlevelResult = self.dao.get_qualcontrollvl_by_id(valueResult.QualityControlLevelID)
                 if hasattr(qlevelResult,'Definition'):
                     valueResult.QualityControlLevel = qlevelResult.Definition
-                else:
-                    valueResult.QualityControlLevel = qlevelResult.QualityControlLevelCode
+                # else:
+                #     if hasattr(valueResult,'QualityControlLevel'):
+                #         valueResult.QualityControlLevel = qlevelResult.QualityControlLevelCode
             v = self.create_value_element(valueResult)
             values.add_value(v)
 
@@ -472,8 +473,8 @@ class WOF(object):
 
     #TODO: lots more stuff to fill out here
     def create_value_element(self, valueResult):
-        datetime_string = core._get_iso8061_datetime_string(
-            valueResult, "LocalDateTime", "DateTimeUTC")
+        adate = core._get_datavalues_datetime(
+            valueResult, "LocalDateTime", "DateTimeUTC").isoformat()
         clean_censorCode =self.check_censorCode(valueResult.CensorCode)
         clean_qcl = self.check_QualityControlLevel(valueResult.QualityControlLevel)
 
@@ -488,7 +489,7 @@ class WOF(object):
                         offsetTypeID=valueResult.OffsetTypeID,
                         accuracyStdDev=valueResult.ValueAccuracy,
                         offsetValue=valueResult.OffsetValue,
-                        dateTime=datetime_string,
+                        dateTime=adate,
                         qualifiers=valueResult.QualifierID,
                         valueOf_=str(valueResult.DataValue))
 
@@ -608,10 +609,11 @@ class WOF(object):
         series.valueCount = WaterML.valueCount(
             valueOf_=str(seriesResult.ValueCount))
 
-        beginDateTime = core._get_iso8061_datetime_string(
-            seriesResult, "BeginDateTime", "BeginDateTimeUTC")
-        endDateTime = core._get_iso8061_datetime_string(
-            seriesResult, "EndDateTime", "EndDateTimeUTC")
+# in WML1_0, these are strings.
+        beginDateTime = core._get_datavalues_datetime(
+            seriesResult, "BeginDateTime", "BeginDateTimeUTC").isoformat()
+        endDateTime = core._get_datavalues_datetime(
+            seriesResult, "EndDateTime", "EndDateTimeUTC").isoformat()
 
         #TimeInterval
         if beginDateTime is None:

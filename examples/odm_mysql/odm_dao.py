@@ -8,6 +8,11 @@ from dateutil.parser import parse
 from wof.dao import BaseDao
 import sqlalch_odm_models as model
 
+import pytz
+from dateutil.parser import parse
+#utc_time_zone = tz(None,0)
+UTC_TZ=pytz.utc
+
 
 class OdmDao(BaseDao):
 
@@ -68,13 +73,13 @@ class OdmDao(BaseDao):
             series.BeginDateTime = series.BeginDateTime.isoformat() + \
                                    iso_utc_offset
             series.BeginDateTimeUTC = series.BeginDateTimeUTC.isoformat() + \
-                                      'Z'
+                                      '+00:00'
             utc_offset = compute_utc_offset(series.EndDateTime,
                                             series.EndDateTimeUTC)
             iso_utc_offset = create_iso_offset(utc_offset)
             series.EndDateTime = series.EndDateTime.isoformat() + \
                                  iso_utc_offset
-            series.EndDateTimeUTC = series.EndDateTimeUTC.isoformat() + 'Z'
+            series.EndDateTimeUTC = series.EndDateTimeUTC.isoformat() + '+00:00'
 
     def get_series_by_sitecode(self, site_code):
         seriesResultArr = model.Series.query.filter(
@@ -128,7 +133,8 @@ class OdmDao(BaseDao):
             raise ValueError('invalid end date: ' + str(end_date_time_string))
 
         # If we know time zone for both, convert to UTC time
-        utc_time_zone = parse('2001-01-01T00Z').tzinfo # dummy time to get tz
+        #utc_time_zone = parse('2001-01-01T00Z').tzinfo # dummy time to get tz
+        utc_time_zone = UTC_TZ
         if b and b.tzinfo and e and e.tzinfo:
             b = b.astimezone(utc_time_zone)
             e = e.astimezone(utc_time_zone)
@@ -155,7 +161,7 @@ class OdmDao(BaseDao):
         minutes = int((float(utc_offset_hrs) % 1) * 60)
         
         if hours == 0 and minutes == 0:
-            return 'Z'
+            return '+00:00'
         else:
             return '%+.2d:%.2d' % (hours, minutes)
 
@@ -239,10 +245,12 @@ class OdmDao(BaseDao):
             create_iso_offset = self.create_iso_utc_offset
             for value in valueResultArr:
                 iso_utc_offset = create_iso_offset(value.UTCOffset)
-                value.LocalDateTime = value.LocalDateTime.isoformat() + \
+                ldt = value.LocalDateTime.isoformat() + \
                                       iso_utc_offset
-                value.DateTimeUTC = value.DateTimeUTC.isoformat() + 'Z'
-        
+
+                value.LocalDateTime = parse(ldt)
+                #value.DateTimeUTC = value.DateTimeUTC.isoformat() + '+00:00'
+                value.DateTimeUTC = UTC_TZ.localize( value.DateTimeUTC)
         return valueResultArr
 
     def get_method_by_id(self, method_id):

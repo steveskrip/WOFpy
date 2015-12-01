@@ -29,6 +29,9 @@ from wof.apps.spyned_1_1 import TWOFService as wml11
 from wof.apps.waterml2 import TWOFService as wml2
 from wof.WofWsdls import WofWSDL_1_0, WofWSDL_1_1
 
+import pytz
+from dateutil.parser import parse
+
 import urllib
 
 import logging
@@ -59,6 +62,8 @@ _SERVICE_PARAMS = {
     "wml11_rest_name" : "WaterOneFlow_rest_1_1",
     "wml11_soap_name" : "WaterOneFlow_soap_1_1",
 }
+#utc_time_zone = tz(None,0)
+UTC_TZ=pytz.utc
 
 def site_map(app):
     output = []
@@ -385,10 +390,10 @@ def create_wof_flask_multiple(wofConfig=[], templates=None):
     app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
     return app
 
-def _get_iso8061_datetime_string(object, local_datetime_attr,
-                                 utc_datetime_attr):
+def _get_datavalues_datetime(object, local_datetime_attr,
+                             utc_datetime_attr):
     """
-    Returns a datetime string given an object and the names of the
+    Returns a datetime  given an object and the names of the
     attributes for local time and utc date time
     """
     local_datetime = getattr(object, local_datetime_attr, None)
@@ -396,12 +401,16 @@ def _get_iso8061_datetime_string(object, local_datetime_attr,
         if type(local_datetime) == datetime.datetime:
             if not local_datetime.tzinfo:
                 raise ValueError("local times must be timezone-aware")
-            return local_datetime.isoformat()
-        else:
+            #return local_datetime.isoformat()
             return local_datetime
+        else:
+            ldt = parse( local_datetime)
+            return ldt
     else:
         utc_datetime = getattr(object, utc_datetime_attr)
         if type(utc_datetime) == datetime.datetime:
-            return utc_datetime.replace(tzinfo=None).isoformat() + 'Z'
+            utcdt = UTC_TZ.localize(utc_datetime)
+            return utcdt
         else:
-            return utc_datetime
+            utcdt = parse(utc_datetime)
+            return utcdt
