@@ -305,10 +305,14 @@ class WOF_1_1(object):
         #queryInfo.set_extension('')
         timeSeriesResponse.set_queryInfo(queryInfo)
 
+        #if not valueResultArr:
+        #    timeSeries = WaterML.TimeSeriesType()
+        #    timeSeriesResponse.add_timeSeries(timeSeries)
+        #    return timeSeriesResponse
+
         if not valueResultArr:
-            timeSeries = WaterML.TimeSeriesType()
-            timeSeriesResponse.add_timeSeries(timeSeries)
-            return timeSeriesResponse
+            raise Exception("Values Not Found for %s:%s for dates %s - %s" % (
+                siteCode, varCode, startDateTime, endDateTime))
 
         if isinstance(valueResultArr,dict):
             for key in valueResultArr.keys():
