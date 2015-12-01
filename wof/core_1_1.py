@@ -64,13 +64,34 @@ class WOF_1_1(object):
         self.default_south = config.default_south
         self.default_west = config.default_west
 
+    def get_site_code(self, siteArg):
+
+        if ':' in siteArg:
+            networkname, siteCode = siteArg.split(':')
+            networkname = networkname.lower()
+            if self.network == networkname:
+                return siteCode
+            else:
+                return None
+        return siteArg
+
+    def get_variable_code(self, varArg):
+
+        if ':' in varArg:
+            vocabname, varCode = varArg.split(':')
+            vocabname = vocabname.lower()
+            if self.vocabulary == vocabname:
+                return varCode
+            else:
+                return None
+        return varArg
 
     def create_get_site_response(self, siteArg=None):
         if siteArg == None or siteArg == '':
             siteResultArr = self.dao.get_all_sites()
         else:
             siteCodesArr = siteArg.split(',')
-            siteCodesArr = [s.replace(self.network + ':', '')
+            siteCodesArr = [self.get_site_code(s)
                             for s in siteCodesArr]
             siteResultArr = self.dao.get_sites_by_codes(siteCodesArr)
 
@@ -102,13 +123,13 @@ class WOF_1_1(object):
         return siteInfoResponse
 
     def create_get_site_info_response(self, siteArg, varArg=None):
-        siteCode = siteArg.replace(self.network + ':', '')
+        siteCode = self.get_site_code(siteArg)
         siteResult = self.dao.get_site_by_code(siteCode)
 
         if (varArg == None or varArg == ''):
             seriesResultArr = self.dao.get_series_by_sitecode(siteCode)
         else:
-            varCode = varArg.replace(self.vocabulary + ':', '')
+            varCode = self.get_variable_code(varArg)
             seriesResultArr = self.dao.get_series_by_sitecode_and_varcode(
                 siteCode, varCode)
 
@@ -137,7 +158,7 @@ class WOF_1_1(object):
 
     def create_get_site_info_multiple_response(self, siteArg):
         siteCodesArr = siteArg.split(',')
-        siteCodesArr = [s.replace(self.network + ':', '')
+        siteCodesArr = [self.get_site_code(s)
                         for s in siteCodesArr]
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
@@ -153,7 +174,7 @@ class WOF_1_1(object):
         siteInfoResponse.set_queryInfo(queryInfo)
 
         for siteArg in siteCodesArr:
-            siteCode = siteArg.replace(self.network + ':', '')
+            siteCode = self.get_site_code(siteArg)
             siteResult = self.dao.get_site_by_code(siteCode)
             seriesResultArr = self.dao.get_series_by_sitecode(siteCode)
 
@@ -222,7 +243,7 @@ class WOF_1_1(object):
             variableResultArr = self.dao.get_all_variables()
         else:
             varCodesArr = varArg.split(',')
-            varCodesArr = [v.replace(self.vocabulary + ':', '')
+            varCodesArr = [self.get_variable_code(v)
                            for v in varCodesArr]
             variableResultArr = self.dao.get_variables_by_codes(varCodesArr)
 
@@ -255,8 +276,8 @@ class WOF_1_1(object):
 
         #TODO: Tim thinks the DAO should handle network and vocab parsing,
         #      not WOF
-        siteCode = siteArg.replace(self.network + ':', '')
-        varCode = varArg.replace(self.vocabulary + ':', '')
+        siteCode = self.get_site_code(siteArg)
+        varCode = self.get_variable_code(varArg)
 
         valueResultArr = self.dao.get_datavalues(siteCode, varCode,
                                                  startDateTime, endDateTime)
@@ -445,7 +466,7 @@ class WOF_1_1(object):
         #queryInfo.set_extension('')
         timeSeriesResponse.set_queryInfo(queryInfo)
 
-        siteCode = site.replace(self.network + ':', '')
+        siteCode = self.get_site_code(site)
         seriesResultArr = self.dao.get_series_by_sitecode(siteCode)
         if seriesResultArr:
             for seriesResult in seriesResultArr:
@@ -804,8 +825,8 @@ class WOF_1_1(object):
 
     def create_wml2_values_object(self, siteArg, varArg, startDateTime=None,
                                    endDateTime=None):
-        siteCode = siteArg.replace(self.network + ':', '')
-        varCode = varArg.replace(self.vocabulary + ':', '')
+        siteCode = self.get_site_code(siteArg)
+        varCode = self.get_variable_code(varArg)
         valueResultArr = self.dao.get_datavalues(siteCode, varCode,
                                                  startDateTime, endDateTime)
         return valueResultArr
