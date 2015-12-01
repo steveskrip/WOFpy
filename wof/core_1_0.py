@@ -253,7 +253,10 @@ class WOF(object):
             if valueResult.QualityControlLevelID is not None:
                 qualitycontrollevelIdSet.add(valueResult.QualityControlLevelID)
                 qlevelResult = self.dao.get_qualcontrollvl_by_id(valueResult.QualityControlLevelID)
-                valueResult.QualityControlLevel = qlevelResult.Definition
+                if hasattr(qlevelResult,'Definition'):
+                    valueResult.QualityControlLevel = qlevelResult.Definition
+                else:
+                    valueResult.QualityControlLevel = qlevelResult.QualityControlLevelCode
             v = self.create_value_element(valueResult)
             values.add_value(v)
 

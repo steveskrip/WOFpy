@@ -52,7 +52,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='start WOF for an ODM1 database.')
-    parser.add_argument('config',
+    parser.add_argument('--config',
                        help='Configuration file', default=CSV_CONFIG_FILE)
     parser.add_argument('--sites_file',
                        help='csv file containing sites information',default=SITES_FILE)
@@ -64,5 +64,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file
-                , openPort=args.port)
+    startServer(config=args.config,sites_file=args.sites_file,values_file=args.values_file,openPort=args.port)

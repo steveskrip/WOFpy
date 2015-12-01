@@ -53,7 +53,8 @@ setup(
     platforms='any',
     install_requires=[
         'flask>=0.10.0',
-        'lxml>=3.3,<=3.4.4',
+    #    'lxml>=3.3,<=3.4.4',
+        'lxml>=3.4.4',
         'spyne>=2.12.8',
         'nose',
         'python-dateutil==1.5.0',

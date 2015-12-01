@@ -299,5 +299,5 @@ class CsvDao(BaseDao):
         return qcl
 
 
-    def get_qualcontrollvl_by_ids(self, qualcontrollvl_arr):
+    def get_qualcontrollvls_by_ids(self, qualcontrollvl_arr):
         return []
