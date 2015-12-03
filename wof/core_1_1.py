@@ -506,7 +506,7 @@ class WOF_1_1(object):
             offsetTypeID=offsetTypeResult.OffsetTypeID,
             offsetValue=None,
             offsetDescription=offsetTypeResult.OffsetDescription,
-            offsetIsVertical='true')
+            offsetIsVertical=True)
 
         if offsetTypeResult.OffsetUnits:
             units = WaterML.UnitsType(

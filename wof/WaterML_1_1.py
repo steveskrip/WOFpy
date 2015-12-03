@@ -4771,9 +4771,10 @@ class OffsetType(GeneratedsSuper):
             outfile.write('<%soffsetDescription>%s</%soffsetDescription>%s' % (namespace_, self.gds_format_string(quote_xml(self.offsetDescription).encode(ExternalEncoding), input_name='offsetDescription'), namespace_, eol_))
         if self.unit is not None:
             self.unit.export(outfile, level, namespace_, name_='unit', pretty_print=pretty_print)
-        if not self.offsetIsVertical:
-            showIndent(outfile, level, pretty_print)
-            outfile.write('<%soffsetIsVertical>%s</%soffsetIsVertical>%s' % (namespace_, self.gds_format_boolean(self.offsetIsVertical, input_name='offsetIsVertical'), namespace_, eol_))
+# default is true. Always show
+        #if not self.offsetIsVertical:
+        showIndent(outfile, level, pretty_print)
+        outfile.write('<%soffsetIsVertical>%s</%soffsetIsVertical>%s' % (namespace_, self.gds_format_boolean(self.offsetIsVertical, input_name='offsetIsVertical'), namespace_, eol_))
         if self.offsetAzimuthDegrees is not None:
             showIndent(outfile, level, pretty_print)
             outfile.write('<%soffsetAzimuthDegrees>%s</%soffsetAzimuthDegrees>%s' % (namespace_, self.gds_format_integer(self.offsetAzimuthDegrees, input_name='offsetAzimuthDegrees'), namespace_, eol_))
