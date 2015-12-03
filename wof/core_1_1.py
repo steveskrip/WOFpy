@@ -67,7 +67,7 @@ class WOF_1_1(object):
     def get_site_code(self, siteArg):
 
         if ':' in siteArg:
-            networkname, siteCode = siteArg.split(':')
+            networkname, siteCode = siteArg.split(':',1)
             networkname = networkname.lower()
             if self.network == networkname:
                 return siteCode
@@ -78,7 +78,7 @@ class WOF_1_1(object):
     def get_variable_code(self, varArg):
 
         if ':' in varArg:
-            vocabname, varCode = varArg.split(':')
+            vocabname, varCode = varArg.split(':',1)
             vocabname = vocabname.lower()
             if self.vocabulary == vocabname:
                 return varCode
