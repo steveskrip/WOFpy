@@ -84,23 +84,23 @@ and WaterML responses are described on the HIS website at
 http://his.cuahsi.org/wofws.html.
 
 WSDL Endpoints:
-* http://127.0.0.1:8080/{network}/soap/wateroneflow/.wsdl
-* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1/.wsdl
+* http://127.0.0.1:8080/{network}/soap/cuahsi_1_0/.wsdl
+* http://127.0.0.1:8080/{network}/soap/cuahsi_1_`/.wsdl
 These correspond to SOAP endpoints:
-* http://127.0.0.1:8080/{network}/soap/wateroneflow
-* http://127.0.0.1:8080/{network}/soap/wateroneflow_1_1
+* http://127.0.0.1:8080/{network}/soap/cuahsi_1_0
+* http://127.0.0.1:8080/{network}/soap/cuahsi_1_1
 
 One of the easiest ways to test the SOAP endpoint is to use the free soapUI
 program.  To test with soapUI:
 
 #. Install soapUI.
-#. Run WOFpy, perhaps using one of the :ref:`examples <examples>`.
+#. Run WOFpy, perhaps using  the csv in the :ref:`examples <examples>`.
 #. Start soapUI.
 #. In soapUI, click **File**, and then click **Import Project**.
 #. Go to test\wofpy-1-1-soapui-project.xml
 #. Expand the example request for **GetSites** and double-click
    **GetAllSites** to open that request.
-#. At the top of the window, there is a menu with url  like **http://127.0.0.1:8080/TxRivers/soap/wateroneflow/**
+#. At the top of the window, there is a menu with url  like **http://127.0.0.1:8080/txrivers/soap/cuahsi_1_1/**
    click, select the url for the example, or if you have a new service, **[add new endpoint]**
 #. Expand **WOF11 Soap TestSuite**, Double Click **Run Test Case**
 #. In window, select URL icon. Run

@@ -30,7 +30,8 @@ Database Support
 ================
 You may need to install additional components to connect to your database.
 * sqlalhchemy
-* pydobc (for ODM1, sqlserverand ODM2)
+* pydobc (for ODM1_1 using sqlserver and ODM2)
+* msqldb (for ODM1_1 using mysql)
 * ODM2API (for ODM2 example)
 * other database drivers: postgres, sqllite, mysql.
 
@@ -73,7 +74,7 @@ The examples are described in more detail below.
 Barebones SQLite Example
 ------------------------
 
-This example is located in the **examples/barebones** folder.
+This example is located in the **examples/flask/barebones** folder.
 
 This example shows how to access a very simple SQLite database located in the
 **LCM_Data** subfolder.  The database only has three tables in it: one for
@@ -82,10 +83,10 @@ required for WaterML is read from a config file.
 
 Follow the steps below to run this example.
 
-#. In the **examples/barebones** folder, edit the value of the **openPort**
+#. In the **examples/flask/barebones** folder, edit the value of the **openPort**
    variable in **runserver_LCM.py** to match an open port on your computer,
    if necessary.  Then save and close the file. 
-#. Open a command window in the **examples/barebones** folder and enter:
+#. Open a command window in the **examples/flask/barebones** folder and enter:
    ``python runserver_LCM.py``
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.  
@@ -93,7 +94,7 @@ Follow the steps below to run this example.
 Comma Delimited File Example
 ----------------------------
 
-This example is located in the **examples/csv_server** folder.
+This example is located in the **examples/flask/csv_server** folder.
 
 This example shows how to access data from comma delimited (CSV) files in the 
 **csv** subfolder.  One CSV file contains the time series values, while
@@ -101,10 +102,8 @@ another contains descriptions of observations sites.
 
 Follow the steps below to run this example.
 
-#. In the **examples/csv_server** folder, edit the value of the **openPort**
-   variable in **runserver_csv.py** to match an open port on your computer,
-   if necessary.  Then save and close the file. 
-#. Open a command window in the **examples/csv_server** folder and enter:
+#. In the **examples/flask/csv_server** folder,  **runserver_csv.py**   Then save and close the file.
+#. Open a command window in the **examples/flask/csv_server** folder and enter:
    ``python runserver_csv.py``
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.  
@@ -114,7 +113,7 @@ Follow the steps below to run this example.
 SWIS SQLite Example
 -------------------
 
-This example is located in the **examples/swis** folder.
+This example is located in the **examples/flask/swis** folder.
 
 This example shows how to access a more complicated SQLite database based on
 early designs of the Texas Water Development Board's Surface Water Information
@@ -122,10 +121,8 @@ System (SWIS) database.
 
 Follow the steps below to run this example.
 
-#. In the **examples/swis** folder, edit the value of the **openPort**
-   variable in **runserver_swis.py** to match an open port on your computer,
-   if necessary.  Then save and close the file. 
-#. Open a command window in the **examples/swis** folder and enter:
+#. In the **examples/flask/swis** folder **runserver_swis.py** t
+#. Open a command window in the **examples/flask/swis** folder and enter:
    ``python runserver_swis.py``
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.  
@@ -133,7 +130,7 @@ Follow the steps below to run this example.
 ODM SQL Server Example
 ----------------------
 
-This example is located in the **examples/odm_sqlserver** folder.
+This example is located in the **examples/flask/odm_1_1** folder.
 
 This example shows how to access CUAHSI Observations Data Model (ODM) databases
 in Microsoft SQL Server.  The example uses the Little Bear River ODM 1.1
@@ -149,15 +146,15 @@ Follow the steps below to run this example.
 #. Grant a SQL Server account **select** privileges on the database.  WOFpy
    will use this account to connect to the database.
 #. Determine the database connection string. **lbr_connection_string** set to a SQLAlchemy-compatible
-   database connection string for the Little Bear River database, e.g.,
+   database connection string for the Little Bear River database, e.g. in a file ending in .connection (eg private.connection or lbr.connection),
    'mssql+pyodbc://webservice:webservice@localhost/LittleBear11?driver=SQL+Server+Native+Client+10.0'``
-#. In the **examples/odm_sqlserver** folder, edit the value of the **openPort**
-   variable in **runserver_lbr.py** to match an open port on your computer,
+#. In the **examples/flask/odm_1_1** folder, edit the value of the **openPort**
+   variable in **runserver_odm_1_1.py** to match an open port on your computer,
    if necessary.  Then save and close the file.
-#. Open a command window in the **examples/odm_sqlserver** folder and enter:
-   ``python runserver_odm11.py
+#. Open a command window in the **examples/flask/odm_1_1** folder and enter:
+   ``python runserver_odm_1_1.py
     --config=lbr_config.cfg
-    --connection=mssql+pyodbc://{user}:{password}@{host}/{db}?driver=SQL+Server+Native+Client+10.0y``
+    --connection=lbr.connection``
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.
 
@@ -165,7 +162,7 @@ Follow the steps below to run this example.
 CBI External Service Example
 ----------------------------
 
-This example is located in the **examples/cbi** folder.
+This example is located in the **examples/flask/cbi** folder.
 
 This example shows how to access a Web service provided by the Conrad Blucher
 Institute (CBI) for the Texas Coastal Ocean Observation Network (TCOON).
@@ -187,11 +184,8 @@ from TCOON.  Then you will run the service.
 
 Follow the steps below to run this example.
 
-#. Open a command window in the **examples/cbi** folder and enter:
+#. Open a command window in the **examples/flask/cbi** folder and enter:
    ``python build_cbi_cache.py``
-#. In the **examples/cbi** folder, edit the value of the **openPort**
-   variable in **runserver_cbi.py** to match an open port on your computer,
-   if necessary.  Then save and close the file. 
 #. In the command window, enter:
    ``python runserver_cbi.py``
 #. In your command window you should see a message indicating that the service
@@ -200,14 +194,14 @@ Follow the steps below to run this example.
 Multiple Services Example
 -------------------------
 
-This example is located in the **examples** folder.
+This example is located in the **examples/flask/** folder.
 
 This folder contains a **runserver_multiple.py** script demonstrating how to
 run multiple services at once.  It uses the
 :ref:`barebones <barebones-example>` and :ref:`SWIS <swis-example>` examples.
 Follow the steps below to run this example.
 
-#. In the **examples** folder, edit the value of the **openPort**
+#. In the **examples/flask/** folder, edit the value of the **openPort**
    variable in **runserver_multiple.py** to match an open port on your computer,
    if necessary.  Then save and close the file. 
 #. Open a command window in the **examples** folder and enter:

@@ -32,7 +32,7 @@ Example: Writing a DAO for a simple three-table database
 --------------------------------------------------------
 (In progress)
 This example shows how to write a new dao for a simple three-table database.  The dao can be found under the folder,
-'examples\barebones\' in 'swtools\WOFpy'.  The database contains data from the Lake Champlain Monitoring 
+'examples\flask\barebones\' in 'ODM2\WOFpy'.  The database contains data from the Lake Champlain Monitoring
 Program (LCM) from the Vermont Department of Environmental Conservation.  The original data were in a 
 collection of ASCII and MS Excel files.  These were imported into a sqlite database for publishing 
 through WOFpy.  Please note that data is for demonstration purposes and has been modified slightly to make 

@@ -3,13 +3,13 @@ ODM1 SQL Server
 ***************
 A single service can be run from the command line.
 
-    ``python examples/odm_sqlserver/runserver_odm11.py
+    ``python examples/flask/odm_1_1/runserver_odm_1_1.py
     --config=lbr_config.cfg
     --connection=mssql+pyodbc://{user}:{password}@{host}/{db}?driver=SQL+Server+Native+Client+10.0``
 
 Detailed Instructions
 ---------------------
-This example is located in the **examples/odm_sqlserver** folder.
+This example is located in the **examples/flask/odm_1_1** folder.
 
 This example shows how to access CUAHSI Observations Data Model (ODM) databases
 in Microsoft SQL Server.  The example uses the Little Bear River ODM 1.1
@@ -27,10 +27,10 @@ Follow the steps below to run this example.
 #. Determine the database connection string. **lbr_connection_string** set to a SQLAlchemy-compatible
    database connection string for the Little Bear River database, e.g.,
    'mssql+pyodbc://webservice:webservice@localhost/LittleBear11?driver=SQL+Server+Native+Client+10.0'``
-#. In the **examples/odm_sqlserver** folder, edit the value of the **openPort**
-   variable in **runserver_lbr.py** to match an open port on your computer,
+#. In the **examples/flask/odm_1_1** folder, edit the value of the **openPort**
+   variable in **runserver_odm_1_1.py** to match an open port on your computer,
    if necessary.  Then save and close the file.
-#. Open a command window in the **examples/odm_sqlserver** folder and enter:
+#. Open a command window in the **examples/odm_1_1** folder and enter:
    ``python runserver_odm11.py
     --config=lbr_config.cfg
     --connection=mssql+pyodbc://{user}:{password}@{host}/{db}?driver=SQL+Server+Native+Client+10.0y``

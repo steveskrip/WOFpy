@@ -205,7 +205,7 @@ class WOFConfig(object):
             elif config.has_option('WOFPY','Templates'):
                 self.TEMPLATES = config.get('WOFPY', 'Templates')
             else:
-                self.TEMPLATES = '../../wof/apps/templates'
+                self.TEMPLATES = '../../../wof/apps/templates'
 
 class wofSoap11(Soap11):
     def _wof_parse_xml_string(self, xml_string, parser, charset=None):

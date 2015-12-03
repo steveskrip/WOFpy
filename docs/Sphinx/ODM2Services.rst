@@ -36,20 +36,20 @@ Follow the steps below to run this example.
 #. Determine the database connection string. **odm2_connection_string** set to a SQLAlchemy-compatible
    database connection string for the ODM2 database, e.g.,
    'postgresql+psycopg2://username:passowkr@hostname:port/db_name' or, 'mysql+mysqldb://username:password/db_name'
-#. In the **examples/odm2/{measurement|timeseries}** folder, edit the value of the **openPort**
+#. In the **examples/flask/odm2/{measurement|timeseries}** folder, edit the value of the **openPort**
    variable in **runserver_multiple.py|runserver_odm2_measurement.py|runserver_odm2_timeseries.py** to match an open port on your computer,
    if necessary.  Then save and close the file.
-#. In case of ODM2 measurement data use case, open a command window in the **examples/odm2/measurement** folder and enter:
+#. In case of ODM2 measurement data use case, open a command window in the **examples/flask/odm2/measurement** folder and enter:
 
     ``python runserver_odm2_measurement.py
     --config=odm2_config_measurement.cfg
     --connection=postgresql+psycopg2://username:password/db_name``
-#. In case of ODM2 timeseries data use case, open a command window in the **examples/odm2/timeseries** folder and enter:
+#. In case of ODM2 timeseries data use case, open a command window in the **examples/flask/odm2/timeseries** folder and enter:
 
     ``python runserver_odm2_timeseries.py
     --config=odm2_config_timeseries.cfg
     --connection=mysql+mysqldb://username:password/db_name``
-#. In case of multiple services, open a command window in the **examples/odm2/** folder and enter:
+#. In case of multiple services, open a command window in the **examples/flask/odm2/** folder and enter:
 
     ``python runserver_multiple.py
     --timeseries_connection=mysql+mysqldb://username:password/db_name

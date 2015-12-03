@@ -35,7 +35,7 @@ this tutorial.  First let's take a look at the data, which are contained in
 CSV files.
 
 .. note::
-   All tutorial files are located in the **WOFpy/examples/csv_tutorial**
+   All tutorial files are located in the **WOFpy/examples/flask/csv_tutorial**
    folder.
 
 1. Open the **solution** folder.  
