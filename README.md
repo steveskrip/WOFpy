@@ -1,7 +1,5 @@
 
-=====
-WOFpy
-=====
+# WOFpy
 
 WOFpy is a Python package that implements CUAHSI's (http://his.cuahsi.org) WaterOneFlow Web service.  WaterOneFlow is a Web service with methods for querying time series of water data at point locations, and which returns data in WaterML format, providing standardized access to water data.   
 
@@ -24,6 +22,12 @@ Follow the steps below for Basic installation on a Windows computer.
 The wof package (in the subfolder named wof) is now accessible from any directory.
 
 Note: If you edit code in the **wof** folder, you may need to run setup.py again to apply the changes to your system.
+
+ODM2 and ODM1 Instructions
+--------------------------
+This is new material that is up to date. The sections "Running the Examples" and "Publishing Your Data", below, *might* be out of date.
+- [ODM2](https://github.com/ODM2/WOFpy/blob/master/docs/Sphinx/ODM2Services.rst)
+- [ODM1](https://github.com/ODM2/WOFpy/blob/master/docs/Sphinx/ODM1Services.rst)
 
 Running the Examples
 --------------------
