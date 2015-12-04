@@ -7,7 +7,7 @@ WOFpy reads data from a Data Access Object (DAO) and translates the data into Wa
 
 WOFpy uses Python version 2.7.
 
-(There's [Sphinx WOFpy documentation](https://github.com/ODM2/WOFpy/blob/master/docs/Sphinx/index.rst) from the original WOFpy development several years ago. It may need to be overhauled/updated, and ideally fixed to generate documentation at http://readthedocs.org. In the meantime, this is just a reference to its index page, as a reference)
+*(There's [Sphinx WOFpy documentation](https://github.com/ODM2/WOFpy/blob/master/docs/Sphinx/index.rst) from the original WOFpy development several years ago. It may need to be overhauled/updated, and ideally fixed to generate documentation at http://readthedocs.org. In the meantime, this is just a reference to its index page, as a reference)*
 
 Installation
 ------------
