@@ -1,7 +1,7 @@
 import logging
 
 import wof
-
+import wof.flask
 from csv_dao import CsvDao
 
 """
@@ -25,14 +25,14 @@ def startServer(config=CSV_CONFIG_FILE,
                 values_file=VALUES_FILE,
                 openPort=8080):
     dao = CsvDao(sites_file, values_file)
-    app = wof.create_wof_flask_app(dao, config)
+    app = wof.flask.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
 
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
-    for path in wof.core.site_map_flask_wsgi_mount(app):
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"

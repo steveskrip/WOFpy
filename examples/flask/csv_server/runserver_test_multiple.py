@@ -1,7 +1,7 @@
 import logging
 
 import wof
-
+import wof.flask
 from csv_dao import CsvDao
 from werkzeug.wsgi import DispatcherMiddleware
 from werkzeug.exceptions import NotFound
@@ -21,13 +21,13 @@ def startServer(config=CSV_CONFIG_FILE,config2=CSV_CONFIG_FILE2,
     conf1 = wof.core.wofConfig(dao, config)
     conf2 = wof.core.wofConfig(dao, config2)
 
-    app= wof.core.create_wof_flask_multiple({conf1,conf2})
+    app= wof.flask.create_wof_flask_multiple({conf1, conf2})
 
     openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
-    for path in wof.core.site_map_flask_wsgi_mount(app):
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"

@@ -1,10 +1,18 @@
+import urllib
+
+import werkzeug
 from flask import Flask, render_template, current_app, make_response, request
 import wof
 import config
 import datetime
 
+from wof.core import wofConfig, getSpyneApplications
+import wof.core_1_1 as wof_1_1
+import wof.core_1_0 as wof_1_0
+
 try:
-    from wof import __version__
+    from wof import __version__, core_1_0, core_1_1
+
     version = __version__
 except ImportError:
     version = 'dev'
@@ -144,4 +152,70 @@ def add_flask_routes(app,path, servicesPath,
         # app.add_url_rule(servicesPath+'/soap/wateroneflow_1_1.wsdl', wof_inst.network+'get_wsdl_1_1', get_wsdl_1_1)
 
 
+    return app
+
+
+def site_map_flask_wsgi_mount(app):
+    output = []
+    for mount in app.wsgi_app.mounts:
+        method = app.wsgi_app.mounts[mount].app.name
+        #methods = ','.join(mounts[.app.name)
+        #path = mount.key
+        #line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, rule))
+        line = urllib.unquote("{}".format(mount))
+        if '/static/' in line:
+            #or '/rest/' in line:
+            continue
+        output.append(line)
+
+    #print "Acess Service Path at "
+    #for line in sorted(output):
+    #    print(line)
+    return sorted(output)
+
+
+def create_wof_flask_app(dao, config_file):
+    """
+    Returns a fully instantiated WOF wsgi app (flask + apps)
+    """
+
+    # wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
+    # wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
+    #
+    # # static URL's need to be deprecriated.
+    # app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
+    #
+    # spyneapps = getSpyneApplications(wof_obj_1_0,wof_obj_1_1)
+    # app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
+    wConf = wofConfig(dao=dao, wofConfigFile=config_file)
+    templates = None
+    if hasattr(wConf, 'configObject' ):
+        if hasattr(wConf.configObject, 'TEMPLATES' ):
+            templates = wConf.configObject.TEMPLATES
+
+    app = create_wof_flask_multiple({wConf},templates=templates)
+    return app
+
+
+def create_wof_flask_multiple(wofConfig=[], templates=None):
+    """
+    Returns a fully instantiated WOF wsgi app (flask + apps)
+    """
+    app = wof.flask.create_simple_app()
+    spyneapps = {}
+    for wConf in wofConfig:
+        wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config, templates)
+        wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config,templates)
+
+        spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1,templates) )
+        path = wof_obj_1_0.network.lower()
+        servicesPath =  '/'+wof_obj_1_0.network.lower()
+
+        wof.flask.add_flask_routes(app,path, servicesPath,
+                     wof_obj_1_0,
+                     wof_obj_1_1,
+                     soap_service_url=None,
+                     soap_service_1_1_url=None)
+
+    app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
     return app

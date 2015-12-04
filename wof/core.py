@@ -1,40 +1,32 @@
-import datetime
 import ConfigParser
-import os
-
-import werkzeug
-import wof.flask
-import wof.core_1_1 as wof_1_1
-import wof.core_1_0 as wof_1_0
-
-from spyne.server.wsgi import WsgiApplication
-from spyne.application import Application
-from spyne.model.primitive import Unicode, AnyXml
-from spyne.protocol.soap import Soap11
-from spyne.protocol.http import HttpRpc
-from spyne.protocol.xml import XmlDocument
-
-from lxml import etree
-from spyne.server.http import HttpTransportContext
 import cgi
-from spyne.protocol.soap.mime import collapse_swa
-from lxml.etree import XMLParser
-from spyne.error import RequestNotAllowed
-from spyne.const.http import HTTP_405
-from lxml.etree import XMLSyntaxError
-from spyne.model.fault import Fault
-
-from wof.apps.spyned_1_0 import TWOFService as wml10
-from wof.apps.spyned_1_1 import TWOFService as wml11
-from wof.apps.waterml2 import TWOFService as wml2
-from wof.WofWsdls import WofWSDL_1_0, WofWSDL_1_1
+import datetime
+import logging
+import os
+import urllib
 
 import pytz
 from dateutil.parser import parse
+from lxml import etree
+from lxml.etree import XMLParser
+from lxml.etree import XMLSyntaxError
+from spyne.application import Application
+from spyne.const.http import HTTP_405
+from spyne.error import RequestNotAllowed
+from spyne.model.fault import Fault
+from spyne.model.primitive import Unicode, AnyXml
+from spyne.protocol.http import HttpRpc
+from spyne.protocol.soap import Soap11
+from spyne.protocol.soap.mime import collapse_swa
+from spyne.protocol.xml import XmlDocument
+from spyne.server.http import HttpTransportContext
+from spyne.server.wsgi import WsgiApplication
 
-import urllib
+from wof.WofWsdls import WofWSDL_1_0, WofWSDL_1_1
+from wof.apps.spyned_1_0 import TWOFService as wml10
+from wof.apps.spyned_1_1 import TWOFService as wml11
+from wof.apps.waterml2 import TWOFService as wml2
 
-import logging
 #logging.basicConfig(level=logging.INFO)
 logging.getLogger('spyne.model.complex').setLevel(logging.ERROR)
 logging.getLogger('spyne.interface._base').setLevel(logging.ERROR)
@@ -80,23 +72,6 @@ def site_map(app):
     #    print(line)
     return sorted(output)
 
-def site_map_flask_wsgi_mount(app):
-    output = []
-    for mount in app.wsgi_app.mounts:
-        method = app.wsgi_app.mounts[mount].app.name
-        #methods = ','.join(mounts[.app.name)
-        #path = mount.key
-        #line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, rule))
-        line = urllib.unquote("{}".format(mount))
-        if '/static/' in line:
-            #or '/rest/' in line:
-            continue
-        output.append(line)
-
-    #print "Acess Service Path at "
-    #for line in sorted(output):
-    #    print(line)
-    return sorted(output)
 
 class WOFConfig(object):
         network = 'NETWORK'
@@ -344,51 +319,17 @@ def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
 class wofConfig(object):
     dao=None
     config=None
-    def __init__(self, dao=None,wofConfig=None):
-        self.config = wofConfig
+    configObject = None
+    def __init__(self, dao=None, wofConfigFile=None):
+        self.config = wofConfigFile
         self.dao = dao
-
-def create_wof_flask_app(dao, config_file):
-    """
-    Returns a fully instantiated WOF wsgi app (flask + apps)
-    """
-
-    # wof_obj_1_0 = wof_1_0.WOF(dao, config_file)
-    # wof_obj_1_1 = wof_1_1.WOF_1_1(dao,config_file)
-    #
-    # # static URL's need to be deprecriated.
-    # app = wof.flask.create_app(wof_obj_1_0,wof_obj_1_1)
-    #
-    # spyneapps = getSpyneApplications(wof_obj_1_0,wof_obj_1_1)
-    # app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
-    wConf = wofConfig(dao=dao,  wofConfig=config_file)
-    app = create_wof_flask_multiple({wConf})
-    return app
+        if (self.config is not None):
+            try:
+                self.configObject = WOFConfig(self.config)
+            except:
+                pass
 
 
-
-def create_wof_flask_multiple(wofConfig=[], templates=None):
-    """
-    Returns a fully instantiated WOF wsgi app (flask + apps)
-    """
-    app = wof.flask.create_simple_app()
-    spyneapps = {}
-    for wConf in wofConfig:
-        wof_obj_1_0 = wof_1_0.WOF(wConf.dao, wConf.config, templates)
-        wof_obj_1_1 = wof_1_1.WOF_1_1(wConf.dao,wConf.config,templates)
-
-        spyneapps.update(getSpyneApplications(wof_obj_1_0,wof_obj_1_1,templates) )
-        path = wof_obj_1_0.network.lower()
-        servicesPath =  '/'+wof_obj_1_0.network.lower()
-
-        wof.flask.add_flask_routes(app,path, servicesPath,
-                     wof_obj_1_0,
-                     wof_obj_1_1,
-                     soap_service_url=None,
-                     soap_service_1_1_url=None)
-
-    app.wsgi_app = werkzeug.wsgi.DispatcherMiddleware(app.wsgi_app, spyneapps)
-    return app
 
 def _get_datavalues_datetime(object, local_datetime_attr,
                              utc_datetime_attr):

@@ -3,7 +3,7 @@ import os
 import tempfile
 
 import wof
-
+import wof.flask
 from cbi_dao import CbiDao
 
 """ Before running this script, run build_cbi_cache.py to build a cache of
@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.DEBUG)
 def startServer(config=CBI_CONFIG_FILE,connection=CBI_CACHE_DATABASE_URI, openPort = 8080):
 
     cbi_dao = CbiDao(CBI_CONFIG_FILE, database_uri=CBI_CACHE_DATABASE_URI)
-    app = wof.create_wof_flask_app(cbi_dao, config)
+    app = wof.flask.create_wof_flask_app(cbi_dao, config)
     app.config['DEBUG'] = True
 
 
@@ -34,7 +34,7 @@ def startServer(config=CBI_CONFIG_FILE,connection=CBI_CACHE_DATABASE_URI, openPo
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
-    for path in wof.core.site_map_flask_wsgi_mount(app):
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"

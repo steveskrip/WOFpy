@@ -3,6 +3,7 @@ import logging
 from examples.barebones.LCM_dao import LCMDao
 
 import wof
+import wof.flask
 from examples.flask.csv_server import CsvDao
 from examples.flask.swis.swis_dao import SwisDao
 
@@ -58,13 +59,13 @@ def startServer(openPort):
     conf_lcm = wof.core.wofConfig(lcm_dao, LCM_CONFIG)
     conf_csv = wof.core.wofConfig(csv_doa, CSV_CONFIG_FILE)
 
-    app= wof.core.create_wof_flask_multiple({conf_swis,conf_lcm,conf_csv}, templates="../../wof/apps/templates")
+    app= wof.flask.create_wof_flask_multiple({conf_swis, conf_lcm, conf_csv}, templates="../../wof/apps/templates")
 
 
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
-    for path in wof.core.site_map_flask_wsgi_mount(app):
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"

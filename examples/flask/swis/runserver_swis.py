@@ -2,7 +2,7 @@
 import logging
 
 import wof
-
+import wof.flask
 from swis_dao import SwisDao
 
 SWIS_DATABASE_URI = 'sqlite:///swis2.db'
@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 def startServer(config=SWIS_CONFIG_FILE,connection=SWIS_DATABASE_URI, openPort=8080):
 
     swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri=connection)
-    app = wof.create_wof_flask_app(swis_dao, config)
+    app = wof.flask.create_wof_flask_app(swis_dao, config)
     app.config['DEBUG'] = True
 
 

@@ -1,7 +1,7 @@
 import logging
 
 import wof
-
+import wof.flask
 from csv_dao import CsvDao
 
 CSV_CONFIG_FILE = 'csv_config.cfg'
@@ -15,7 +15,7 @@ def startServer(config=CSV_CONFIG_FILE,
                 values_file=VALUES_FILE,
                 openPort = 8080):
     dao = CsvDao(sites_file, values_file)
-    app = wof.create_wof_flask_app(dao, config)
+    app = wof.flask.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
     site_map = wof.site_map(app)
 

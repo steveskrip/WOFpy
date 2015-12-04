@@ -4,7 +4,7 @@ import logging
 from werkzeug.wsgi import DispatcherMiddleware
 
 import wof
-
+import wof.flask
 from wof.flask import config
 from wof.flask import create_app
 from LCM_dao import LCMDao
@@ -63,14 +63,14 @@ CONFIG='LCM_config.cfg'
 def startServer(config='LCM_config.cfg',connection='sqlite:///LCM_Data/LCM.db', openPort=8080):
 
     dao = LCMDao(connection,config)
-    app = wof.create_wof_flask_app(dao, config)
+    app = wof.flask.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
 
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
-    for path in wof.core.site_map_flask_wsgi_mount(app):
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"

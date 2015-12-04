@@ -3,6 +3,7 @@
 import logging
 
 import wof
+import wof.flask
 from wof.core import WOFConfig
 
 from odm_dao import OdmDao
@@ -19,7 +20,7 @@ logging.basicConfig(level=logging.DEBUG)
 def startServer(connection, config='config.cfg',openPort=8080):
     """given an open file on connection, read it to get a connection string to open the database and start up flask running WOF."""
     dao = OdmDao(connection.read())
-    app = wof.create_wof_flask_app(dao, config)
+    app = wof.flask.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
     configFile = WOFConfig(config)
@@ -27,7 +28,7 @@ def startServer(connection, config='config.cfg',openPort=8080):
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
-    for path in wof.core.site_map_flask_wsgi_mount(app):
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"

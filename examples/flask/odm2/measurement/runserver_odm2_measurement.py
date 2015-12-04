@@ -1,5 +1,7 @@
 import os, sys
 
+import wof.flask
+
 curr_folder = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, '%s/../../../' % curr_folder)
 
@@ -20,7 +22,7 @@ def startServer(config='odm2_config_measurement.cfg',connection=None,
                     openPort = 8080):
     TEMPLATES = '../../../wof/apps/templates'
     dao = Odm2Dao(connection.read())
-    app = wof.create_wof_flask_app(dao, config,templates=TEMPLATES)
+    app = wof.flask.create_wof_flask_app(dao, config, templates=TEMPLATES)
     app.config['DEBUG'] = True
 
 

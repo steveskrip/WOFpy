@@ -8,6 +8,7 @@ from werkzeug.serving import run_simple
 from werkzeug.exceptions import NotFound
 
 import wof
+import wof.flask
 from measurement.odm2_measurement_dao import Odm2Dao as measurement
 from timeseries.odm2_timeseries_dao import Odm2Dao as timeseries
 #from measurement.private_config import odm2_connection_string
@@ -32,12 +33,12 @@ def startServer(m_config=M_CONFIG_FILE,
     m_conf = wof.core.wofConfig(m_dao, m_config)
     t_conf = wof.core.wofConfig(t_dao, t_config)
 
-    app= wof.core.create_wof_flask_multiple({m_conf,t_conf},templates=TEMPLATES)
+    app= wof.flask.create_wof_flask_multiple({m_conf, t_conf}, templates=TEMPLATES)
 
     url = "http://127.0.0.1:" + str(openPort)
     print "----------------------------------------------------------------"
     print "Service endpoints"
-    for path in wof.core.site_map_flask_wsgi_mount(app):
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
         print "%s%s" % (url,path)
 
     print "----------------------------------------------------------------"
