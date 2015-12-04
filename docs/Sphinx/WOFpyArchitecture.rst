@@ -58,21 +58,23 @@ When you download and open WOFpy.  You will notice that it contains the followin
 
 .. note::
     (Only selected folders are expanded).    
-\WOFPY\
-|   readme.txt
-|   setup.py
-|   
+\WOFPY
+ |   readme.txt
+ |   setup.py
+
 +---docs\
-|
+
 +---examples\
-|   +---barebones\
-|   +---cbi\
-|   +---odm_sqlserver\
-|   \---swis\
-|
+    |   barebones
+    |   csv
+    |   cbi
+    |   odm_1_1
+    |   odm2
+    |   swis
+
 +---test\
-|           
-\---wof\
+
++---wof\
     |   core.py
     |   core_1_1.py
     |   core_1_0.py
@@ -82,33 +84,32 @@ When you download and open WOFpy.  You will notice that it contains the followin
     |   WaterML_1_1.py
     |   WofWsdls.py
     |   __init__.py
-    |   
+
     +---flask\
-    |   |   config.py
-    |   |   __init__.py
-    |   |   
-    |   +---templates\
-    |   |       index.html
-    |   |       wml2_values_template.xml
-    |   |       wsdl_temp.wsdl
-    |           
-    \---apps\
+        |   config.py
         |   __init__.py
-        |   wof/apps/spyned_1_0.py
+        |
+        +---templates\
+               index.html
+               wml2_values_template.xml
+               wsdl_temp.wsdl
+    +---apps\
+        |   __init__.py
+        |   spyned_1_0.py
         |   spyned_1_1.py
         |   waterml2.py
         |   wsdl.py
-        |
-        |+---templates\
+        +---templates\
 
-        |   |       wml2_values_template.xml
-        |   |       wsdl_1_1_template.wsdl
-        |   |       index.html
-        |   |       index_1_0.html
-        |   |       index_1_1.html
-        |   |       index_2.html
+            |       wml2_values_template.xml
+            |       wsdl_1_1_template.wsdl
+            |       index.html
+            |       index_1_0.html
+            |       index_1_1.html
+            |       index_2.html
 
-WOFpy contains 4 main 
+The WOFPy api uses spyne.io. This allows for the API to be utilized by multiple service platforms.
+  The present examples utlize the flask service stack.
 
 
 WOFpy modules and packages

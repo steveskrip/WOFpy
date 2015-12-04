@@ -1,5 +1,5 @@
 # The version as used in the setup.py
-__version__ = "2.0.0008-alpha"
+__version__ = "2.0.0009-beta"
 
 from core import _SERVICE_PARAMS, site_map
 

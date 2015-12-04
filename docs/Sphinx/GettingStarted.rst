@@ -39,9 +39,10 @@ You may need to install additional components to connect to your database.
 PIP Installs
 ============
 TBD: ONCE a Package is created and packaged.
+``pip install WofPy``
 
 If you are using ODM, or ODM2, then you need to run the extras (ODM1, or ODM2)
-``pip install -e .[ODM2]``
+``pip install WofPy -e .[ODM2]``
 
 
 .. _examples:
