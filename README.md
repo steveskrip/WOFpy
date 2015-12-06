@@ -1,13 +1,16 @@
 
 # WOFpy
 
-WOFpy is a Python package that implements CUAHSI's (http://his.cuahsi.org) WaterOneFlow Web service.  WaterOneFlow is a Web service with methods for querying time series of water data at point locations, and which returns data in WaterML format, providing standardized access to water data.   
+WOFpy is a Python package that implements [CUAHSI's](http://his.cuahsi.org) WaterOneFlow Web service.  WaterOneFlow is a Web service with methods for querying time series of water data at point locations, and which returns data in WaterML format, providing standardized access to water data.   
 
 WOFpy reads data from a Data Access Object (DAO) and translates the data into WaterML.  DAOs can represent a variety of data sources, including databases, text files, and Web sites or services.  You can view example DAOs in the examples folder, or write your own based on the BaseDao class in wof/dao.py.
 
 WOFpy uses Python version 2.7.
 
-*(There's [Sphinx WOFpy documentation](https://github.com/ODM2/WOFpy/blob/master/docs/Sphinx/index.rst) from the original WOFpy development several years ago. It may need to be overhauled/updated, and ideally fixed to generate documentation at http://readthedocs.org. In the meantime, this is just a reference to its index page, as a reference)*
+Documentation
+-------------
+
+Extensive documentation is available at http://pythonhosted.org/WOFpy/
 
 Installation
 ------------
