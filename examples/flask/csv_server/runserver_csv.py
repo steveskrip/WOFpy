@@ -26,7 +26,7 @@ def startServer(config=CSV_CONFIG_FILE,
                 openPort=8080):
     dao = CsvDao(sites_file, values_file)
     app = wof.flask.create_wof_flask_app(dao, config)
-    app.config['DEBUG'] = True
+#    app.config['DEBUG'] = True
 
 
     url = "http://127.0.0.1:" + str(openPort)

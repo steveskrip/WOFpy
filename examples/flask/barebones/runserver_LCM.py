@@ -64,7 +64,7 @@ def startServer(config='LCM_config.cfg',connection='sqlite:///LCM_Data/LCM.db', 
 
     dao = LCMDao(connection,config)
     app = wof.flask.create_wof_flask_app(dao, config)
-    app.config['DEBUG'] = True
+#    app.config['DEBUG'] = True
 
 
     url = "http://127.0.0.1:" + str(openPort)

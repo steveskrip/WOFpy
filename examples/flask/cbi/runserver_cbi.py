@@ -27,7 +27,7 @@ def startServer(config=CBI_CONFIG_FILE,connection=CBI_CACHE_DATABASE_URI, openPo
 
     cbi_dao = CbiDao(CBI_CONFIG_FILE, database_uri=CBI_CACHE_DATABASE_URI)
     app = wof.flask.create_wof_flask_app(cbi_dao, config)
-    app.config['DEBUG'] = True
+#    app.config['DEBUG'] = True
 
 
 

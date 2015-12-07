@@ -18,7 +18,7 @@ def startServer(config=SWIS_CONFIG_FILE,connection=SWIS_DATABASE_URI, openPort=8
 
     swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri=connection)
     app = wof.flask.create_wof_flask_app(swis_dao, config)
-    app.config['DEBUG'] = True
+#    app.config['DEBUG'] = True
 
 
     url = "http://127.0.0.1:" + str(openPort)

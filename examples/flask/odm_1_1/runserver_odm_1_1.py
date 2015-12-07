@@ -21,7 +21,7 @@ def startServer(connection, config='config.cfg',openPort=8080):
     """given an open file on connection, read it to get a connection string to open the database and start up flask running WOF."""
     dao = OdmDao(connection.read())
     app = wof.flask.create_wof_flask_app(dao, config)
-    app.config['DEBUG'] = True
+
 
     configFile = WOFConfig(config)
 
