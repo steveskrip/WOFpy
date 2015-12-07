@@ -13,7 +13,7 @@ from measurement.odm2_measurement_dao import Odm2Dao as measurement
 from timeseries.odm2_timeseries_dao import Odm2Dao as timeseries
 #from measurement.private_config import odm2_connection_string
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 M_CONFIG_FILE = './measurement/odm2_config_measurement.cfg'
 T_CONFIG_FILE = './timeseries/odm2_config_timeseries.cfg'

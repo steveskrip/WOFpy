@@ -16,7 +16,7 @@ from odm2_measurement_dao import Odm2Dao
      --connection=example.connection
 
 """
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 def startServer(config='odm2_config_measurement.cfg',connection=None,
                     openPort = 8080):

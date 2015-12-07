@@ -17,8 +17,8 @@ from odm2_timeseries_dao import Odm2Dao
     --connection=example.connection
 
 """
-logging.basicConfig(level=logging.DEBUG)
-logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
+#logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
 
 def startServer(config='odm2_config_timeseries.cfg',connection=None,
