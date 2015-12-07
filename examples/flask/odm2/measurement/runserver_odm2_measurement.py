@@ -20,9 +20,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 def startServer(config='odm2_config_measurement.cfg',connection=None,
                     openPort = 8080):
-    TEMPLATES = '../../../wof/apps/templates'
     dao = Odm2Dao(connection.read())
-    app = wof.flask.create_wof_flask_app(dao, config, templates=TEMPLATES)
+    app = wof.flask.create_wof_flask_app(dao, config)
     app.config['DEBUG'] = True
 
 
