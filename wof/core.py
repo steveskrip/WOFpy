@@ -28,7 +28,8 @@ from wof.apps.spyned_1_1 import TWOFService as wml11
 from wof.apps.waterml2 import TWOFService as wml2
 
 #logging.basicConfig(level=logging.ERROR)
-logging.disable(logging.CRITICAL)
+#logging.disable(logging.CRITICAL)
+logging.getLogger('werkzeug').setLevel(logging.CRITICAL)
 #logging.getLogger('spyne.model.complex').setLevel(logging.ERROR)
 #logging.getLogger('spyne.interface._base').setLevel(logging.ERROR)
 #logging.getLogger('spyne.util.appreg').setLevel(logging.ERROR)
