@@ -4,6 +4,7 @@ import unittest
 #TODO finish this unittest
 # should definitely test for bad inputs (non-existent site and var codes, bad dates for getvalues, etc.)
 
+@unittest.skip("SOAP requires running server skipping")
 class TestWofpySoap(unittest.TestCase):
     """
     UnitTest to test the WOF SOAP methods using a Suds client.

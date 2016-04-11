@@ -1,4 +1,4 @@
-import soaplib
+import spyne
 import logging
 
 import wof

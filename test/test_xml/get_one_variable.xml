@@ -1,7 +1,7 @@
 <variablesResponse xmlns:gml="http://www.opengis.net/gml"     xmlns:xlink="http://www.w3.org/1999/xlink"     xmlns:xsd="http://www.w3.org/2001/XMLSchema"     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"     xmlns:wtr="http://www.cuahsi.org/waterML/"     xmlns="http://www.cuahsi.org/waterML/1.0/">
     <variables>
         <variable>
-            <variableCode default="true" variableID="1" vocabulary="TESTVocab">Temp</variableCode>
+            <variableCode default="true" variableID="1" vocabulary="testvocab">Temp</variableCode>
             <variableName>Temperature</variableName>
             <valueType>Field Observation</valueType>
             <dataType>Continuous</dataType>

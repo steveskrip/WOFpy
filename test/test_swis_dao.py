@@ -4,10 +4,11 @@ import sys
 
 sys.path.append('../implementations/')
 
-from daos.swis.swis_dao import SwisDao
+from examples.flask.swis.swis_dao import SwisDao
 
 
 #TODO: Finish this unittest
+@unittest.skip("DOA requires db setup skipping")
 class TestSwisDao(unittest.TestCase):
     def setUp(self):
         test_db_path = os.path.join(os.path.dirname(__file__),

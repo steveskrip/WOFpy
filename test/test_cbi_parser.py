@@ -6,9 +6,9 @@ from lxml import etree
 
 sys.path.append('../implementations/')
 
-from daos.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
+from examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
 
-
+@unittest.skip("DOA requires db setup skipping")
 class TestCbiParser(unittest.TestCase):
     def setUp(self):
         pass

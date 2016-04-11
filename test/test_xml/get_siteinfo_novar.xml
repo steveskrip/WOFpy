@@ -9,7 +9,7 @@
     <site>
         <siteInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SiteInfoType">
             <siteName>Site A</siteName>
-            <siteCode siteID="1" network="TEST">SITE_A</siteCode>
+            <siteCode siteID="1" network="test">SITE_A</siteCode>
             <timeZoneInfo siteUsesDaylightSavingsTime="false">
                 <defaultTimeZone ZoneOffset="00:00" ZoneAbbreviation="GMT"/>
             </timeZoneInfo>
@@ -26,7 +26,7 @@
         <seriesCatalog menuGroupName="TEST OBSERVATIONS" serviceWsdl="http://not.a.real.url/">
             <series>
                 <variable>
-                    <variableCode default="true" variableID="2" vocabulary="TESTVocab">Flow</variableCode>
+                    <variableCode default="true" variableID="2" vocabulary="testvocab">Flow</variableCode>
                     <variableName>Discharge</variableName>
                     <variableDescription>Average streamflow</variableDescription>
                     <valueType>Field Observation</valueType>
@@ -76,7 +76,7 @@
             </series>
             <series>
                 <variable>
-                    <variableCode default="true" variableID="1" vocabulary="TESTVocab">Temp</variableCode>
+                    <variableCode default="true" variableID="1" vocabulary="testvocab">Temp</variableCode>
                     <variableName>Temperature</variableName>
                     <valueType>Field Observation</valueType>
                     <dataType>Continuous</dataType>

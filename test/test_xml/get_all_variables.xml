@@ -1,7 +1,7 @@
 <variablesResponse xmlns:gml="http://www.opengis.net/gml"     xmlns:xlink="http://www.w3.org/1999/xlink"     xmlns:xsd="http://www.w3.org/2001/XMLSchema"     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"     xmlns:wtr="http://www.cuahsi.org/waterML/"     xmlns="http://www.cuahsi.org/waterML/1.0/">
     <variables>
         <variable>
-            <variableCode default="true" variableID="2" vocabulary="TESTVocab">Flow</variableCode>
+            <variableCode default="true" variableID="2" vocabulary="testvocab">Flow</variableCode>
             <variableName>Discharge</variableName>
             <variableDescription>Average streamflow</variableDescription>
             <valueType>Field Observation</valueType>
@@ -21,13 +21,13 @@
             </timeSupport>
         </variable>
         <variable>
-            <variableCode default="true" variableID="3" vocabulary="TESTVocab">TP</variableCode>
+            <variableCode default="true" variableID="3" vocabulary="testvocab">TP</variableCode>
             <variableName>Phosphorus, total as P</variableName>
             <valueType>Sample</valueType>
             <dataType>Sporadic</dataType>
             <generalCategory>Water Quality</generalCategory>
             <sampleMedium>Surface Water</sampleMedium>
-            <units unitsAbbreviation="mg/L" unitsCode="199" unitsType="Concentration">milligrams per liter</units>
+            <units unitsAbbreviation="mg/L" unitsCode="199" unitsType="Dimensionless">milligrams per liter</units>
             <NoDataValue>-9999</NoDataValue>
             <timeSupport isRegular="false">
                 <unit UnitID="100">
@@ -39,7 +39,7 @@
             </timeSupport>
         </variable>
         <variable>
-            <variableCode default="true" variableID="1" vocabulary="TESTVocab">Temp</variableCode>
+            <variableCode default="true" variableID="1" vocabulary="testvocab">Temp</variableCode>
             <variableName>Temperature</variableName>
             <valueType>Field Observation</valueType>
             <dataType>Continuous</dataType>

@@ -9,7 +9,7 @@
     <site>
         <siteInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SiteInfoType">
             <siteName>Site A</siteName>
-            <siteCode siteID="1" network="TEST">SITE_A</siteCode>
+            <siteCode siteID="1" network="test">SITE_A</siteCode>
             <timeZoneInfo siteUsesDaylightSavingsTime="false">
                 <defaultTimeZone ZoneOffset="00:00" ZoneAbbreviation="GMT"/>
             </timeZoneInfo>
