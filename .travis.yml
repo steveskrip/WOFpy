@@ -19,7 +19,7 @@ cache:
 addons:
   apt:
     packages:
-      lxml
+      - python-lxml
 #services:
  # - mysql
 #  - postgresql
@@ -29,7 +29,7 @@ before_script:
 
 before_install:
 # python -m pip makes the install go into the virtualenv
-  - python -m pip install pysqlite sqlalchemy requests suds
+  - python -m pip install pysqlite sqlalchemy requests suds lxml
 install: # now just our code
   - pip install   .
 #  - pip install pysqlite sqlalchemy requests suds
