@@ -12,7 +12,7 @@ CBI_CACHE_DATABASE_URI = 'sqlite:////' + os.path.join(
 TEST_CONFIG_PATH = os.path.join(os.path.dirname(__file__),
                                 'test_cbi_config.cfg')
 
-#@unittest.skip("DOA requires db setup skipping")
+@unittest.skip("DOA, List of sites needs to be updated.")
 class TestCbiDao(unittest.TestCase):
     def setUp(self):
         self.dao = CbiDao(TEST_CONFIG_PATH, CBI_CACHE_DATABASE_URI)
