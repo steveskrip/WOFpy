@@ -48,15 +48,15 @@ try:
     req = requests.get('http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl', timeout=2)
     if req.status_code == 200:
         serverUp = True
-        print "found server"
+        serverMessage= "found server"
     else:
         serverUp = False
-        print "found server, but URL failed"
+        serverMessage = "found server, but URL failed"
 except:
     serverUp = False
-    print "URL failed"
+    serverMessage = "No server running"
 
-@unittest.skipUnless(serverUp, "No server running")
+@unittest.skipUnless(serverUp, serverMessage)
 class TestWofpySoap(unittest.TestCase):
     """
     UnitTest to test the WOF SOAP methods using a Suds client.
