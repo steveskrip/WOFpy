@@ -36,5 +36,5 @@ install: # now just our code
 
 # command to run tests
 script:
-  - nosetests tests
+  - nosetests -w tests
 #  - py.test
