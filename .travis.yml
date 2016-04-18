@@ -40,5 +40,5 @@ install: # now just our code
 
 # command to run tests
 script:
-  - nosetests -v -w test
+  - nosetests --verbosity=1 -w test
 #  - py.test
