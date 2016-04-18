@@ -346,9 +346,10 @@ class WOF(object):
                     qlevel = self.create_qlevel_element(qlevelResult)
                     values.add_qualityControlLevel(qlevel)
             except:
+                logging.warn("WofPy: DOA has no get_qualcontrollvls_by_ids method (added for 2.x)")
                 for qlevelID in qlevelIdIdArr:
                     qlevel = WaterML.QualityControlLevelType(
-                        qualityControlLevelID=qlevelID)
+                        qualityControlLevelID=qlevelID )
                     values.add_qualityControlLevel(qlevel)
 
         timeSeries.values = values

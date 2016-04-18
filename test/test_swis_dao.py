@@ -4,10 +4,11 @@ import sys
 
 sys.path.append('../implementations/')
 
-from daos.swis.swis_dao import SwisDao
+from examples.flask.swis.swis_dao import SwisDao
 
 
 #TODO: Finish this unittest
+
 class TestSwisDao(unittest.TestCase):
     def setUp(self):
         test_db_path = os.path.join(os.path.dirname(__file__),
@@ -16,7 +17,7 @@ class TestSwisDao(unittest.TestCase):
         test_config_path = os.path.join(os.path.dirname(__file__),
                                         'test_swis_config.cfg')
 
-        self.dao = SwisDao('sqlite:///' + test_db_path, test_config_path)
+        self.dao = SwisDao(test_config_path, database_uri='sqlite:///' + test_db_path, )
 
         self.known_site_codes = [
             'ARA', 'ARROYD', 'ARROYS', 'BAFF', 'BAYT', 'BIRD', 'BLB', 'BOBH',

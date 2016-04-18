@@ -376,7 +376,7 @@ test_datavalues = {
         MethodID = 5,
         SourceID = 1,
         SampleID = None,
-        QualityControlLevel = 'QC Definition',
+        QualityControlLevel = 'Quality controlled data',
         QualityControlLevelID = 1),
     'Temp2': TestDataValue(
         ValueID = 2,
@@ -394,7 +394,7 @@ test_datavalues = {
         MethodID = 5,
         SourceID = 1,
         SampleID = None,
-        QualityControlLevel = 'QC Definition',
+        QualityControlLevel = 'Quality controlled data',
         QualityControlLevelID = 1),
     'Flow1': TestDataValue(
         ValueID = 3,
@@ -430,7 +430,7 @@ test_datavalues = {
         MethodID = 25,
         SourceID = 1,
         SampleID = None,
-        QualityControlLevel = 'QC Definition',
+        QualityControlLevel = 'Quality controlled data',
         QualityControlLevelID = 1),
     'TP2': TestDataValue(
         ValueID = 5,
@@ -531,4 +531,17 @@ class TestDao(dao.BaseDao):
 
     def get_offsettypes_by_ids(self, offset_type_id_arr):
         return [test_offset_types[id] for id in offset_type_id_arr]
-    
+
+    def get_qualcontrollvl_by_id(self, qual_control_lvl_id):
+        qcl = models.BaseQualityControlLevel()
+        qcl.QualityControlLevelCode = "Quality controlled data"
+        qcl.Definition = "Quality controlled data"
+        qcl.QualityControlLevelID = 1
+        return [qcl]
+
+    def get_qualcontrollvls_by_ids(self, qual_control_lvl_id):
+        qcl = models.BaseQualityControlLevel()
+        qcl.QualityControlLevelCode = "Quality controlled data"
+        qcl.Definition = "Quality controlled data"
+        qcl.QualityControlLevelID = 1
+        return [qcl]

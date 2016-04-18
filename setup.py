@@ -56,7 +56,7 @@ setup(
         'lxml>=3.4.4',
         'spyne>=2.12.8',
         'nose',
-        'python-dateutil==1.5.0',
+        'python-dateutil',
         'jinja2',
         'pytz'
     ],
@@ -65,6 +65,7 @@ setup(
         'odm2':  ["sqlalchemy",'ODM2API'],
         'sqlite': ["sqlalchemy",'sqlite3'],
     },
+    tests_require=["suds", "requests"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',

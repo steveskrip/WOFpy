@@ -1,9 +1,59 @@
 import suds
 import unittest
 
+from examples.flask.swis.swis_dao import SwisDao
+import wof
+import wof.flask
+import ConfigParser
+from threading import Thread
+import requests
+
 #TODO finish this unittest
 # should definitely test for bad inputs (non-existent site and var codes, bad dates for getvalues, etc.)
+SWIS_CONFIG_FILE = 'test_swis_config.cfg'
+openPort=8080
 
+
+def setupServer():
+    config = ConfigParser.ConfigParser()
+    config.readfp(open(SWIS_CONFIG_FILE))
+
+    swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri="sqlite:///test_swis2.db")
+    app = wof.flask.create_wof_flask_app(swis_dao, SWIS_CONFIG_FILE)
+    #    app.config['DEBUG'] = True
+
+
+
+    url = "http://127.0.0.1:" + str(openPort)
+    print "----------------------------------------------------------------"
+    print "Service endpoints"
+    for path in wof.flask.site_map_flask_wsgi_mount(app):
+        print "%s%s" % (url, path)
+
+    print "----------------------------------------------------------------"
+    print "----------------------------------------------------------------"
+    print "Acess HTML endpoints at "
+    for path in wof.site_map(app):
+        print "%s%s" % (url, path)
+
+    print "----------------------------------------------------------------"
+
+    #app.run(host='0.0.0.0', port=openPort, threaded=True)
+    app.run(host='0.0.0.0', port=openPort, threaded=False)
+    # run runs indefinitely
+    #app.test_client()
+
+#@unittest.skip("SOAP requires running server skipping")
+try:
+    req = requests.get('http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl', timeout=2)
+    if req.status_code == 200:
+        serverUp = True
+    else:
+        serverUp = False
+except:
+    serverUp = False
+
+@unittest.skipUnless(serverUp, "No server running")
 class TestWofpySoap(unittest.TestCase):
     """
     UnitTest to test the WOF SOAP methods using a Suds client.
@@ -11,11 +61,16 @@ class TestWofpySoap(unittest.TestCase):
     Assumes a server using the SWIS DAO is already up and running at the
     specified WSDL Address.
     """
-    
+
+
     def setUp(self):
+
+        # self.t = Thread(target=setupServer, args=())
+        # self.t.start()
+
         #Change this to your currently-running WSDL
-        wsdl_address = "http://127.0.0.1:8080/soap/wateroneflow.wsdl"
-        self.network = 'SWIS'
+        wsdl_address = "http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl"
+        self.network = 'twdb'
         
         self.client = suds.client.Client(wsdl_address)
         
@@ -58,7 +113,10 @@ class TestWofpySoap(unittest.TestCase):
                     'water_temperature',
                     'water_depth_non_vented']
         )
-        
+    def tearDown(self):
+        self.t = None
+        pass
+
     def test_getsitesxml(self):
         result = self.client.service.GetSitesXml('')
         self.assertNotEqual(result, None)

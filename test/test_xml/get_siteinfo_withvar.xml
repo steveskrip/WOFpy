@@ -10,7 +10,7 @@
     <site>
         <siteInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SiteInfoType">
             <siteName>Site B</siteName>
-            <siteCode siteID="2" network="TEST">SITE_B</siteCode>
+            <siteCode siteID="2" network="test">SITE_B</siteCode>
             <timeZoneInfo siteUsesDaylightSavingsTime="false">
                 <defaultTimeZone ZoneOffset="00:00" ZoneAbbreviation="GMT"/>
             </timeZoneInfo>
@@ -34,13 +34,13 @@
         <seriesCatalog menuGroupName="TEST OBSERVATIONS" serviceWsdl="http://not.a.real.url/">
             <series>
                 <variable>
-                    <variableCode default="true" variableID="3" vocabulary="TESTVocab">TP</variableCode>
+                    <variableCode default="true" variableID="3" vocabulary="testvocab">TP</variableCode>
                     <variableName>Phosphorus, total as P</variableName>
                     <valueType>Sample</valueType>
                     <dataType>Sporadic</dataType>
                     <generalCategory>Water Quality</generalCategory>
                     <sampleMedium>Surface Water</sampleMedium>
-                    <units unitsAbbreviation="mg/L" unitsCode="199" unitsType="Concentration">milligrams per liter</units>
+                    <units unitsAbbreviation="mg/L" unitsCode="199" unitsType="Dimensionless">milligrams per liter</units>
                     <NoDataValue>-9999</NoDataValue>
                     <timeSupport isRegular="false">
                         <unit UnitID="100">
