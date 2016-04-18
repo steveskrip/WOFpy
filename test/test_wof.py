@@ -26,7 +26,8 @@ class TestWOF(unittest.TestCase):
 
     def setUp(self):
         dao = TestDao()
-        self.wof_inst = WOF(dao, TEST_CONFIG_FILE)
+        testConfig = os.path.join(os.path.dirname(__file__),TEST_CONFIG_FILE)
+        self.wof_inst = WOF(dao, testConfig)
         waterml_schema_path = os.path.join(os.path.dirname(__file__),
                                         'cuahsiTimeSeries_v1_0.xsd')
         waterml_schema_doc = etree.parse(waterml_schema_path)
