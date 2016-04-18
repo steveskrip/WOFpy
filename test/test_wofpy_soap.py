@@ -45,8 +45,11 @@ def setupServer():
 
 #@unittest.skip("SOAP requires running server skipping")
 try:
-    req = requests.get('http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl', timeout=0.0001)
-    serverUp = True
+    req = requests.get('http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl', timeout=2)
+    if req.status_code == 200:
+        serverUp = True
+    else:
+        serverUp = False
 except:
     serverUp = False
 
