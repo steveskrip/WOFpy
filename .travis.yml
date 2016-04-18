@@ -3,9 +3,9 @@ sudo: required
 # if the https://travis-ci.org/ODM2/ODM2PythonAPI/requests ever says: missing config
 # validate at: http://lint.travis-ci.org/
 python:
-  - "2.6"
+#  - "2.6"
   - "2.7"
-  - "3.2"
+#  - "3.2"
 #  - "3.3"
 #  - "3.4"
 #  - "3.5"
@@ -28,7 +28,7 @@ before_install:
 
 install: # now just our code
   - pip install   .
-  - pip install pysqlite
+  - pip install pysqlite sqlalchemy
   - pip list
 
 # don't forget to open up the azure mssql server to these addreses
