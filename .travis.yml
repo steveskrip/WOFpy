@@ -25,7 +25,7 @@ addons:
 #  - postgresql
 before_script:
   - python examples/flask/cbi/build_cbi_cache.py
-  - python examples/flask/swis/runserver_swis.py &
+  - python examples/flask/swis/runserver_swis.py --config=./test/test_swis_config.cfg --connection=sqlite:///./test/test_swis2.db &
 
 before_install:
 # python -m pip makes the install go into the virtualenv
