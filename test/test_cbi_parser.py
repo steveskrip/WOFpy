@@ -8,7 +8,7 @@ sys.path.append('../implementations/')
 
 from examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
 
-@unittest.skip("DOA requires db setup skipping")
+@unittest.skip("DOA needs work to build a cache, and update tests to be valid")
 class TestCbiParser(unittest.TestCase):
     def setUp(self):
         pass

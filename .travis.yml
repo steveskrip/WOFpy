@@ -20,9 +20,8 @@ cache:
  # - mysql
 #  - postgresql
 before_script:
-  - ./scripts/mysql_setup.sh
-  - ./scripts/postgres_setup.sh
-  - ./scripts/freetds.sh
+  - python examples/flask/cbi/build_cbi_cache.py
+  - python examples/flask/swis/runserver_swis.py &
 
 before_install:
 # python -m pip makes the install go into the virtualenv
