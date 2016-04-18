@@ -6,6 +6,7 @@ import wof
 import wof.flask
 import ConfigParser
 from threading import Thread
+import requests
 
 #TODO finish this unittest
 # should definitely test for bad inputs (non-existent site and var codes, bad dates for getvalues, etc.)
@@ -42,7 +43,14 @@ def setupServer():
     # run runs indefinitely
     #app.test_client()
 
-@unittest.skip("SOAP requires running server skipping")
+#@unittest.skip("SOAP requires running server skipping")
+try:
+    req = requests.get('http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl', timeout=0.0001)
+    serverUp = True
+except:
+    serverUp = False
+
+@unittest.skipUnless(serverUp, "No server running")
 class TestWofpySoap(unittest.TestCase):
     """
     UnitTest to test the WOF SOAP methods using a Suds client.
@@ -54,8 +62,8 @@ class TestWofpySoap(unittest.TestCase):
 
     def setUp(self):
 
-        self.t = Thread(target=setupServer, args=())
-        self.t.start()
+        # self.t = Thread(target=setupServer, args=())
+        # self.t.start()
 
         #Change this to your currently-running WSDL
         wsdl_address = "http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl"

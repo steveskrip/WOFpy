@@ -28,7 +28,7 @@ before_install:
 
 install: # now just our code
   - pip install   .
-  - pip install pysqlite sqlalchemy
+  - pip install pysqlite sqlalchemy requests suds
   - pip list
 
 # don't forget to open up the azure mssql server to these addreses
@@ -36,5 +36,5 @@ install: # now just our code
 
 # command to run tests
 script:
-  - nosetests
+  - nosetests tests
 #  - py.test

@@ -65,7 +65,7 @@ setup(
         'odm2':  ["sqlalchemy",'ODM2API'],
         'sqlite': ["sqlalchemy",'sqlite3'],
     },
-    tests_require=["suds"],
+    tests_require=["suds", "requests"],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
