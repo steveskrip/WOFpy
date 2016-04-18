@@ -2,14 +2,17 @@ import logging
 
 from wof import WOF
 
-from LCM_dao import LCMDao
+from ..LCM_dao import LCMDao
 
-import private_config
+#import private_config
 import wof.models as wof_base
 
 logging.basicConfig(level=logging.DEBUG)
 
-dao = LCMDao(private_config.LCM_connection_string,'LCM_config.cfg')
+config='LCM_config.cfg'
+connection='sqlite:///LCM_Data/LCM.db'
+
+dao = LCMDao(connection,config)
 #LCM_wof = WOF(dao)
 #LCM_wof.config_from_file('LCM_config.cfg')
 
