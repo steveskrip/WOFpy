@@ -56,8 +56,8 @@ except:
     serverUp = False
     serverMessage = "No server running"
 
-@unittest.skip("Failing on travis with long logs. Skipping")
-#@unittest.skipUnless(serverUp, serverMessage)
+#@unittest.skip("Failing on travis with long logs. Skipping")
+@unittest.skipUnless(serverUp, serverMessage)
 class TestWofpySoap(unittest.TestCase):
     """
     UnitTest to test the WOF SOAP methods using a Suds client.
