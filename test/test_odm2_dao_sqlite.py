@@ -3,16 +3,16 @@ import sys
 import os
 import tempfile
 
+
 sys.path.append('../implementations/')
-from examples.flask.odm2.measurement.odm2_measurement_dao import OdmDao
+from examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao as OdmDao
 #import private_config
-ODM2_DATABASE_URI = 'sqlite:////' + os.path.join(
-    tempfile.gettempdir(), '/test/ODM2sqlite.db')
+ODM2_DATABASE_URI = 'sqlite:///' + "./test/odm2/ODM2.sqlite"
 ODM2_ONFIG_PATH = os.path.join(os.path.dirname(__file__),
                                 'test_odm2_sqlite.cfg')
 
 
-# networkCode = 'LBR'
+# networkCode = 'LBR
 # siteCode = 'USU-LBR-Mendon'
 # variableCode = 'USU36:methodCode=28:qualityControlLevelCode=1'
 # beginDate = '2005-01-01'
@@ -22,7 +22,7 @@ ODM2_ONFIG_PATH = os.path.join(os.path.dirname(__file__),
 class TestOdmDao(unittest.TestCase):
     def setUp(self):
         #self.dao = OdmDao(private_config.lbr_connection_string)
-
+        self.dao = OdmDao(ODM2_DATABASE_URI)
         self.known_site_codes = (
             'USU-LBR-Mendon',
             # 'USU-LBR-Paradise',
