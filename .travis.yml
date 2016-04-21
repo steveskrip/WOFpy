@@ -29,7 +29,7 @@ before_script:
 
 before_install:
 # python -m pip makes the install go into the virtualenv
-  - python -m pip install sqlite sqlalchemy requests suds lxml pyodbc
+  - python -m pip install sqlalchemy requests suds lxml pyodbc
   - pip install git+https://github.com/ODM2/geoalchemy.git@odm2#egg=geoalchemy-0.7.3
   - pip install  git+https://github.com/ODM2/ODM2PythonAPI.git@pre_alpha_0#egg=odm2api-0.1.0
 
