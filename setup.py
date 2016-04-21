@@ -63,7 +63,7 @@ setup(
     extras_require = {
         'odm1':  ["sqlalchemy", 'pyodbc'],
         'odm2':  ["sqlalchemy",'odm2api'],
-        'sqlite': ["sqlalchemy",'sqlite3'],
+        'sqlite': ["sqlalchemy",'sqlite'],
     },
     dependency_links=[
         "git+https://github.com/ODM2/geoalchemy.git@v0.7.3#egg=geoalchemy-0.7.3",
