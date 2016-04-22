@@ -18,12 +18,12 @@ ODM2_ONFIG_PATH = os.path.join(os.path.dirname(__file__),
 # beginDate = '2005-01-01'
 # endDate = '2016-01-01'
 
-@unittest.skip("DOA requires db setup skipping")
+#@unittest.skip("DOA requires db setup skipping")
 class TestOdmDao(unittest.TestCase):
     def setUp(self):
         #self.dao = OdmDao(private_config.lbr_connection_string)
         self.dao = OdmDao(ODM2_DATABASE_URI)
-        self.known_site_codes = (
+        self.known_site_codes = [
             'USU-LBR-Mendon',
             # 'USU-LBR-Paradise',
             # 'USU-LBR-ExpFarm',
@@ -36,15 +36,15 @@ class TestOdmDao(unittest.TestCase):
             # 'USU-LBR-Wellsville',
             # 'USU-LBR-Confluence',
             # '10105900'
-        )
+        ]
 
-        self.fake_codes = (
+        self.fake_codes = [
             'junk',
             'trash',
             'fake'
-        )
+        ]
 
-        self.known_var_codes = (
+        self.known_var_codes = [
             # 'USU3',
             # 'USU4',
             # 'USU5',
@@ -86,7 +86,7 @@ class TestOdmDao(unittest.TestCase):
             # 'USU41',
             # 'USU42',
             # 'USU43'
-        )
+        ]
 
         self.known_series = [
             # ('USU-LBR-Mendon','USU3','2005-08-04 18:30:00.000','2008-03-27 19:30:00.000'),
