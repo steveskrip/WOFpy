@@ -62,9 +62,13 @@ setup(
     ],
     extras_require = {
         'odm1':  ["sqlalchemy", 'pyodbc'],
-        'odm2':  ["sqlalchemy",'ODM2API'],
-        'sqlite': ["sqlalchemy",'sqlite3'],
+        'odm2':  ["sqlalchemy",'odm2api'],
+        'sqlite': ["sqlalchemy"],
     },
+    dependency_links=[
+        "git+https://github.com/ODM2/geoalchemy.git@v0.7.3#egg=geoalchemy-0.7.3",
+        "git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0"
+    ],
     tests_require=["suds", "requests"],
     classifiers=[
         'Development Status :: 3 - Alpha',

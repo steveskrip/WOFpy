@@ -7,7 +7,7 @@ from dateutil.parser import parse
 
 from wof.dao import BaseDao
 import sqlalch_odm2_models as model
-import api.ODM2.models as odm2_models
+import odm2api.ODM2.models as odm2_models
 from sqlalchemy.orm import aliased
 from sqlalchemy import or_
 from sqlalchemy import and_
@@ -20,6 +20,7 @@ class Odm2Dao(BaseDao):
     def __init__(self, db_connection_string):
         self.engine = create_engine(db_connection_string, convert_unicode=True,
             pool_size=100)
+        odm2_models.setSchema(self.engine)
         # Default application pool size is 5. Use 100 to improve performance.
         self.db_session = scoped_session(sessionmaker(
             autocommit=False, autoflush=False, bind=self.engine))
