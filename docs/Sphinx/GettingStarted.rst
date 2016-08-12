@@ -128,7 +128,7 @@ Follow the steps below to run this example.
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.  
 
-ODM SQL Server Example
+ODM 1.1 SQL Server Example
 ----------------------
 
 This example is located in the **examples/flask/odm_1_1** folder.
@@ -159,6 +159,29 @@ Follow the steps below to run this example.
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.
 
+   ODM1Services
+
+ODM 2 SQL Server Example
+----------------------
+
+This example is located in the **examples/flask/odm2** folder.
+
+These examples show how to access Observations Data Model (ODM2) databases in PostgreSQL/Mysql Server.
+The example for ODM2 measurement data uses the Marchantaria Time Series ODM2 PostgreSQL database from the ODM2 github at https://github.com/ODM2/ODM2/tree/master/usecases/marchantariats.
+And the example for ODM2 timeseries uses Little Bear River Test ODM2 Mysql Database from ODM2 github at https://github.com/ODM2/ODM2/tree/master/usecases/littlebearriver/sampledatabases.
+
+Follow the steps below to run this example.
+
+#. Install PostgreSQL or Mysql Server based on the data use cases.
+#. Download ODM2 database from the ODM2 github at above URLs.
+#. Download the ODM2API (https://github.com/ODM2/ODM2PythonAPI/tree/setup). At **src** folder, enter this command: ``python setup.py install``.
+#. Determine the database connection string. **odm2_connection_string** set to a SQLAlchemy-compatible
+   database connection string for the ODM2 database, e.g.,
+   'postgresql+psycopg2://username:passowkr@hostname:port/db_name' or, 'mysql+mysqldb://username:password/db_name'
+#. In the **examples/flask/odm2/{measurement|timeseries}** folder, edit the value of the **openPort**
+   variable in **runserver_multiple.py|runserver_odm2_measurement.py|runserver_odm2_timeseries.py** to match an open port on your computer,
+
+   ODM2Services
 
 CBI External Service Example
 ----------------------------

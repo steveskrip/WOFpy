@@ -14,19 +14,10 @@ Extensive documentation is available at http://pythonhosted.org/WOFpy/
 
 Installation
 ------------
+In general, the easiest method is to utilize the anaconda package:
+https://conda.anaconda.org/odm2
 
-Follow the steps below for Basic installation on a Windows computer.
 
-1. Install **Python 2.7**.  The 32-bit installer is recommended.
-2. Add the **Python** folder to your **Path** environment variable.
-3. Install **setuptools**. This allows the setup script to be run.
-4. Add the **Python/scripts** folder to your **Path** environment variable.
-5. Open a command window (run cmd), navigate to the WOFpy folder (with setup.py
-   in it), and enter this command: ``python setup.py install``
-
-The wof package (in the subfolder named wof) is now accessible from any directory.
-
-Note: If you edit code in the **wof** folder, you may need to run setup.py again to apply the changes to your system.
 
 ODM2 and ODM1 Instructions
 --------------------------
