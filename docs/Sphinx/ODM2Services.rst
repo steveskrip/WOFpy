@@ -7,18 +7,24 @@ A single service can be run from the command line.
 
     ``python runserver_odm2_measurement.py
     --config=odm2_config_measurement.cfg
-    --connection=postgresql+psycopg2://username:password/db_name``
+    --connection=connection.file``
 #. ODM2 Timeseries data use case
 
     ``python runserver_odm2_timeseries.py
     --config=odm2_config_timeseries.cfg
-    --connection=mysql+mysqldb://username:password/db_name``
+    --connection=connection.file``
 
 Multiple services can be run from the command line
 
     ``python runserver_multiple.py
-    --timeseries_connection=mysql+mysqldb://username:password/db_name
-    --measurement_connection=postgresql+psycopg2://username:password/db_name``
+    --timeseries_connection=connection.file
+    --measurement_connection=connection.file``
+
+connection.file contains:
+
+``postgresql+psycopg2://username:password/db_name``
+
+``mysql+mysqldb://username:password/db_name``
 
 Detailed Instructions
 ---------------------
@@ -43,16 +49,16 @@ Follow the steps below to run this example.
 
     ``python runserver_odm2_measurement.py
     --config=odm2_config_measurement.cfg
-    --connection=postgresql+psycopg2://username:password/db_name``
+    --connection=connection.file``
 #. In case of ODM2 timeseries data use case, open a command window in the **examples/flask/odm2/timeseries** folder and enter:
 
     ``python runserver_odm2_timeseries.py
     --config=odm2_config_timeseries.cfg
-    --connection=mysql+mysqldb://username:password/db_name``
+    --connection=connection.file``
 #. In case of multiple services, open a command window in the **examples/flask/odm2/** folder and enter:
 
     ``python runserver_multiple.py
     --timeseries_connection=mysql+mysqldb://username:password/db_name
-    --measurement_connection=postgresql+psycopg2://username:password/db_name``
+    --measurement_connection=connection.file``
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.

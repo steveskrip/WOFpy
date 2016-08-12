@@ -5,7 +5,13 @@ A single service can be run from the command line.
 
     ``python examples/flask/odm_1_1/runserver_odm_1_1.py
     --config=lbr_config.cfg
-    --connection=mssql+pyodbc://{user}:{password}@{host}/{db}?driver=SQL+Server+Native+Client+10.0``
+    --connection=connection.file``
+
+connection.file contains:
+
+``postgresql+psycopg2://username:password/db_name``
+
+``mysql+mysqldb://username:password/db_name``
 
 Detailed Instructions
 ---------------------
@@ -33,6 +39,6 @@ Follow the steps below to run this example.
 #. Open a command window in the **examples/odm_1_1** folder and enter:
    ``python runserver_odm11.py
     --config=lbr_config.cfg
-    --connection=mssql+pyodbc://{user}:{password}@{host}/{db}?driver=SQL+Server+Native+Client+10.0y``
+    --connection=connection.file``
 #. In your command window you should see a message indicating that the service
    is running along with instructions for accessing the service.
