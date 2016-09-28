@@ -46,10 +46,10 @@ class Site(wof_base.BaseSite):
         self.Latitude = s.Latitude
         self.Longitude = s.Longitude
         self.LatLongDatumID = s.SpatialReferenceID
-        self.SiteCode = s.SamplingFeatureObj.SamplingFeatureCode
-        self.SiteName = s.SamplingFeatureObj.SamplingFeatureName
-        self.Elevation_m = s.SamplingFeatureObj.Elevation_m
-        self.Comments = s.SamplingFeatureObj.SamplingFeatureDescription
+        self.SiteCode = s.SamplingFeatureCode
+        self.SiteName = s.SamplingFeatureName
+        self.Elevation_m = s.Elevation_m
+        self.Comments = s.SamplingFeatureDescription
         sr = wof_base.BaseSpatialReference()
         sr.SpatialReferenceId = s.SpatialReferenceObj.SpatialReferenceID
         sr.SRSID = s.SpatialReferenceObj.SRSCode
@@ -110,11 +110,11 @@ class DataValue(wof_base.BaseDataValue):
             self.SourceID = '%d' % aff_obj.AffiliationID
             #self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
         self.CensorCode = v.CensorCodeCV
-        self.MethodID = v.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
-        #self.MethodCode = v.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
-        self.QualityControlLevelID = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelID
-        #self.QualityControlLevel = QualityControlLevel(v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj)
-        self.QualityControlLevel = v.TimeSeriesResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelCode
+        self.MethodID = v.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
+        #self.MethodCode = v.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
+        self.QualityControlLevelID = v.ResultObj.ProcessingLevelObj.ProcessingLevelID
+        #self.QualityControlLevel = QualityControlLevel(v.ResultObj.ProcessingLevelObj)
+        self.QualityControlLevel = v.ResultObj.ProcessingLevelObj.ProcessingLevelCode
 
     def create_iso_utc_offset(self, utc_offset_hrs):
         hours = int(utc_offset_hrs)

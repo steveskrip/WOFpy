@@ -13,6 +13,8 @@ from sqlalchemy import or_
 from sqlalchemy import and_
 from sqlalchemy.sql import func
 
+from sqlalchemy.orm import with_polymorphic
+
 import re
 
 class Odm2Dao(BaseDao):
@@ -35,12 +37,19 @@ class Odm2Dao(BaseDao):
         self.db_session.close()
 
     def get_all_sites(self):
+        s_rArr = self.db_session.query(odm2_models.Sites,odm2_models.TimeSeriesResults).\
+            join(odm2_models.FeatureActions).\
+            filter(odm2_models.FeatureActions.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
+                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID). \
+            group_by(odm2_models.Sites.SamplingFeatureID).all()
+        """
         s_rArr = self.db_session.query(odm2_models.Results,
                                        odm2_models.Sites).\
             join(odm2_models.FeatureActions).\
             join(odm2_models.SamplingFeatures).\
             filter(odm2_models.SamplingFeatures.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID).\
             group_by(odm2_models.Sites.SamplingFeatureID).all()
+        """
         s_Arr = []
         for s_r in s_rArr:
             s = model.Site(s_r.Sites)
@@ -51,8 +60,7 @@ class Odm2Dao(BaseDao):
         w_s = None
         try:
             s = self.db_session.query(odm2_models.Sites).\
-                join(odm2_models.SamplingFeatures).\
-                filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).one()
+                filter(odm2_models.Sites.SamplingFeatureCode == site_code).one()
         except:
             s = None
         if s is not None:
@@ -74,11 +82,11 @@ class Odm2Dao(BaseDao):
         west - xmin - longitude
         east - xmax - longitude
         """
-        s_rArr = self.db_session.query(odm2_models.Results,
+        s_rArr = self.db_session.query(odm2_models.TimeSeriesResults,
                                        odm2_models.Sites).\
-            join(odm2_models.FeatureActions).\
-            join(odm2_models.SamplingFeatures).\
-            filter(odm2_models.SamplingFeatures.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
+            join(odm2_models.FeatureActions). \
+            filter(odm2_models.FeatureActions.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
+                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
                    odm2_models.Sites.Latitude >= south,
                    odm2_models.Sites.Latitude <= north,
                    odm2_models.Sites.Longitude >= west,
@@ -103,26 +111,25 @@ class Odm2Dao(BaseDao):
         if l_var_codes is None:
             r_t = self.db_session.query(odm2_models.TimeSeriesResultValues).\
                                         join(odm2_models.TimeSeriesResults).\
-                                        join(odm2_models.Results).\
-                                        group_by(odm2_models.Results.VariableID).all()
+                                        group_by(odm2_models.TimeSeriesResults.VariableID).all()
             r_t_Arr.append(r_t)
         else:
             for item in l_var_codes:
                 r_t = self.db_session.query(odm2_models.TimeSeriesResultValues).\
                         join(odm2_models.TimeSeriesResults).\
-                        join(odm2_models.Results).\
                         join(odm2_models.Variables).\
-                        filter(odm2_models.Variables.VariableCode == item).\
+                        filter(odm2_models.Variables.VariableID == odm2_models.TimeSeriesResults.VariableID,
+                               odm2_models.Variables.VariableCode == item).\
                     group_by(odm2_models.Variables.VariableID).all()
                 r_t_Arr.append(r_t)
         v_arr = []
         if len(r_t_Arr) is not 0:
             for result_t in r_t_Arr:
                 for result in result_t:
-                    v = result.TimeSeriesResultObj.ResultObj.VariableObj
-                    u = result.TimeSeriesResultObj.ResultObj.UnitsObj
-                    s = result.TimeSeriesResultObj.ResultObj.SampledMediumCV
-                    t = result.TimeUnitObj
+                    v = result.ResultObj.VariableObj
+                    u = result.ResultObj.UnitsObj
+                    s = result.ResultObj.SampledMediumCV
+                    t = result.TimeAggregationIntervalUnitsObj
                     ti = result.TimeAggregationInterval
                     w_v = model.Variable(v,s,u,t,ti)
                     v_arr.append(w_v)
@@ -145,11 +152,12 @@ class Odm2Dao(BaseDao):
         return v_arr
 
     def get_series_by_sitecode(self, site_code):
-        r = self.db_session.query(odm2_models.Results).\
+        r = self.db_session.query(odm2_models.TimeSeriesResults).\
             join(odm2_models.FeatureActions).\
             join(odm2_models.SamplingFeatures).\
-            filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).\
-            group_by(odm2_models.Results.VariableID).all()
+            filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                   odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).\
+            group_by(odm2_models.TimeSeriesResults.VariableID).all()
         r_arr = []
         aff = None
         for i in range(len(r)):
@@ -161,11 +169,13 @@ class Odm2Dao(BaseDao):
         return r_arr
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
-        r = self.db_session.query(odm2_models.Results).\
+        r = self.db_session.query(odm2_models.TimeSeriesResults).\
             join(odm2_models.FeatureActions).\
             join(odm2_models.SamplingFeatures).\
             join(odm2_models.Variables).\
-            filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
+            filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                   odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
+                   odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
                    odm2_models.Variables.VariableCode == var_code).\
             group_by(odm2_models.Results.VariableID).all()
         r_arr = []
@@ -185,11 +195,12 @@ class Odm2Dao(BaseDao):
             try:
                 valueResultArr = self.db_session.query(odm2_models.TimeSeriesResultValues).\
                         join(odm2_models.TimeSeriesResults).\
-                        join(odm2_models.Results).\
                         join(odm2_models.FeatureActions).\
                         join(odm2_models.SamplingFeatures).\
                         join(odm2_models.Variables).\
-                        filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
+                        filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                               odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
+                               odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
                                odm2_models.Variables.VariableCode == var_code).\
                         order_by(odm2_models.TimeSeriesResultValues.ValueDateTime).all()
             except:
@@ -200,11 +211,12 @@ class Odm2Dao(BaseDao):
             try:
                 valueResultArr = self.db_session.query(odm2_models.TimeSeriesResultValues).\
                         join(odm2_models.TimeSeriesResults).\
-                        join(odm2_models.Results).\
                         join(odm2_models.FeatureActions).\
                         join(odm2_models.SamplingFeatures).\
                         join(odm2_models.Variables).\
-                        filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
+                        filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                               odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
+                               odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
                                odm2_models.Variables.VariableCode == var_code,
                                odm2_models.TimeSeriesResultValues.ValueDateTime >= begin_date_time,
                                odm2_models.TimeSeriesResultValues.ValueDateTime <= end_date_time).\
@@ -219,7 +231,7 @@ class Odm2Dao(BaseDao):
             for valueResult in valueResultArr:
                 if first_flag:
                     first_flag = False
-                    org_id = valueResult.TimeSeriesResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
+                    org_id = valueResult.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
                     aff = self.db_session.query(odm2_models.Affiliations).\
                             filter(odm2_models.Affiliations.OrganizationID == org_id).first()
                 w_v = model.DataValue(valueResult,aff)
