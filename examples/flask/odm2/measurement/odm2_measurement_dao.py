@@ -13,6 +13,8 @@ from sqlalchemy import or_
 from sqlalchemy import and_
 from sqlalchemy.sql import func
 
+from sqlalchemy.orm import with_polymorphic
+
 import re
 
 class Odm2Dao(BaseDao):
@@ -31,13 +33,12 @@ class Odm2Dao(BaseDao):
 
     def get_all_sites(self):
         s_Arr = []
-        s_rArr = self.db_session.query(odm2_models.Results,
-                                       odm2_models.Sites).\
+        s_rArr = self.db_session.query(odm2_models.MeasurementResults,odm2_models.Sites).\
             distinct(odm2_models.Sites.SamplingFeatureID).\
             join(odm2_models.FeatureActions).\
-            join(odm2_models.SamplingFeatures).\
             join(odm2_models.Specimens).\
             filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
+                   odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
                    odm2_models.Sites.SamplingFeatureID == odm2_models.RelatedFeatures.RelatedFeatureID).all()
         for s_r in s_rArr:
             s = model.Site(s_r.Sites)
@@ -49,8 +50,7 @@ class Odm2Dao(BaseDao):
         w_s = None
         try:
             s = self.db_session.query(odm2_models.Sites).\
-                join(odm2_models.SamplingFeatures).\
-                filter(odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).one()
+                filter(odm2_models.Sites.SamplingFeatureCode == site_code).one()
         except:
             s = None
         if s is not None:
@@ -74,13 +74,13 @@ class Odm2Dao(BaseDao):
         east - xmax - longitude
         """
         s_Arr = []
-        s_rArr = self.db_session.query(odm2_models.Results,
+        s_rArr = self.db_session.query(odm2_models.MeasurementResults,
                                        odm2_models.Sites).\
             distinct(odm2_models.Sites.SamplingFeatureID).\
             join(odm2_models.FeatureActions).\
-            join(odm2_models.SamplingFeatures).\
             join(odm2_models.Specimens).\
             filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
+                   odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
                    odm2_models.Sites.SamplingFeatureID == odm2_models.RelatedFeatures.RelatedFeatureID,
                    odm2_models.Sites.Latitude >= south,
                    odm2_models.Sites.Latitude <= north,
@@ -123,27 +123,26 @@ class Odm2Dao(BaseDao):
         r_m_Arr = []
         if l_var_codes is None:
             r_m = self.db_session.query(odm2_models.MeasurementResults).\
-                    distinct(odm2_models.Results.VariableID,
-                             odm2_models.Results.UnitsID,
-                             odm2_models.Results.SampledMediumCV).\
-                    join(odm2_models.Results).all()
+                    distinct(odm2_models.MeasurementResults.VariableID,
+                             odm2_models.MeasurementResults.UnitsID,
+                             odm2_models.MeasurementResults.SampledMediumCV).all()
             r_m_Arr.append(r_m)
         else:
             for item in l_var_codes:
                 var_code, unitid, samplemedium = self.get_variable_params(item)
 
                 q = self.db_session.query(odm2_models.MeasurementResults).\
-                    distinct(odm2_models.Results.VariableID,
-                             odm2_models.Results.UnitsID,
-                             odm2_models.Results.SampledMediumCV).\
-                    join(odm2_models.Results).\
+                    distinct(odm2_models.MeasurementResults.VariableID,
+                             odm2_models.MeasurementResults.UnitsID,
+                             odm2_models.MeasurementResults.SampledMediumCV).\
                     join(odm2_models.Variables)
-                q = q.filter(odm2_models.Variables.VariableCode == var_code)
+                q = q.filter(odm2_models.MeasurementResults.VariableID == odm2_models.Variables.VariableID,
+                             odm2_models.Variables.VariableCode == var_code)
 
                 if unitid is not None:
-                    q = q.filter(odm2_models.Results.UnitsID == int(unitid))
+                    q = q.filter(odm2_models.MeasurementResults.UnitsID == int(unitid))
                 if samplemedium is not None:
-                    q = q.filter(odm2_models.Results.SampledMediumCV == samplemedium)
+                    q = q.filter(odm2_models.MeasurementResults.SampledMediumCV == samplemedium)
                 r_m = q.all()
                 r_m_Arr.append(r_m)
 
@@ -151,10 +150,10 @@ class Odm2Dao(BaseDao):
         if len(r_m_Arr) is not 0:
             for result_m in r_m_Arr:
                 for result in result_m:
-                    v = result.ResultObj.VariableObj
-                    u = result.ResultObj.UnitsObj
-                    s = result.ResultObj.SampledMediumCV
-                    t = result.TimeUnitObj
+                    v = result.VariableObj
+                    u = result.UnitsObj
+                    s = result.SampledMediumCV
+                    t = result.TimeAggregationIntervalUnitsObj
                     ti = result.TimeAggregationInterval
                     w_v = model.Variable(v,s,u,t,ti)
                     v_arr.append(w_v)
@@ -180,29 +179,29 @@ class Odm2Dao(BaseDao):
         site = self.get_site_by_code(site_code)
         if site is None:
             return None
-        r = self.db_session.query(odm2_models.Results.VariableID.label('vid'),
-                                      odm2_models.Results.UnitsID.label('unitid'),
-                                      odm2_models.Results.SampledMediumCV.label('samplemedium'),
+        r = self.db_session.query(odm2_models.MeasurementResults.VariableID.label('vid'),
+                                      odm2_models.MeasurementResults.UnitsID.label('unitid'),
+                                      odm2_models.MeasurementResults.SampledMediumCV.label('samplemedium'),
                                       func.min(odm2_models.Actions.BeginDateTime).label("begindate"),
                                       func.max(odm2_models.Actions.EndDateTime).label("enddate")).\
-                group_by(odm2_models.Results.VariableID,
-                         odm2_models.Results.UnitsID,
-                         odm2_models.Results.SampledMediumCV).\
+                group_by(odm2_models.MeasurementResults.VariableID,
+                         odm2_models.MeasurementResults.UnitsID,
+                         odm2_models.MeasurementResults.SampledMediumCV).\
                 join(odm2_models.FeatureActions).\
                 join(odm2_models.Actions).\
-                join(odm2_models.SamplingFeatures).\
                 join(odm2_models.Specimens).\
                 filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
+                       odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
                        odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID).all()
 
-        result = self.db_session.query(odm2_models.Results).\
-                distinct(odm2_models.Results.VariableID,
-                         odm2_models.Results.UnitsID,
-                         odm2_models.Results.SampledMediumCV).\
+        result = self.db_session.query(odm2_models.MeasurementResults).\
+                distinct(odm2_models.MeasurementResults.VariableID,
+                         odm2_models.MeasurementResults.UnitsID,
+                         odm2_models.MeasurementResults.SampledMediumCV).\
                 join(odm2_models.FeatureActions).\
-                join(odm2_models.SamplingFeatures).\
                 join(odm2_models.Specimens).\
                 filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
+                       odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
                        odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID).all()
 
         r_arr = []
@@ -225,33 +224,33 @@ class Odm2Dao(BaseDao):
         site = self.get_site_by_code(site_code)
         if site is None:
             return None
-        r = self.db_session.query(odm2_models.Results.VariableID.label('vid'),
-                                      odm2_models.Results.UnitsID.label('unitid'),
-                                      odm2_models.Results.SampledMediumCV.label('samplemedium'),
+        r = self.db_session.query(odm2_models.MeasurementResults.VariableID.label('vid'),
+                                      odm2_models.MeasurementResults.UnitsID.label('unitid'),
+                                      odm2_models.MeasurementResults.SampledMediumCV.label('samplemedium'),
                                       func.min(odm2_models.Actions.BeginDateTime).label("begindate"),
                                       func.max(odm2_models.Actions.EndDateTime).label("enddate")).\
-                group_by(odm2_models.Results.VariableID,
-                         odm2_models.Results.UnitsID,
-                         odm2_models.Results.SampledMediumCV).\
+                group_by(odm2_models.MeasurementResults.VariableID,
+                         odm2_models.MeasurementResults.UnitsID,
+                         odm2_models.MeasurementResults.SampledMediumCV).\
                 join(odm2_models.FeatureActions).\
                 join(odm2_models.Actions).\
-                join(odm2_models.SamplingFeatures).\
                 join(odm2_models.Specimens).\
                 join(odm2_models.Variables).\
                 filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
+                       odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
                        odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID,
                        odm2_models.Variables.VariableCode == var_code).all()
 
-        result = self.db_session.query(odm2_models.Results).\
-                distinct(odm2_models.Results.VariableID,
-                         odm2_models.Results.UnitsID,
-                         odm2_models.Results.SampledMediumCV).\
+        result = self.db_session.query(odm2_models.MeasurementResults).\
+                distinct(odm2_models.MeasurementResults.VariableID,
+                         odm2_models.MeasurementResults.UnitsID,
+                         odm2_models.MeasurementResults.SampledMediumCV).\
                 join(odm2_models.FeatureActions).\
-                join(odm2_models.SamplingFeatures).\
                 join(odm2_models.Variables).\
                 join(odm2_models.Specimens).\
                 join(odm2_models.Variables).\
                 filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
+                       odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
                        odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID,
                        odm2_models.Variables.VariableCode == var_code).all()
 
@@ -273,9 +272,7 @@ class Odm2Dao(BaseDao):
     def get_specimen_data(self):
         q = self.db_session.query(odm2_models.MeasurementResultValues).\
                     join(odm2_models.MeasurementResults).\
-                    join(odm2_models.Results).\
                     join(odm2_models.FeatureActions).\
-                    join(odm2_models.SamplingFeatures).\
                     join(odm2_models.Specimens).\
                     join(odm2_models.Variables)
         return q
@@ -292,12 +289,13 @@ class Odm2Dao(BaseDao):
             try:
                 q = self.get_specimen_data()
                 q = q.filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
-                        odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID,
+                             odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                             odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID,
                              odm2_models.Variables.VariableCode == var_code)
                 if unitid is not None:
-                    q = q.filter(odm2_models.Results.UnitsID == int(unitid))
+                    q = q.filter(odm2_models.MeasurementResults.UnitsID == int(unitid))
                 if samplemedium is not None:
-                    q = q.filter(odm2_models.Results.SampledMediumCV == samplemedium)
+                    q = q.filter(odm2_models.MeasurementResults.SampledMediumCV == samplemedium)
                 valueResultArr = q.all()
             except:
                 valueResultArr = []
@@ -307,14 +305,15 @@ class Odm2Dao(BaseDao):
             try:
                 q = self.get_specimen_data()
                 q = q.filter(odm2_models.Specimens.SamplingFeatureID == odm2_models.RelatedFeatures.SamplingFeatureID,
-                    odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID,
-                           odm2_models.Variables.VariableCode == var_code,
-                           odm2_models.MeasurementResultValues.ValueDateTime >= begin_date_time,
-                           odm2_models.MeasurementResultValues.ValueDateTime <= end_date_time)
+                             odm2_models.MeasurementResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                             odm2_models.RelatedFeatures.RelatedFeatureID == site.SiteID,
+                             odm2_models.Variables.VariableCode == var_code,
+                             odm2_models.MeasurementResultValues.ValueDateTime >= begin_date_time,
+                             odm2_models.MeasurementResultValues.ValueDateTime <= end_date_time)
                 if unitid is not None:
-                    q = q.filter(odm2_models.Results.UnitsID == int(unitid))
+                    q = q.filter(odm2_models.MeasurementResults.UnitsID == int(unitid))
                 if samplemedium is not None:
-                    q = q.filter(odm2_models.Results.SampledMediumCV == samplemedium)
+                    q = q.filter(odm2_models.MeasurementResults.SampledMediumCV == samplemedium)
                 valueResultArr = q.all()
             except:
                 valueResultArr = []
@@ -326,12 +325,12 @@ class Odm2Dao(BaseDao):
             first_flag = True
             if unitid is None and samplemedium is None:
                 for valueResult in valueResultArr:
-                    variable_key = '%s::%s-%s' % (valueResult.MeasurementResultObj.ResultObj.VariableObj.VariableCode,
-                                              valueResult.MeasurementResultObj.ResultObj.UnitsID,
-                                              valueResult.MeasurementResultObj.ResultObj.SampledMediumCV)
+                    variable_key = '%s::%s-%s' % (valueResult.ResultObj.VariableObj.VariableCode,
+                                              valueResult.ResultObj.UnitsID,
+                                              valueResult.ResultObj.SampledMediumCV)
                     if first_flag:
                         first_flag = False
-                        org_id = valueResult.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
+                        org_id = valueResult.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
                         aff = self.db_session.query(odm2_models.Affiliations).\
                             filter(odm2_models.Affiliations.OrganizationID == org_id).first()
                     w_v = model.DataValue(valueResult,aff)
@@ -347,7 +346,7 @@ class Odm2Dao(BaseDao):
                 for valueResult in valueResultArr:
                     if first_flag:
                         first_flag = False
-                        org_id = valueResult.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
+                        org_id = valueResult.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
                         aff = self.db_session.query(odm2_models.Affiliations).\
                             filter(odm2_models.Affiliations.OrganizationID == org_id).first()
                     w_v = model.DataValue(valueResult,aff)

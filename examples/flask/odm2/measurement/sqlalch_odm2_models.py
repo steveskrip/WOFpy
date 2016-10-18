@@ -47,10 +47,10 @@ class Site(wof_base.BaseSite):
         self.Latitude = s.Latitude
         self.Longitude = s.Longitude
         self.LatLongDatumID = s.SpatialReferenceID
-        self.SiteCode = s.SamplingFeatureObj.SamplingFeatureCode
-        self.SiteName = s.SamplingFeatureObj.SamplingFeatureName
-        self.Elevation_m = s.SamplingFeatureObj.Elevation_m
-        self.Comments = s.SamplingFeatureObj.SamplingFeatureDescription
+        self.SiteCode = s.SamplingFeatureCode
+        self.SiteName = s.SamplingFeatureName
+        self.Elevation_m = s.Elevation_m
+        self.Comments = s.SamplingFeatureDescription
         sr = wof_base.BaseSpatialReference()
         sr.SpatialReferenceId = s.SpatialReferenceObj.SpatialReferenceID
         sr.SRSID = s.SpatialReferenceObj.SRSCode
@@ -108,17 +108,17 @@ class DataValue(wof_base.BaseDataValue):
             self.SourceID = aff_obj.AffiliationID
             #self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
 
-        self.CensorCode = v.MeasurementResultObj.CensorCodeCV
-        self.MethodID = v.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
-        self.QualityControlLevelID = v.MeasurementResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelID
-        #self.QualityControlLevel = QualityControlLevel(v.MeasurementResultObj.ResultObj.ProcessingLevelObj)
-        self.QualityControlLevel = v.MeasurementResultObj.ResultObj.ProcessingLevelObj.ProcessingLevelCode
+        self.CensorCode = v.ResultObj.CensorCodeCV
+        self.MethodID = v.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
+        self.QualityControlLevelID = v.ResultObj.ProcessingLevelObj.ProcessingLevelID
+        #self.QualityControlLevel = QualityControlLevel(v.ResultObj.ProcessingLevelObj)
+        self.QualityControlLevel = v.ResultObj.ProcessingLevelObj.ProcessingLevelCode
 
         #extra info
-        #self.MethodCode = v.MeasurementResultObj.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
-        #self.VariableID = v.MeasurementResultObj.ResultObj.VariableID
-        #self.UnitID = v.MeasurementResultObj.ResultObj.UnitsID
-        #self.SampleMedium = v.MeasurementResultObj.ResultObj.SampledMediumCV
+        #self.MethodCode = v.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
+        #self.VariableID = v.ResultObj.VariableID
+        #self.UnitID = v.ResultObj.UnitsID
+        #self.SampleMedium = v.ResultObj.SampledMediumCV
 
 class Method(wof_base.BaseMethod):
     def __init__(self,m_obj):
