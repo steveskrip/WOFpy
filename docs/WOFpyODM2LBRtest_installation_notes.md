@@ -26,6 +26,8 @@ $ python runserver_odm2_timeseries.py --config=odm2_config_timeseries.cfg --conn
 ```
 
 ## Extra Notes
+
+### Non-fatal error messages
 - On http://127.0.0.1:8080/odm2timeseries/rest/1_1/GetSiteInfo?site=odm2timeseries:USU-LBR-Mendon and http://127.0.0.1:8080/odm2timeseries/rest/1_1/GetSiteInfoMultple?site=odm2timeseries:USU-LBR-Mendon I am getting these non-fatal errors
 ``` bash
 ERROR:root:bad datetime conversion
@@ -47,6 +49,13 @@ ERROR:root:bad datetime conversion
 ERROR:root:bad datetime conversion
 ERROR:root:bad datetime conversion
 ```
+
+### Links to relevant WOFpy resources and documentation
+- Notes from Aug 12 weekly BiGCZ meeting, on Google Drive:
+https://docs.google.com/document/d/1Ok_lN37hdDXjD8H_ElOIRYbAHJ4_WPAPyxx0iiuSR8k/edit#bookmark=kix.iiqm28wbiruz
+There are lots of links here to WOFpy documentation, plus other guidance and comments.
+- A [github issue](https://github.com/ODM2/WOFpy/issues/59) that includes a lot of discussions and error reports. 
+Initially it was focused on how to install the WOFpy package (and how to install and use miniconda ...). Then it got into installation and configuration errors people were running into.
 
 ## Installing WOFpy Docker image
 We created a Docker Image for this WOFpy MySQL Example. It's [available here.](https://hub.docker.com/r/lsetiawan/wofpy/) On Mac or Linux, if you have Docker installed and have the docker engine running, just run this statement:
