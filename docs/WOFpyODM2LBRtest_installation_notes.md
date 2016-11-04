@@ -51,9 +51,7 @@ ERROR:root:bad datetime conversion
 ```
 
 ### Links to relevant WOFpy resources and documentation
-- Notes from Aug 12 weekly BiGCZ meeting, on Google Drive:
-https://docs.google.com/document/d/1Ok_lN37hdDXjD8H_ElOIRYbAHJ4_WPAPyxx0iiuSR8k/edit#bookmark=kix.iiqm28wbiruz
-There are lots of links here to WOFpy documentation, plus other guidance and comments.
+- [Notes from Aug 12 weekly BiGCZ meeting, on Google Drive](https://docs.google.com/document/d/1Ok_lN37hdDXjD8H_ElOIRYbAHJ4_WPAPyxx0iiuSR8k/edit#bookmark=kix.iiqm28wbiruz). There are lots of links here to WOFpy documentation, plus other guidance and comments.
 - A [github issue](https://github.com/ODM2/WOFpy/issues/59) that includes a lot of discussions and error reports. 
 Initially it was focused on how to install the WOFpy package (and how to install and use miniconda ...). Then it got into installation and configuration errors people were running into.
 
