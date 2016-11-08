@@ -4,6 +4,8 @@ Notes mostly from @lsetiawan (with minor edits by @emiliom) on steps followed to
 
 These notes include installation of WOFpy from its `conda` package; downloading and installing the Litter Bear River (LBR) test database; configuring WOFpy for the LBR database; running WOFpy; and installing the WOFpy Docker image we created.
 
+Note that this installation was in "testing" mode, not as a live service.
+
 ## Installing WOFpy:
 1. Create the conda environment (after installing Anaconda or miniconda): `conda create -n wofpy -c ODM2 python=2.7 wofpy odm2api mysql-python`. *Note: `mysql-python` is not installed by the wofpy package*
 2. Download the Little Bear River (LBR) test database from https://github.com/ODM2/ODM2/tree/master/usecases/littlebearriver
