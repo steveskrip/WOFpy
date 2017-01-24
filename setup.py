@@ -55,7 +55,6 @@ setup(
         'flask>=0.10.0',
         'lxml>=3.4.4',
         'spyne>=2.12.8',
-        'nose',
         'python-dateutil',
         'jinja2',
         'pytz'
@@ -66,7 +65,6 @@ setup(
         'sqlite': ["sqlalchemy"],
     },
     dependency_links=[
-        "git+https://github.com/ODM2/geoalchemy.git@v0.7.3#egg=geoalchemy-0.7.3",
         "git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0"
     ],
     tests_require=["suds", "requests"],

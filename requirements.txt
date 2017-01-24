@@ -1,0 +1,11 @@
+flask>=0.10.0
+lxml>=3.4.4
+spyne>=2.12.8
+python-dateutil
+jinja2
+pytz
+sqlalchemy
+sqlalchemy
+odm2api
+# geoalchemy-odm2 not used in the code!
+# pyodbc # odm1
