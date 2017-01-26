@@ -86,7 +86,7 @@ Server Specifications:
 	#logging.basicConfig(level=logging.DEBUG)
 	#logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
-	connection = 'mysql+mysqldb://root:119576ok@127.0.0.1:3306/ODM2'
+	connection = 'mysql+mysqldb://root:password@127.0.0.1:3306/ODM2'
 
 	dao = Odm2Dao(connection)
 	config_file = 'odm2_config_timeseries.cfg'
