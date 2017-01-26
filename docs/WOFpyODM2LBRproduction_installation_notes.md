@@ -72,9 +72,6 @@ Server Specifications:
 
 	import wof.flask
 
-	curr_folder = os.path.abspath(os.path.dirname(__file__))
-	sys.path.insert(0, '%s/../../../' % curr_folder)
-
 	import logging
 	import wof
 
@@ -89,13 +86,15 @@ Server Specifications:
 	#logging.basicConfig(level=logging.DEBUG)
 	#logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
-	connection = 'mysql+mysqldb://root:password@127.0.0.1:3306/ODM2'
+	connection = 'mysql+mysqldb://root:119576ok@127.0.0.1:3306/ODM2'
 
 	dao = Odm2Dao(connection)
-    app = wof.flask.create_wof_flask_app(dao, 'odm2_config_timeseries.cfg')
+	config_file = 'odm2_config_timeseries.cfg'
+	timeseries_conf = wof.core.wofConfig(dao, config_file)
+	app = wof.flask.create_wof_flask_multiple({timeseries_conf}, templates='/home/ubuntu/miniconda/envs/wofpy/lib/python2.7/site-packages/wof/flask/templates')
 
 	def startServer(openPort = 8080):
-	    
+
 	    app.config['DEBUG'] = True
 
 
@@ -103,14 +102,14 @@ Server Specifications:
 	    print "----------------------------------------------------------------"
 	    print "Acess Service endpoints at "
 	    for path in wof.site_map(app):
-	        print "%s%s" % (url,path)
+		print "%s%s" % (url,path)
 
 	    print "----------------------------------------------------------------"
 
 	    app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 	if __name__ == '__main__':
-		startServer()
+	    startServer()
 	```
 2. Test that `runserver.py` will deploy WOFpy. Go to `ip:8080/odm2timeseries/` on your browser once it is deployed.
 
