@@ -16,6 +16,13 @@ Server Specifications:
 ## Installing WOFpy:
 
 1. Install miniconda into the user home directory. `/home/ubuntu/miniconda`
+	```bash
+	$ url=https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+	$ curl $url -o miniconda.sh
+	$ bash miniconda.sh -b
+	$ export PATH=$HOME/miniconda2/bin:$PATH
+	```
+
 2. Create the conda environment: `conda create -n wofpy -c ODM2 -c conda-forge python=2.7 wofpy odm2api mysql-python uwsgi`. *Note: `mysql-python` is not installed by the wofpy package and we'll need `uwsgi` for the application*
 3. Download the Little Bear River (LBR) test MySQL database
 
@@ -91,7 +98,7 @@ Server Specifications:
 	dao = Odm2Dao(connection)
 	config_file = 'odm2_config_timeseries.cfg'
 	timeseries_conf = wof.core.wofConfig(dao, config_file)
-	app = wof.flask.create_wof_flask_multiple({timeseries_conf}, templates='/home/ubuntu/miniconda/envs/wofpy/lib/python2.7/site-packages/wof/flask/templates')
+	app = wof.flask.create_wof_flask_multiple({timeseries_conf}, templates=os.path.join(wof.__path__[0],'flask/templates'))
 
 	def startServer(openPort = 8080):
 
@@ -195,6 +202,27 @@ Server Specifications:
 	$ ps aux | grep timeseries.ini # This command is to check whether the process started successfully
 	```
 
+**For system that uses systemd follow the steps below to create an upstart script**
+
+1. Create the upstart script `timeseries.service` in `/etc/systemd/system/`. Insert the following into the file:
+	```bash
+	[Unit]
+ 	Description=uWSGI instance to serve timeseries
+ 
+ 	[Service]
+ 	ExecStart=/bin/bash -c 'export PATH=/home/ubuntu/miniconda/bin:$PATH; source activate wofpy; cd /var/www/timeseries; uwsgi --ini timeseries.ini'
+ 
+	[Install]
+	WantedBy=multi-user.target
+	```
+
+2. Start the service by using the following command.
+	```bash
+	$ sudo systemctl start timeseries
+	$ systemctl status timeseries # This command is to make sure the service is started and running correctly
+	$ sudo systemctl enable timeseries # This command enables the code to run independently
+	```
+
 ## Configuring NGINX
 
 1. Create a new server block configuration file `timeseries` in `/etc/nginx/sites-available/`
@@ -228,5 +256,15 @@ Server Specifications:
 	```bash
 	$ sudo service nginx restart
 	```
+
+**For systemd system**
+
+After setting up nginx run the following command
+```bash
+$ sudo systemctl start nginx
+$ sudo systemctl enable nginx
+```
+
+To view nginx errors checkout the log `/var/log/nginx/error.log`. Ensure that all files in the `timeseries` folder are still owned by www-data.
 
 **Now go to ip:8080/odm2timeseries and you should see WOFpy running. Click on the links available to see if the application is working properly.**
