@@ -6,9 +6,9 @@ These notes include installation of WOFpy from its `conda` package; downloading 
 
 Note that this installation is [live on the cloud](http://52.24.188.162:8080/odm2timeseries/).
 
-Server Specifications:
-- Ubuntu 14.04
-- MySQL 5.6
+Tested on:
+- Ubuntu 14.04 and 16.04
+- MySQL 5.6 and 5.5.28
 - NGINX 1.10.2
 
 **These instructions assumes that a Linux Server or Amazon EC2 Instance is already set up.**
