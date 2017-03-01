@@ -25,7 +25,7 @@ Deployment of WOFpy was done in an Ubuntu Server. WOFpy is served by using [NGIN
 
 ### [Amazon Web Services (AWS)](https://aws.amazon.com/) 
 
-Note that this installation is [live on the cloud](http://35.167.209.27:8080/odm2timeseries/).
+Note that this installation is [live on the cloud](http://52.40.105.124:8080/odm2timeseries/).
 
 Specifications:
 - Ubuntu 14.04
