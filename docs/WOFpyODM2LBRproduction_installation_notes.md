@@ -25,23 +25,23 @@ Deployment of WOFpy was done in an Ubuntu Server. WOFpy is served by using [NGIN
 
 ### [Amazon Web Services (AWS)](https://aws.amazon.com/) 
 
-Note that this installation is [live on the cloud](http://52.40.105.124:8080/odm2timeseries/).
+Note that this installation is currently (2017-3-1) [live on the cloud](http://52.40.105.124:8080/odm2timeseries/). It will be kept live only during active testing, and will be taken down without prior notice when active testing is over. It will be reactivated in the future as needed.
 
 Specifications:
 - Ubuntu 14.04
 - MySQL 5.6
 - NGINX 1.10.2
 
-The AWS Ubuntu Server is running [SysV init](http://en.wikipedia.org/wiki/Init#SysV-style) system
+The AWS Ubuntu Server is running [SysV init](http://en.wikipedia.org/wiki/Init#SysV-style) system.
 
 ### Local Ubuntu Machine
 
 Tested on:
 - Ubuntu 16.04
 - MySQL 5.5.28
-- NGINX 1.10.2
+- NGINX 1.10.2 (*assumed but not confirmed*)
 
-The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wiki/Software/systemd/) system
+The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wiki/Software/systemd/) system.
 
 **These instructions assumes that a Linux Server or Amazon EC2 Instance is already set up.**
 
@@ -316,4 +316,4 @@ $ sudo systemctl enable nginx
 
 ## Checking Live instance of WOFpy
 
-Go to ip:8080/odm2timeseries and you should see WOFpy running. Click on the links available to see if the application is working properly.
+Go to `ip:8080/odm2timeseries` and you should see WOFpy running. Click on the links available to see if the application is working properly.
