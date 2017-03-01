@@ -4,7 +4,7 @@ Notes on the deployment of WOFpy in an AWS EC2 Instance (Linux Ubuntu 14.04 Serv
 
 These notes include installation of WOFpy from its `conda` package; downloading and installing the Litter Bear River (LBR) test database; configuring WOFpy for the LBR database; running WOFpy; and installing the WOFpy Docker image we created. *Most of the steps are copied from [WOFpyODM2LBRtest_installation_notes.md](https://github.com/ODM2/WOFpy/blob/master/docs/WOFpyODM2LBRtest_installation_notes.md) with some modifications.
 
-Note that this installation is [live on the cloud](http://52.24.188.162:8080/odm2timeseries/).
+Note that this installation is [live on the cloud](http://35.167.209.27:8080/odm2timeseries/).
 
 Tested on:
 - Ubuntu 14.04 and 16.04
