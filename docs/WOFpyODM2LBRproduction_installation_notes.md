@@ -1,19 +1,53 @@
-# Installing WOFpy on [Amazon Web Services (AWS)](https://aws.amazon.com/) with Little Bear River MySQL ODM2 test database
-
-Notes on the deployment of WOFpy in an AWS EC2 Instance (Linux Ubuntu 14.04 Server). WOFpy is served by using [NGINX](https://www.nginx.com/) and [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/).
+# Installing WOFpy with Little Bear River MySQL ODM2 test database
 
 These notes include installation of WOFpy from its `conda` package; downloading and installing the Litter Bear River (LBR) test database; configuring WOFpy for the LBR database; running WOFpy; and installing the WOFpy Docker image we created. *Most of the steps are copied from [WOFpyODM2LBRtest_installation_notes.md](https://github.com/ODM2/WOFpy/blob/master/docs/WOFpyODM2LBRtest_installation_notes.md) with some modifications.
 
+## Table of Contents
+
+- [Testing Environments](#testing-environments)
+	+ [Amazon Web Services (AWS)](#amazon-web-services-aws)
+	+ [Local Ubuntu Machine](#local-ubuntu-machine)
+- [Installing WOFpy](#installing-wofpy)
+- [Installing NGINX](#installing-nginx)
+- [Setting up runserver script and wsgi.py](#setting-up-runserver-script-and-wsgipy)
+- [Configuring WSGI](#configuring-wsgi)
+	+ [AWS SysV init system](#aws-sysv-init-system)
+	+ [Local Server Systemd init system](#local-server-systemd-init-system)
+- [Configuring NGINX](#configuring-nginx)
+	+ [AWS SysV init system](#aws-sysv-init-system_1)
+	+ [Local Server Systemd init system](#local-server-systemd-init-system_1)
+- [Checking Live instance of WOFpy](#checking-live-instance-of-wofpy)
+
+## Testing Environments
+
+We tested WOFpy installations on Amazon Web Services and a local Ubuntu Server.
+Deployment of WOFpy was done in an Ubuntu Server. WOFpy is served by using [NGINX](https://www.nginx.com/) and [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/).
+
+### [Amazon Web Services (AWS)](https://aws.amazon.com/) 
+
 Note that this installation is [live on the cloud](http://35.167.209.27:8080/odm2timeseries/).
 
-Tested on:
-- Ubuntu 14.04 and 16.04
-- MySQL 5.6 and 5.5.28
+Specifications:
+- Ubuntu 14.04
+- MySQL 5.6
 - NGINX 1.10.2
+
+The AWS Ubuntu Server is running [SysV init](http://en.wikipedia.org/wiki/Init#SysV-style) system
+
+### Local Ubuntu Machine
+
+Tested on:
+- Ubuntu 16.04
+- MySQL 5.5.28
+- NGINX 1.10.2
+
+The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wiki/Software/systemd/) system
 
 **These instructions assumes that a Linux Server or Amazon EC2 Instance is already set up.**
 
-## Installing WOFpy:
+## Installing WOFpy
+
+**Note: The installation step for WOFpy should be the same for both server on AWS and local**
 
 1. Install miniconda into the user home directory. `/home/ubuntu/miniconda`
 	```bash
@@ -38,7 +72,9 @@ Tested on:
 	```
 7. Clone the WOFpy repository `$ git clone https://github.com/ODM2/WOFpy.git`
 
-## Installing NGINX:
+## Installing NGINX
+
+**Note: The installation step for NGINX should be the same for both server on AWS and local**
 
 1. Install nginx into the system
 
@@ -71,6 +107,8 @@ Tested on:
 	```
 
 ## Setting up runserver script and wsgi.py
+
+**Note: This step for setting up runserver script and wsgi.py should be the same for both server on AWS and local**
 
 1. Using `runserver_odm2_timeseries.py` as an example, create a `runserver.py` script.
 
@@ -118,6 +156,7 @@ Tested on:
 	if __name__ == '__main__':
 	    startServer()
 	```
+
 2. Test that `runserver.py` will deploy WOFpy. Go to `ip:8080/odm2timeseries/` on your browser once it is deployed.
 
 	```bash
@@ -172,7 +211,9 @@ Tested on:
 	die-on-term = true
 	```
 
-4. Create an upstart script `timeseries.conf` in `/etc/init/. This will allow the init system to automatically start uwsgi and serve out WOFpy when the server boots. 
+### AWS SysV init system
+
+1. Create an upstart script `timeseries.conf` in `/etc/init/. This will allow the init system to automatically start uwsgi and serve out WOFpy when the server boots. 
 
 	``` bash
 	# description of the script purpose
@@ -195,14 +236,15 @@ Tested on:
 	chdir /var/www/timeseries
 	exec uwsgi --ini timeseries.ini
 	```
-5. Start the uwsgi process.
+
+2. Start the uwsgi process.
 
 	```bash
 	$ sudo start timeseries
 	$ ps aux | grep timeseries.ini # This command is to check whether the process started successfully
 	```
 
-**For system that uses systemd follow the steps below to create an upstart script**
+### Local Server Systemd init system
 
 1. Create the upstart script `timeseries.service` in `/etc/systemd/system/`. Insert the following into the file:
 	```bash
@@ -251,20 +293,27 @@ Tested on:
 	$ sudo nginx -t
 	```
 
-4. If no issues restart Nginx server 
+To view nginx errors checkout the log `/var/log/nginx/error.log`. Ensure that all files in the `timeseries` folder are still owned by www-data.
 
-	```bash
-	$ sudo service nginx restart
-	```
+### AWS SysV init system
 
-**For systemd system**
+If no issues restart Nginx server 
+
+```bash
+$ sudo service nginx restart
+```
+
+
+### Local Server Systemd init system
 
 After setting up nginx run the following command
+
 ```bash
 $ sudo systemctl start nginx
 $ sudo systemctl enable nginx
 ```
 
-To view nginx errors checkout the log `/var/log/nginx/error.log`. Ensure that all files in the `timeseries` folder are still owned by www-data.
 
-**Now go to ip:8080/odm2timeseries and you should see WOFpy running. Click on the links available to see if the application is working properly.**
+## Checking Live instance of WOFpy
+
+Go to ip:8080/odm2timeseries and you should see WOFpy running. Click on the links available to see if the application is working properly.
