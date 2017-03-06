@@ -1,6 +1,8 @@
 # Installing WOFpy with Little Bear River MySQL ODM2 test database
 
-These notes include installation of WOFpy from its `conda` package; downloading and installing the Litter Bear River (LBR) test database; configuring WOFpy for the LBR database; running WOFpy; and installing the WOFpy Docker image we created. *Most of the steps are copied from [WOFpyODM2LBRtest_installation_notes.md](https://github.com/ODM2/WOFpy/blob/master/docs/WOFpyODM2LBRtest_installation_notes.md) with some modifications.
+These notes cover installation of `WOFpy` from its `conda` package; downloading and installing the Little Bear River (LBR) ODM2 MySQL test database; configuring WOFpy for the LBR database; and running WOFpy. *The instructions enable the creation of "live" web services exposed to external use.*
+
+Most of the steps were originally copied from [WOFpyODM2LBRtest_installation_notes.md](https://github.com/ODM2/WOFpy/blob/master/docs/WOFpyODM2LBRtest_installation_notes.md) with some modifications; we're no longer actively maintaining that page, but it still has useful content, including references to relevant discussions.
 
 ## Table of Contents
 
@@ -21,7 +23,7 @@ These notes include installation of WOFpy from its `conda` package; downloading 
 ## Testing Environments
 
 We tested WOFpy installations on Amazon Web Services and a local Ubuntu Server.
-Deployment of WOFpy was done in an Ubuntu Server. WOFpy is served by using [NGINX](https://www.nginx.com/) and [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/).
+Deployment of WOFpy was done in an Ubuntu Server. WOFpy is served by using [NGINX](https://www.nginx.com/) and [uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/). **These instructions assume that Amazon AWS EC2 Instance or a local Linux Ubuntu Server is already set up.**
 
 ### [Amazon Web Services (AWS)](https://aws.amazon.com/) 
 
@@ -43,7 +45,6 @@ Tested on:
 
 The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wiki/Software/systemd/) system.
 
-**These instructions assumes that a Linux Server or Amazon EC2 Instance is already set up.**
 
 ## Installing WOFpy
 
