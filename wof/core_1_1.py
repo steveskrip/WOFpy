@@ -731,9 +731,12 @@ class WOF_1_1(object):
         # WML1_1 wants a datetime, no zone. breaks the conversion
         try:
             beginDateTime =  dateutil.parser.parse(beginDateTime)
+        except Exception as inst:
+            logging.warn('bad datetime conversion on beginDateTime:' + inst.message)
+        try:
             endDateTime =  dateutil.parser.parse(endDateTime)
         except Exception as inst:
-              logging.error('bad datetime conversion')
+            logging.warn('bad datetime conversion on endDateTime:' + inst.message)
 
         #TimeInterval
         if beginDateTime is None:
