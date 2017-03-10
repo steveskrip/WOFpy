@@ -58,7 +58,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 	$ export PATH=$HOME/miniconda2/bin:$PATH
 	```
 
-2. Create the conda environment: `conda create -n wofpy -c ODM2 -c conda-forge python=2.7 wofpy odm2api mysql-python uwsgi`. *Note: `mysql-python` is not installed by the wofpy package and we'll need `uwsgi` for the application*
+2. Create the "wofpy" conda environment: `conda create -n wofpy -c ODM2 -c conda-forge python=2.7 wofpy odm2api mysql-python uwsgi`. *Note: `mysql-python` is not installed by the wofpy package and we'll need `uwsgi` for the application*
 3. Download the Little Bear River (LBR) test MySQL database
 
 	```bash
@@ -95,7 +95,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 
 	**This welcome page is located in `/var/www/html/`**
 
-3. Copy the example timeseries folder from WOFpy repository to `/var/www/`
+3. Copy the example `odm2/timeseries` folder from WOFpy repository to `/var/www/`
 
 	```bash
 	$ sudo cp -r /home/ubuntu/WOFpy/examples/flask/odm2/timeseries /var/www/
