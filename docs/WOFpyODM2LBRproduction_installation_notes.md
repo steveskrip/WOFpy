@@ -111,7 +111,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 
 **Note: This step for setting up runserver script and wsgi.py should be the same for both server on AWS and local**
 
-1. Using `runserver_odm2_timeseries.py` as an example, create a `runserver.py` script.
+1. Using `runserver_odm2_timeseries.py` as an example, create a `runserver.py` script. Avoid using `localhost` in place of `127.0.0.1` below, to minimize problems.
 
 	```python
 	import os, sys
