@@ -2,3 +2,5 @@ flake8
 pytest
 suds-jurko
 requests
+pyodbc
+geoalchemy-odm2
