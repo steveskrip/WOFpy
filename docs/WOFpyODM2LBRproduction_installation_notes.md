@@ -9,6 +9,7 @@ Most of the steps were originally copied from [WOFpyODM2LBRtest_installation_not
 - [Testing Environments](#testing-environments)
 	+ [Amazon Web Services (AWS)](#amazon-web-services-aws)
 	+ [Local Ubuntu Machine](#local-ubuntu-machine)
+- [Installing the LBR ODM2 MySQL test database](#installing-the-lbr-odm2-mysql-test-database)
 - [Installing WOFpy](#installing-wofpy)
 - [Installing NGINX](#installing-nginx)
 - [Setting up runserver script and wsgi.py](#setting-up-runserver-script-and-wsgipy)
@@ -19,6 +20,7 @@ Most of the steps were originally copied from [WOFpyODM2LBRtest_installation_not
 	+ [AWS SysV init system](#aws-sysv-init-system_1)
 	+ [Local Server Systemd init system](#local-server-systemd-init-system_1)
 - [Checking Live instance of WOFpy](#checking-live-instance-of-wofpy)
+
 
 ## Testing Environments
 
@@ -46,6 +48,26 @@ Tested on:
 The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wiki/Software/systemd/) system.
 
 
+## Installing the LBR ODM2 MySQL test database
+
+**Important Notes:**
+- This step should be the same for both server on AWS and local
+- *Do not use MySQL 5.7. We've identified a problem in MySQL 5.7 with loading from the LBR sample database into a geometry column. MySQL 5.6 and 5.5 have been tested successfully.*
+
+1. Download the Little Bear River (LBR) test MySQL database
+
+	```bash
+	$ wget https://raw.githubusercontent.com/ODM2/ODM2/master/usecases/littlebearriver/sampledatabases/odm2_mysql/LBR_MySQL_SmallExample.sql
+	```
+2.  If MySQL database was a stand alone in Unix, add to /etc/mysql/my.cnf : `lower_case_table_names = 1` under [mysqld]
+3. Create ODM2 database in MySQL. At the bash shell where the LBR SQL file was downloaded: `mysql -u root -p odm2 < LBR_MySQL_SmallExample.sql`
+4. **NOTE: Sample database is missing featuregeometrywkt in samplingfeatures** In order to make WOFpy work, alter the table by adding featuregeometrywkt column, at the mysql client:
+
+	```sql
+	ALTER TABLE samplingfeatures ADD featuregeometrywkt VARCHAR (8000) NULL;
+	```
+
+
 ## Installing WOFpy
 
 **Note: The installation step for WOFpy should be the same for both server on AWS and local**
@@ -59,19 +81,8 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 	```
 
 2. Create the "wofpy" conda environment: `conda create -n wofpy -c ODM2 -c conda-forge python=2.7 wofpy odm2api mysql-python uwsgi`. *Note: `mysql-python` is not installed by the wofpy package and we'll need `uwsgi` for the application*
-3. Download the Little Bear River (LBR) test MySQL database
+3. Clone the WOFpy repository `$ git clone https://github.com/ODM2/WOFpy.git`
 
-	```bash
-	$ wget https://raw.githubusercontent.com/ODM2/ODM2/master/usecases/littlebearriver/sampledatabases/odm2_mysql/LBR_MySQL_SmallExample.sql
-	```
-4.  If MySQL database was a stand alone in Unix, add to /etc/mysql/my.cnf : `lower_case_table_names = 1` under [mysqld]
-5. Create ODM2 database in MySQL. At the bash shell where the LBR SQL file was downloaded: `mysql -u root -p odm2 < LBR_MySQL_SmallExample.sql`
-6. **NOTE: Sample database is missing featuregeometrywkt in samplingfeatures** In order to make WOFpy work, alter the table by adding featuregeometrywkt column, at the mysql client:
-
-	```sql
-	ALTER TABLE samplingfeatures ADD featuregeometrywkt VARCHAR (8000) NULL;
-	```
-7. Clone the WOFpy repository `$ git clone https://github.com/ODM2/WOFpy.git`
 
 ## Installing NGINX
 
@@ -106,6 +117,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 	```bash
 	$ sudo chown -R www-data:www-data /var/www/timeseries
 	```
+
 
 ## Setting up runserver script and wsgi.py
 
@@ -177,6 +189,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 	from runserver import app as application
 	application.secret_key = 'Thisismysecretkey'
 	```
+
 
 ## Configuring WSGI
 
@@ -266,6 +279,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 	$ sudo systemctl enable timeseries # This command enables the code to run independently
 	```
 
+
 ## Configuring NGINX
 
 1. Create a new server block configuration file `timeseries` in `/etc/nginx/sites-available/`
@@ -303,7 +317,6 @@ If no issues restart Nginx server
 ```bash
 $ sudo service nginx restart
 ```
-
 
 ### Local Server Systemd init system
 
