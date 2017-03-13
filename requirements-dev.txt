@@ -3,6 +3,6 @@ pytest
 suds-jurko
 requests
 pyodbc
-# The denpencies below are unavailable at PyPI at the moment!
+# The dependencies below are unavailable at PyPI at the moment!
 geoalchemy-odm2
 odm2api
