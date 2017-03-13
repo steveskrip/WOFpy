@@ -3,4 +3,5 @@ pytest
 suds-jurko
 requests
 pyodbc
+# This geoalchemy is a forked version unavailable at PyPI!
 geoalchemy-odm2
