@@ -8,9 +8,10 @@ CUAHSI is the Consortium of Universities for the
 Advancement of Hydrologic Science, Inc.
 
 """
-import codecs
 import os
 import re
+import sys
+import codecs
 
 from setuptools import Command, setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
@@ -26,13 +27,17 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
-import sys
 if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
 if sys.version_info[0] == 2 and sys.version_info[1] < 7:
     sys.exit("Sorry, Python  2.6 is not supported")
 if sys.version_info[0] == 2 and sys.version_info[1] == 7 and sys.version_info[2] < 8 :
     sys.exit("Sorry, Issues with Python < 2.7.8. Please upgrade to 2.7.10 or above ")
+
+# Dependencies.
+with open('requirements.txt') as f:
+    requirements = f.readlines()
+install_requires = [t.strip() for t in requirements]
 
 setup(
     name='WOFpy',
@@ -51,23 +56,16 @@ setup(
     include_package_data=True,
     zip_safe=False,
     platforms='any',
-    install_requires=[
-        'flask>=0.10.0',
-        'lxml>=3.4.4',
-        'spyne>=2.12.8',
-        'python-dateutil',
-        'jinja2',
-        'pytz'
-    ],
+    install_requires=install_requires,
     extras_require = {
-        'odm1':  ["sqlalchemy", 'pyodbc'],
-        'odm2':  ["sqlalchemy",'odm2api'],
-        'sqlite': ["sqlalchemy"],
+        'odm1':  ['sqlalchemy', 'pyodbc'],
+        'odm2':  ['sqlalchemy','odm2api'],
+        'sqlite': ['sqlalchemy'],
     },
     dependency_links=[
-        "git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0"
+        'git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0'
     ],
-    tests_require=["suds", "requests"],
+    tests_require=['suds-jurko', 'requests'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
