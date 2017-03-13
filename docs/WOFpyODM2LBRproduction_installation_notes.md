@@ -50,9 +50,9 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 
 ## Installing the LBR ODM2 MySQL test database
 
-**Important Notes:**
-- This step should be the same for both server on AWS and local
-- *Do not use MySQL 5.7. We've identified a problem in MySQL 5.7 with loading from the LBR sample database into a geometry column. MySQL 5.6 and 5.5 have been tested successfully.*
+**Note 1: This step should be the same for both server on AWS and local**    
+**Note 2: Do not use MySQL 5.7. We've identified a problem in MySQL 5.7 with loading from the LBR sample database into a geometry column. MySQL 5.6 and 5.5 have been tested successfully.**
+
 
 1. Download the Little Bear River (LBR) test MySQL database
 
