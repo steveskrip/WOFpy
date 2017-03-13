@@ -1,1 +1,3 @@
+include *.txt
 recursive-include wof/flask/templates *
+prune examples
