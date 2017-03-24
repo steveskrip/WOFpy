@@ -1,2 +1,2 @@
 recursive-include wof/flask/templates *
-recursive-include examples/flask/odm2/timeseries *
+recursive-include wof/examples/flask/odm2/timeseries *

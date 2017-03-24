@@ -27,7 +27,7 @@ Options:
   -v --version     Show version.
 """
 
-_ROOT = os.path.abspath(os.path.join(os.pardir, os.pardir, os.path.dirname(__file__)))
+_ROOT = os.path.abspath(os.path.join(os.pardir, os.path.dirname(__file__)))
 _CONFIG = os.path.join(_ROOT, 'examples', 'flask', 'odm2', 'timeseries')
 
 def makedirs(directory):
