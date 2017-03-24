@@ -79,6 +79,6 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
       entry_points=dict(console_scripts=[
-          'wofpy_config = wofpy_config.wofpy_config:main']
+          'wofpy_config = wof.wofpy_config:main']
           ),
 )
