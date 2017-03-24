@@ -2,10 +2,6 @@ import os, sys
 
 import wof.flask
 
-curr_folder = os.path.abspath(os.path.dirname(__file__))
-example_folder = os.path.abspath(os.path.join(*[curr_folder]+3*[os.pardir]))
-sys.path.insert(0, example_folder)
-
 import logging
 import wof
 
