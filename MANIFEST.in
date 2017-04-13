@@ -1,2 +1,3 @@
 include *.txt
 recursive-include wof/flask/templates *
+recursive-include wof/examples/flask/odm2/timeseries *
