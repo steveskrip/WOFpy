@@ -1,4 +1,4 @@
-import suds
+from suds.client import Client
 import unittest
 
 from examples.flask.swis.swis_dao import SwisDao
@@ -61,7 +61,7 @@ except:
 class TestWofpySoap(unittest.TestCase):
     """
     UnitTest to test the WOF SOAP methods using a Suds client.
-    
+
     Assumes a server using the SWIS DAO is already up and running at the
     specified WSDL Address.
     """
@@ -75,9 +75,9 @@ class TestWofpySoap(unittest.TestCase):
         #Change this to your currently-running WSDL
         wsdl_address = "http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl"
         self.network = 'twdb'
-        
-        self.client = suds.client.Client(wsdl_address)
-        
+
+        self.client = Client(wsdl_address)
+
         #Assuming use of LBR ODM database
         #TODO: Maybe should test against SWIS instead.  SQLite seems faster.
         self.known_site_codes = [
@@ -95,7 +95,7 @@ class TestWofpySoap(unittest.TestCase):
             'SB5S', 'SB5W', 'SB6W', 'SBBP', 'SBR1', 'SBR2', 'SBR3', 'SBR4',
             'SBR5', 'SBWS', 'SLNDCUT', 'SWBR', 'TRIN', 'UPBAFF', 'USAB'
         ]
-        
+
         self.known_var_codes = [
            'air_pressure', 'instrument_battery_voltage',
            'water_specific_conductance', 'water_electrical_conductivity',
@@ -107,7 +107,7 @@ class TestWofpySoap(unittest.TestCase):
            'northward_water_velocity', 'eastward_water_velocity',
            'upward_water_velocity', 'water_x_velocity', 'water_y_velocity'
         ]
-        
+
         #Need more test data, only JOB and BAYT have datavalues associated with them
         self.known_series = dict(
             BAYT = ['instrument_battery_voltage',
@@ -124,38 +124,38 @@ class TestWofpySoap(unittest.TestCase):
     def test_getsitesxml(self):
         result = self.client.service.GetSitesXml('')
         self.assertNotEqual(result, None)
-    
+
     def test_getsites(self):
         result = self.client.service.GetSites('')
         self.assertNotEqual(result, None)
-    
+
     def test_getvariableinfo(self):
         result = self.client.service.GetVariableInfo('')
         self.assertNotEqual(result, None)
-        
+
         for var_code in self.known_var_codes:
             result = self.client.service.GetVariableInfo(
                 self.network+':'+var_code)
             self.assertNotEqual(result, None)
             #TODO: test that the var code matches the given var code
-    
+
     def test_getvariableinfoobject(self):
         result = self.client.service.GetVariableInfoObject('')
         self.assertNotEqual(result, None)
-        
+
         for var_code in self.known_var_codes:
             result = self.client.service.GetVariableInfoObject(
                 self.network+':'+var_code)
             self.assertNotEqual(result, None)
             #TODO: test that the var code matches the given var code
-    
+
     def test_getsiteinfo(self):
         for site_code in self.known_series: #TODO: every site should have siteinfo, but the swis db is not complete
             result = self.client.service.GetSiteInfo(
                 self.network+':'+site_code)
             self.assertNotEqual(result, None)
             #TODO: test that the site code in the result matches the given site code
-    
+
     def test_getsiteinfoobject(self):
         for site_code in self.known_series: #TODO: every site should have siteinfo, but the swis db is not complete
             result = self.client.service.GetSiteInfoObject(
@@ -167,7 +167,7 @@ class TestWofpySoap(unittest.TestCase):
         for site_code, var_code_list in self.known_series.items():
             for var_code in var_code_list:
                 result = self.client.service.GetValues(self.network+':'+site_code, self.network+':'+var_code)
-            
+
     def test_getvaluesobject(self):
         for site_code, var_code_list in self.known_series.items():
             for var_code in var_code_list:
