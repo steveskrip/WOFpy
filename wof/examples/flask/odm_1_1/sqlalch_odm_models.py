@@ -1,3 +1,4 @@
+from __future__ import (absolute_import, division, print_function)
 
 from sqlalchemy import (Column, Integer, String, ForeignKey, Float, DateTime,
                         Boolean)
@@ -13,7 +14,7 @@ Base = declarative_base()
 def init_model(db_session):
     Base.query = db_session.query_property()
 
-# return s if you use mixed-case table names, or 
+# return s if you use mixed-case table names, or
 # return s.lower() if you use all-lower-case table names.
 def c(s): return s.lower()
 
@@ -32,10 +33,10 @@ class Variable(Base, wof_base.BaseVariable):
     DataType = Column(String)
     GeneralCategory = Column(String)
     NoDataValue = Column(Float)
-    
+
     VariableUnits = relationship("Units",
                         primaryjoin='Variable.VariableUnitsID==Units.UnitsID')
-    
+
     TimeUnits = relationship("Units",
                         primaryjoin='Variable.TimeUnitsID==Units.UnitsID')
 
@@ -44,7 +45,7 @@ class Variable(Base, wof_base.BaseVariable):
 
 class Site(Base, wof_base.BaseSite):
     __tablename__ = c('Sites')
-    
+
     SiteID = Column(Integer, primary_key = True)
     SiteCode = Column(String)
     SiteName = Column(String)
@@ -61,15 +62,15 @@ class Site(Base, wof_base.BaseSite):
     State = Column(String)
     County = Column(String)
     Comments = Column(String)
-    
+
     LatLongDatum = relationship("SpatialReference",
-                                    primaryjoin='Site.LatLongDatumID==' + 
+                                    primaryjoin='Site.LatLongDatumID==' +
                                         'SpatialReference.SpatialReferenceId')
-    
+
     LocalProjection = relationship("SpatialReference",
-                                    primaryjoin='Site.LocalProjectionID==' + 
+                                    primaryjoin='Site.LocalProjectionID==' +
                                         'SpatialReference.SpatialReferenceId')
-      
+
     def __repr__(self):
         return "<Site('%s','%s', ['%s' '%s'])>" % (self.SiteCode,
                                                    self.SiteName,
@@ -78,7 +79,7 @@ class Site(Base, wof_base.BaseSite):
 
 class DataValue(Base, wof_base.BaseDataValue):
     __tablename__ = c('DataValues')
-    
+
     ValueID = Column(Integer, primary_key = True)
     DataValue = Column(Float)
     ValueAccuracy = Column(Float)
@@ -86,7 +87,7 @@ class DataValue(Base, wof_base.BaseDataValue):
     UTCOffset = Column(Float)
     DateTimeUTC = Column(DateTime)
     SiteID = Column(Integer)
-    VariableID = Column(Integer) 
+    VariableID = Column(Integer)
     OffsetValue = Column(Float)
     OffsetTypeID = Column(Integer)
     CensorCode = Column(String)
@@ -95,43 +96,43 @@ class DataValue(Base, wof_base.BaseDataValue):
     SourceID = Column(Integer)
     SampleID = Column(Integer)
     QualityControlLevelID = Column(Integer)
-    
+
     @property
     def QualityControlLevel(self):
         for name_code in wof_base.QualityControlLevelTypes:
             if self.QualityControlLevelID==name_code[1]:
                 return name_code[0]
-        
+
         return wof_base.QualityControlLevelTypes['RAW_DATA'][0]
-    
+
 class Qualifier(Base, wof_base.BaseQualifier):
     __tablename__ = c('Qualifiers')
-    
+
     QualifierID = Column(Integer, primary_key=True)
     QualifierCode = Column(String)
     QualifierDescription = Column(String)
 
 class OffsetType(Base, wof_base.BaseOffsetType):
     __tablename__ = c('OffsetTypes')
-    
+
     OffsetTypeID = Column(Integer, primary_key = True)
     OffsetUnitsID = Column(Integer, ForeignKey(c('Units')+'.UnitsID'))
     OffsetDescription = Column(String)
-    
+
     OffsetUnits = relationship("Units",
                 primaryjoin='OffsetType.OffsetUnitsID==Units.UnitsID')
 
 
 class Method(Base, wof_base.BaseMethod):
     __tablename__ =c('Methods')
-    
+
     MethodID = Column(Integer, primary_key=True)
     MethodDescription = Column(String)
     MethodLink = Column(String)
-    
+
 class Source(Base, wof_base.BaseSource):
     __tablename__=c('Sources')
-    
+
     SourceID = Column(Integer, primary_key=True)
     Organization = Column(String)
     SourceDescription = Column(String)
@@ -144,29 +145,29 @@ class Source(Base, wof_base.BaseSource):
     State = Column(String)
     ZipCode = Column(String)
     MetadataID = Column(Integer, ForeignKey(c('ISOMetadata')+'.MetadataID'))
-    
+
     Metadata = relationship("Metadata",
                     primaryjoin='Source.MetadataID==Metadata.MetadataID')
-    
+
 class Metadata(Base, wof_base.BaseMetadata):
     __tablename__=c('ISOMetadata')
-    
+
     MetadataID = Column(Integer, primary_key=True)
     TopicCategory = Column(String)
     Title = Column(String)
     Abstract = Column(String)
     ProfileVersion = Column(String)
-    MetadataLink = Column(String)    
+    MetadataLink = Column(String)
 
 class QualityControlLevel(Base, wof_base.BaseQualityControlLevel):
     __tablename__=c('QualityControlLevels')
-    
+
     QualityControlLevelID = Column(Integer, primary_key=True)
     QualityControlLevelCode = Column(String)
 
 class Series(Base, wof_base.BaseSeries):
     __tablename__ = c('SeriesCatalog')
-    
+
     SeriesID = Column(Integer, primary_key = True)
     SiteID = Column(Integer, ForeignKey(c('Sites')+'.SiteID'))
     SiteCode = Column(String)
@@ -174,7 +175,7 @@ class Series(Base, wof_base.BaseSeries):
     VariableID = Column(Integer, ForeignKey(c('Variables')+'.VariableID'))
     VariableCode = Column(String)
     VariableName = Column(String)
-    VariableUnitsID = Column(Integer, ForeignKey(c('Units')+'.UnitsID')) 
+    VariableUnitsID = Column(Integer, ForeignKey(c('Units')+'.UnitsID'))
     VariableUnitsName = Column(String)
     SampleMedium = Column(String)
     ValueType = Column(String)
@@ -195,36 +196,36 @@ class Series(Base, wof_base.BaseSeries):
     BeginDateTimeUTC = Column(DateTime)
     EndDateTimeUTC = Column(DateTime)
     ValueCount = Column(Integer)
-    
+
     Site = relationship("Site",
                 primaryjoin='Series.SiteID==Site.SiteID')
-    
+
     Variable = relationship("Variable",
                 primaryjoin='Series.VariableID==Variable.VariableID')
-    
+
     Method = relationship("Method",
                 primaryjoin='Series.MethodID==Method.MethodID')
-    
+
     Source = relationship("Source",
                 primaryjoin='Series.SourceID==Source.SourceID')
 
 
 class Units(Base, wof_base.BaseUnits):
     __tablename__ = c('Units')
-    
+
     UnitsID = Column(Integer, primary_key=True)
     UnitsName = Column(String)
     UnitsType = Column(String)
     UnitsAbbreviation = Column(String)
-    
+
 class SpatialReference(Base, wof_base.BaseSpatialReference):
     __tablename__ = c('SpatialReferences')
-    
+
     SpatialReferenceId = Column(Integer, primary_key=True)
     SRSID = Column(Integer)
     SRSName = Column(String)
     Notes = Column(String)
-    
+
 class VerticalDatum(Base, wof_base.BaseVerticalDatum):
     __tablename__ = c('VerticalDatumCV')
     Term = Column(String, primary_key=True)

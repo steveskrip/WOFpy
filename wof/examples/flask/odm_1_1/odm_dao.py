@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from datetime import datetime
 from sqlalchemy import create_engine, distinct, func
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -51,10 +53,10 @@ class OdmDao(BaseDao):
 
     def compute_utc_offset(self, local_datetime, utc_datetime):
         """Returns UTC offset in hours."""
-        
+
         # Datetimes from ODM have no tzinfo
         offset = local_datetime - utc_datetime
-        
+
         if offset.days == -1:
             offset = -1 * (24 - offset.seconds/3600.)
         else:
@@ -87,7 +89,7 @@ class OdmDao(BaseDao):
 
         if seriesResultArr:
             self.format_series_dates(seriesResultArr)
-        
+
         return seriesResultArr
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
@@ -97,7 +99,7 @@ class OdmDao(BaseDao):
 
         if seriesResultArr:
             self.format_series_dates(seriesResultArr)
-        
+
         return seriesResultArr
 
     def parse_date_strings(self, begin_date_time_string, end_date_time_string):
@@ -112,9 +114,9 @@ class OdmDao(BaseDao):
                 end datetime as datetime.datetime object
                 bool that is True if times are UTC, False otherwise
             The datetimes are None if the input strings were None.
-        
+
         """
-        
+
         # Convert input strings to datetime objects
         try:
             if begin_date_time_string:
@@ -155,11 +157,11 @@ class OdmDao(BaseDao):
             using_utc = False
 
         return [b, e, using_utc]
-    
+
     def create_iso_utc_offset(self, utc_offset_hrs):
         hours = int(utc_offset_hrs)
         minutes = int((float(utc_offset_hrs) % 1) * 60)
-        
+
         if hours == 0 and minutes == 0:
             return '+00:00'
         else:
@@ -173,7 +175,7 @@ class OdmDao(BaseDao):
         varResult = self.get_variable_by_code(var_code)
 
         valueResultArr = None
-        
+
         if siteResult and varResult:
             parse_result = self.parse_date_strings(begin_date_time,
                                                    end_date_time)

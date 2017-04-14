@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import datetime
 
 from sqlalchemy import (Table, Column, Integer, String, ForeignKey, Float,
@@ -272,7 +274,7 @@ class Series(wof_base.BaseSeries):
             begin_date_time_utc = parse(begin_date_time_utc)
         if not type(end_date_time_utc) is datetime.datetime:
             end_date_time_utc = parse(end_date_time_utc)
-        
+
         if begin_date_time_utc.tzinfo is None:
             begin_date_time_utc = begin_date_time_utc.replace(tzinfo=utc)
         if end_date_time_utc.tzinfo is None:

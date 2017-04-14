@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from datetime import datetime
 from sqlalchemy import create_engine, distinct, func
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -335,7 +337,7 @@ class Odm2Dao(BaseDao):
                             filter(odm2_models.Affiliations.OrganizationID == org_id).first()
                     w_v = model.DataValue(valueResult,aff)
 
-                    if v_dict.has_key(variable_key):
+                    if variable_key in v_dict:
                         a_list = v_dict.get(variable_key)
                         a_list.append(w_v)
                     else:

@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from lxml import etree
 
 import cbi_models as model
@@ -12,7 +14,7 @@ namespaces = {
 
 
 def nspath(path, ns):
-    return '{%s}%s' % (ns, path)
+    return '{%s}%s'.format(ns, path)
 
 
 def parse_datavalues_from_get_observation(tree, site_code, var_code):

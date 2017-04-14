@@ -1,3 +1,4 @@
+from __future__ import (absolute_import, division, print_function)
 
 import logging
 
@@ -22,12 +23,11 @@ def startServer(config=SWIS_CONFIG_FILE,connection=SWIS_DATABASE_URI, openPort=8
 
 
     url = "http://127.0.0.1:" + str(openPort)
-    print "----------------------------------------------------------------"
-    print "Acess Service endpoints at "
+    print("----------------------------------------------------------------")
+    print("Access Service endpoints at ")
     for path in wof.site_map(app):
-        print "%s%s" % (url,path)
-
-    print "----------------------------------------------------------------"
+        print("%s%s".format(url, path))
+    print("----------------------------------------------------------------")
 
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 

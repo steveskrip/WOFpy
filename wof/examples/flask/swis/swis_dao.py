@@ -1,6 +1,10 @@
-import datetime
-import ConfigParser
+from __future__ import (absolute_import, division, print_function)
 
+import datetime
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 from sqlalchemy import create_engine, distinct, func
 from sqlalchemy.orm import mapper, scoped_session, sessionmaker
 from sqlalchemy.sql import and_
@@ -35,7 +39,7 @@ class SwisDao(BaseDao):
         self.db_session = scoped_session(sessionmaker(
             autocommit=False, autoflush=False, bind=self.engine))
         model.init_model(self.db_session)
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         config.read(config_file_path)
         if config.has_section('Contact'):
             self.contact_info = {

@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import os, sys
 
 import wof.flask
@@ -26,12 +28,12 @@ def startServer(config='odm2_config_measurement.cfg',connection=None,
 
 
     url = "http://127.0.0.1:" + str(openPort)
-    print "----------------------------------------------------------------"
-    print "Acess Service endpoints at "
+    print("----------------------------------------------------------------")
+    print("Access Service endpoints at ")
     for path in wof.site_map(app):
-        print "%s%s" % (url,path)
+        print("%s%s".format(url, path))
 
-    print "----------------------------------------------------------------"
+    print("----------------------------------------------------------------")
 
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 

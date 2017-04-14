@@ -1,6 +1,10 @@
-import datetime
-import ConfigParser
+from __future__ import (absolute_import, division, print_function)
 
+import datetime
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 from sqlalchemy import create_engine, distinct, func
 from sqlalchemy.orm import mapper, scoped_session, sessionmaker
 from sqlalchemy.sql import and_
@@ -33,21 +37,21 @@ class LCMDao(BaseDao):
         For SQLite connection - no need to specify for pool size in connection
         string, e.g.
         self.engine = create_engine(db_connection_string, convert_unicode=True)
-        
+
         For non-SQLite connections (e.g. MSSQL) - indicate default pool_size of
         100, e.g.
         self.engine = create_engine(db_connection_string, convert_unicode=True,
          pool_size=100)
         '''
-        
+
         self.engine = create_engine(db_connection_string, convert_unicode=True)
-                
+
         self.db_session = scoped_session(sessionmaker(
-            autocommit=False, autoflush=False, bind=self.engine))              
-        
+            autocommit=False, autoflush=False, bind=self.engine))
+
         model.init_model(self.db_session)
-        
-        config = ConfigParser.RawConfigParser()
+
+        config = configparser.RawConfigParser()
         config.read(config_file_path)
         if config.has_section('Contact'):
             self.contact_info = {
@@ -83,7 +87,7 @@ class LCMDao(BaseDao):
     child objects under VariableUnits in the Variable class.
     Normally this kind of hierarchy is generated when a 'Units'-like table in
     the database is joined to a 'Variable'-like table using UnitsID as the Foreign Key.
-    
+
     However, in the LCM database, both units information and variable
     information are lumped together within the 'variables' table.
     To generate the required hierarchy, the 'append units' function loops
@@ -97,19 +101,19 @@ class LCMDao(BaseDao):
             #Declare a new instance of BaseUnits for each VariableUnits object of
             #each item in get_all_variables response.
             #If you don't do this all items will end up referencing the same
-            #memory location for VariableUnits.            
+            #memory location for VariableUnits.
             r[i].VariableUnits = wof_base.BaseUnits()
-            
+
             r[i].VariableUnits.UnitsID = r[i].VariableUnits_UnitsID
             r[i].VariableUnits.UnitsName = r[i].VariableUnits_UnitsName
-            r[i].VariableUnits.UnitsAbbreviation = r[i].VariableUnits_UnitsAbbreviation    
-        
+            r[i].VariableUnits.UnitsAbbreviation = r[i].VariableUnits_UnitsAbbreviation
+
         return r
-    
-    def get_all_variables(self):        
-        r = model.Variable.query.all()               
+
+    def get_all_variables(self):
+        r = model.Variable.query.all()
         r = self.append_units(r)
-        
+
         return r
 
     def get_variable_by_code(self, var_code):
@@ -117,39 +121,39 @@ class LCMDao(BaseDao):
             model.Variable.VariableCode == var_code).first()
         r.VariableUnits.UnitsID = r.VariableUnits_UnitsID
         r.VariableUnits.UnitsName = r.VariableUnits_UnitsName
-        r.VariableUnits.UnitsAbbreviation = r.VariableUnits_UnitsAbbreviation   
+        r.VariableUnits.UnitsAbbreviation = r.VariableUnits_UnitsAbbreviation
         return r
 
     def get_variables_by_codes(self, var_codes_arr):
         r = model.Variable.query.filter(model.Variable.VariableCode.in_(
             var_codes_arr)).all()
-        r = self.append_units(r)        
+        r = self.append_units(r)
         return r
-    
+
     #ET: Experimental, not used.
     #def format_DateTimeUTC(self,DateString,TimeString):
     #    dformat = '%m/%d/%Y'
     #    tformat = '%H:%M'
-    #    DateTimeUTC = [datetime.datetime.strptime(Item[0:-1], dformat) for Item in DateTimeUTC.DateString]        
+    #    DateTimeUTC = [datetime.datetime.strptime(Item[0:-1], dformat) for Item in DateTimeUTC.DateString]
     #    return DateTimeUTC
-    
+
     def get_series_by_sitecode(self, site_code):
         siteResult = model.Site.query.filter(
-            model.Site.SiteCode == site_code).one()        
-        if siteResult:            
-            resultList = self.db_session.query(                
+            model.Site.SiteCode == site_code).one()
+        if siteResult:
+            resultList = self.db_session.query(
                 model.DataValue.VariableCode.label('VariableCode'),
                 func.count(model.DataValue.DataValue).label('ValueCount'),
                 func.min(model.DataValue.DateTimeUTC).label(
                     'BeginDateTimeUTC'),
-                func.max(model.DataValue.DateTimeUTC).label('EndDateTimeUTC')              
+                func.max(model.DataValue.DateTimeUTC).label('EndDateTimeUTC')
             ).group_by(
                 model.DataValue.VariableCode).filter(
                     model.DataValue.SiteCode == siteResult.SiteCode
-                ).order_by(model.DataValue.VariableCode).all()           
+                ).order_by(model.DataValue.VariableCode).all()
             varCodeArr = [r.VariableCode for r in resultList]
-            varResultArr = model.Variable.query.filter(               
-                model.Variable.VariableCode.in_(varCodeArr)).order_by(                    
+            varResultArr = model.Variable.query.filter(
+                model.Variable.VariableCode.in_(varCodeArr)).order_by(
                     model.Variable.VariableCode).all()
             seriesCatArr = []
             for i in range(len(resultList)):
@@ -178,7 +182,7 @@ class LCMDao(BaseDao):
                     'BeginDateTimeUTC'),
                 func.max(model.DataValue.DateTimeUTC).label('EndDateTimeUTC'),
             ).filter(
-                and_(model.DataValue.SiteCode == siteResult.SiteCode,                     
+                and_(model.DataValue.SiteCode == siteResult.SiteCode,
                      model.DataValue.VariableCode == varResult.VariableCode)).one()
 
         seriesCat = model.Series(
@@ -196,10 +200,10 @@ class LCMDao(BaseDao):
         valueResultArr = None
         if siteResult and varResult:
             if (not begin_date_time or not end_date_time):
-                valueResultArr = model.DataValue.query.filter(                    
+                valueResultArr = model.DataValue.query.filter(
                     and_(model.DataValue.SiteCode == site_code,
                         model.DataValue.VariableCode == var_code)
-                    ).order_by(model.DataValue.DateTimeUTC).all()                
+                    ).order_by(model.DataValue.DateTimeUTC).all()
             else:
                 begin_date_time = parse(begin_date_time)
                 end_date_time = parse(end_date_time)
@@ -209,7 +213,7 @@ class LCMDao(BaseDao):
                          model.DataValue.DateTimeUTC >= begin_date_time,
                          model.DataValue.DateTimeUTC <= end_date_time)
                     ).order_by(model.DataValue.DateTimeUTC).all()
-                
+
         for i in range(len(valueResultArr)):
             # Replace offset values of None with offset values = 0
             if not valueResultArr[i].OffsetValue:
@@ -218,9 +222,9 @@ class LCMDao(BaseDao):
             d = valueResultArr[i].DateTimeUTC.replace(tzinfo=utc)
             valueResultArr[i].DateTimeUTC = d
             valueResultArr[i].LocalDateTime = d.astimezone(local_tz)
-            
+
         return valueResultArr
-       
+
     def get_method_by_id(self, method_id):
         #return model.Method.query.filter(
         #    model.Method.MethodID == method_id).first()
@@ -285,7 +289,7 @@ class LCMDao(BaseDao):
         r.OffsetUnitsID = 6
         r.OffsetDescription = 'depth below water surface'
 
-        #r.OffsetUnits = wof_base.BaseUnits()        
+        #r.OffsetUnits = wof_base.BaseUnits()
         r.OffsetUnits.UnitsID = 6
         r.OffsetUnits.UnitsName = 'meters'
         r.OffsetUnits.UnitsType = 'depth'
@@ -294,4 +298,4 @@ class LCMDao(BaseDao):
         return rarr
         #return model.OffsetType.query.filter(model.OffsetType.OffsetTypeID.in_(
         #    offset_type_id_arr)).all()
-        
+

@@ -1,6 +1,11 @@
-import ConfigParser
+from __future__ import (absolute_import, division, print_function)
+
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 import time
-from StringIO import StringIO
+from io import StringIO
 
 from lxml import etree
 from sqlalchemy import create_engine
@@ -16,7 +21,7 @@ from wof.dao import BaseDao
 
 class CbiDao(BaseDao):
     def __init__(self, config_file_path, database_uri=None):
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         config.read(config_file_path)
         if not database_uri:
             database_uri = config.get('Database', 'URI')

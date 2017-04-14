@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import datetime
 
 from sqlalchemy import (Table, Column, Integer, String, ForeignKey, Float,
@@ -19,36 +21,36 @@ local_tz = tzoffset("EST", -18000)
 
 def init_model(db_session):
     Base.query = db_session.query_property()
-    
+
 class Variable(Base, wof_base.BaseVariable):
     __tablename__ = 'variables'
 
-    VariableID = Column('rowid',Integer, primary_key=True)    
+    VariableID = Column('rowid',Integer, primary_key=True)
     VariableCode = Column(String)
-    VariableName = Column(String)    
-    
+    VariableName = Column(String)
+
     SampleMedium = "Water"
     ValueType = "Field Observation"
     IsRegular = False
     #TimeSupport = Column(Float)
     #TimeUnitsID = Column(Integer, ForeignKey('Units.UnitsID'))
-    DataType = "Sporadic" 
+    DataType = "Sporadic"
     #GeneralCategory = "Unknown"
-    
+
     NoDataValue = -9999
-             
+
     VariableUnitsID = VariableID
-        
+
     VariableUnits_UnitsID = VariableUnitsID
     VariableUnits_UnitsName = Column('Units',String)
     VariableUnits_UnitsAbbreviation = VariableUnits_UnitsName
-    
+
     def __repr__(self):
-        return "<Variable('%s','%s')>" % (self.VariableCode, self.VariableName)        
+        return "<Variable('%s','%s')>" % (self.VariableCode, self.VariableName)
 
 class Site(Base, wof_base.BaseSite):
     __tablename__ = 'sampling_sites'
-    
+
     SiteID = Column('rowid',Integer, primary_key = True)
     SiteCode = Column('StationID',String)
     SiteName = Column('StationName',String)
@@ -65,15 +67,15 @@ class Site(Base, wof_base.BaseSite):
     State = Column(String)
     County = Column(String)
     #Comments = Column(String)
-    
+
     #LatLongDatum = relationship("SpatialReference",
     #                                primaryjoin='Site.LatLongDatumID==\
     #                                    SpatialReference.SpatialReferenceId')
-    
+
     #LocalProjection = relationship("SpatialReference",
     #                                primaryjoin='Site.LocalProjectionID==\
     #                                    SpatialReference.SpatialReferenceId')
- 
+
     def __repr__(self):
         return "<Site('%s','%s', ['%s' '%s'])>" % (self.SiteCode,
                                                    self.SiteName,
@@ -83,17 +85,17 @@ class Site(Base, wof_base.BaseSite):
 class DataValue(Base, wof_base.BaseDataValue):
 
     __tablename__ = 'LCM_Data'
-    ValueID = Column('rowid',Integer, primary_key = True)    
+    ValueID = Column('rowid',Integer, primary_key = True)
     DataValue = Column('Result',Float)
     DateTimeUTC = Column(DateTime)
     UTCOffset = -5
-    
+
     #DateString= Column('Date',String)
     #TimeString = Column('Time',String)
-                   
+
     SiteCode = Column('Station',String,ForeignKey('sampling_sites.StationID')) #FK to sampling_sites)
     VariableCode = Column('Test',String,ForeignKey('variables.VariableCode')) #FK to variables)
-    
+
     OffsetValue = Column('Depth',Float)
     OffsetTypeID = 1
     #TODO: compile unique method descriptions into separate methods table.
@@ -101,12 +103,12 @@ class DataValue(Base, wof_base.BaseDataValue):
     MethodID = ValueID
     MethodDescription = Column('Method',String)
     MethodLink =""
-    
-    #Assume data are non-censored 
+
+    #Assume data are non-censored
     CensorCode = "nc"
     Site = relationship("Site",
                         primaryjoin='DataValue.SiteCode==\
-                             Site.SiteCode')       
+                             Site.SiteCode')
     Variable = relationship("Variable",
                         primaryjoin='DataValue.VariableCode==\
                              Variable.VariableCode')
@@ -120,11 +122,11 @@ class Source(wof_base.BaseSource):
     SourceID = 1
     #TODO: Metadata
     Metadata = None
-    
-#   Not present in LCM database  
-#class Qualifier(Base, wof_base.BaseQualifier):    
+
+#   Not present in LCM database
+#class Qualifier(Base, wof_base.BaseQualifier):
 #    __tablename__ = 'Qualifiers'
-#    
+#
 #    QualifierID = Column(Integer, primary_key=True)
 #    QualifierCode = Column(String)
 #    QualifierDescription = Column(String)
@@ -134,34 +136,34 @@ class Source(wof_base.BaseSource):
 #    OffsetTypeID = Column(Integer, primary_key = True)
 #    OffsetUnitsID = Column(Integer, ForeignKey('Units.UnitsID'))
 #    OffsetDescription = Column(String)
-#    
+#
 #    OffsetUnits = relationship("Units",
 #                primaryjoin='OffsetType.OffsetUnitsID==Units.UnitsID')
 
-#   Not present in LCM database  
+#   Not present in LCM database
 #class Method(Base, wof_base.BaseMethod):
 #    __tablename__ ='Methods'
-#    
+#
 #    MethodID = Column(Integer, primary_key=True)
 #    MethodDescription = Column(String)
 #    MethodLink = Column(String)
-#    
+#
 
-#   Not present in LCM database   
+#   Not present in LCM database
 #class Metadata(Base, wof_base.BaseMetadata):
 #    __tablename__='ISOMetadata'
-#    
+#
 #    MetadataID = Column(Integer, primary_key=True)
 #    TopicCategory = Column(String)
 #    Title = Column(String)
 #    Abstract = Column(String)
 #    ProfileVersion = Column(String)
-#    MetadataLink = Column(String)    
+#    MetadataLink = Column(String)
 
-#   Not present in LCM database  
+#   Not present in LCM database
 #class QualityControlLevel(Base, wof_base.BaseQualityControlLevel):
 #    __tablename__='QualityControlLevels'
-#    
+#
 #    QualityControlLevelID = Column(Integer, primary_key=True)
 #    QualityControlLevelCode = Column(String)
 #
@@ -175,12 +177,12 @@ class Series(wof_base.BaseSeries):
             begin_date_time_utc = parse(begin_date_time_utc)
         if not type(end_date_time_utc) is datetime.datetime:
             end_date_time_utc = parse(end_date_time_utc)
-        
+
         if begin_date_time_utc.tzinfo is None:
             begin_date_time_utc = begin_date_time_utc.replace(tzinfo=utc)
         if end_date_time_utc.tzinfo is None:
             end_date_time_utc = end_date_time_utc.replace(tzinfo=utc)
-            
+
         self.Site = site
         self.Variable = variable
         self.ValueCount = value_count
@@ -205,7 +207,7 @@ class Series(wof_base.BaseSeries):
     Site = None
     Method = None
 
-#   Not present in LCM database  
+#   Not present in LCM database
 #class Units(Base,wof_base.BaseUnits):
 #    __tablename__ = 'Units'
 #    #UnitsID = Variable.VariableID
@@ -216,16 +218,16 @@ class Series(wof_base.BaseSeries):
 #    #UnitsAbbreviation = Variable.OriginalUnits
 #    UnitsAbbreviation = UnitsName
 
-#   Not present in LCM database  
+#   Not present in LCM database
 #class SpatialReference(Base, wof_base.BaseSpatialReference):
 #    __tablename__ = 'SpatialReferences'
-#    
+#
 #    SpatialReferenceId = Column(Integer, primary_key=True)
 #    SRSID = Column(Integer)
 #    SRSName = Column(String)
 #    Notes = Column(String)
 
-#   Not present in LCM database  
+#   Not present in LCM database
 #class VerticalDatum(Base, wof_base.BaseVerticalDatum):
 #    __tablename__ = 'VerticalDatumCV'
 #    Term = Column(String, primary_key=True)

@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import csv
 import os
 
@@ -34,7 +36,7 @@ class CsvDao(BaseDao):
         stage_units.UnitsAbbreviation = 'ft'
         stage.VariableUnits = stage_units
         variable_dict['Stage_ft'] = stage
-        
+
         flow = csv_model.Variable()
         flow.VariableCode = 'Discharge_cfs'
         flow.VariableName = 'Discharge'
@@ -44,7 +46,7 @@ class CsvDao(BaseDao):
         flow_units.UnitsAbbreviation = 'cfs'
         flow.VariableUnits = flow_units
         variable_dict['Discharge_cfs'] = flow
-        
+
         self.variable_dict = variable_dict
 
     def __del__(self):
@@ -67,7 +69,7 @@ class CsvDao(BaseDao):
                 if at_header:
                     at_header = False
                     continue
-                
+
                 site = self.create_site_from_row(row)
                 sites.append(site)
         return sites
@@ -80,7 +82,7 @@ class CsvDao(BaseDao):
                 if at_header:
                     at_header = False
                     continue
-                
+
                 if row[0] == site_code:
                     site = self.create_site_from_row(row)
                     return site
@@ -94,14 +96,14 @@ class CsvDao(BaseDao):
                 if at_header:
                     at_header = False
                     continue
-                
+
                 if row[0] in site_codes_arr:
                     site = self.create_site_from_row(row)
                     sites.append(site)
         return sites
 
     def get_all_variables(self):
-        return self.variable_dict.values()
+        return list(self.variable_dict.values())
 
     def get_variable_by_code(self, var_code):
         if var_code in self.variable_dict:
@@ -127,15 +129,15 @@ class CsvDao(BaseDao):
                 site_code, 'Discharge_cfs')
             series_list.extend(series)
 
-        return series_list            
-            
+        return series_list
+
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
         series_list = []
         site = self.get_site_by_code(site_code)
         if site:
             var = self.get_variable_by_code(var_code)
-            if var: 
+            if var:
                 series = csv_model.Series()
                 series.SiteCode = site.SiteCode
                 series.SiteName = site.SiteName
@@ -152,7 +154,7 @@ class CsvDao(BaseDao):
                 series.GeneralCategory = var.GeneralCategory
                 series.Site = site
                 series.Variable = var
-                
+
                 series_list.append(series)
 
         return series_list
@@ -167,9 +169,9 @@ class CsvDao(BaseDao):
             The returned list has two items:
                 begin datetime as datetime.datetime object
                 end datetime as datetime.datetime object
-        
+
         """
-        
+
         # Convert input strings to datetime objects
         try:
             if begin_date_time_string:
@@ -238,14 +240,14 @@ class CsvDao(BaseDao):
                 value_index = 2
             else:
                 value_index = 3
-            
+
             # Parse input dates
             parse_result = self.parse_date_strings(begin_date_time,
                                                    end_date_time)
             b = parse_result[0] # begin datetime
             e = parse_result[1] # end datetime
 
-            # Read values            
+            # Read values
             with open(self.values_file_path, 'rb') as f:
                 reader = csv.reader(f)
                 at_header = True
@@ -255,7 +257,7 @@ class CsvDao(BaseDao):
                         at_header = False
                         continue
 
-                    # Make sure we're within input date range                    
+                    # Make sure we're within input date range
                     value_date = parse(row[1])
                     if (value_date >= b and value_date <= e and
                         row[0] == site_code):
@@ -263,7 +265,7 @@ class CsvDao(BaseDao):
                         datavalue = self.create_datavalue_from_row(row,
                                                                    value_index)
                         valueResultArr.append(datavalue)
-            
+
         return valueResultArr
 
     def get_methods_by_ids(self, method_id_arr):
