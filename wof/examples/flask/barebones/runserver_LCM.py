@@ -1,3 +1,4 @@
+from __future__ import (absolute_import, division, print_function)
 
 import logging
 
@@ -16,7 +17,7 @@ Be sure to assign an available port to the openPort variable below!
 
 The standard syntax for connection string is a URL in the form:
 dialect://user:password@host/dbname[?key=value..],
-where dialect is a name such as mysql, oracle, sqlite postgres,etc. 
+where dialect is a name such as mysql, oracle, sqlite postgres,etc.
 
 1.  Example for MSSQL
 
@@ -32,10 +33,10 @@ database_connection_string = 'mssql+pyodbc://odm_user2:water123@JAMTAY-PC\SQLEXP
 
 swis_connection_string = 'sqlite:///C:/PythonSandbox/WOFpy_Sandbox/WOFpy/examples/swis/swis2.db'
 
-You can use relative paths too, e.g. if you are calling the above database from the same directory, 
+You can use relative paths too, e.g. if you are calling the above database from the same directory,
 the connection string can just be:
 
-swis_connection_string = 'sqlite:///swis2.db' 
+swis_connection_string = 'sqlite:///swis2.db'
 '''
 
 LCM_connection_string = 'sqlite:///LCM_Data/LCM.db'
@@ -68,18 +69,18 @@ def startServer(config='LCM_config.cfg',connection='sqlite:///LCM_Data/LCM.db', 
 
 
     url = "http://127.0.0.1:" + str(openPort)
-    print "----------------------------------------------------------------"
-    print "Service endpoints"
+    print("----------------------------------------------------------------")
+    print("Service endpoints")
     for path in wof.flask.site_map_flask_wsgi_mount(app):
-        print "%s%s" % (url,path)
+        print("%s%s".format(url, path))
 
-    print "----------------------------------------------------------------"
-    print "----------------------------------------------------------------"
-    print "HTML Acess Service endpoints at "
+    print("----------------------------------------------------------------")
+    print("----------------------------------------------------------------")
+    print("HTML Access Service endpoints at ")
     for path in wof.site_map(app):
-        print "%s%s" % (url,path)
+        print("%s%s".format(url, path))
 
-    print "----------------------------------------------------------------"
+    print("----------------------------------------------------------------")
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':

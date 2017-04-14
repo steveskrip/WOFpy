@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import logging
 
 from wof import WOF
@@ -17,7 +19,7 @@ dao = LCMDao(connection,config)
 #LCM_wof.config_from_file('LCM_config.cfg')
 
 r = dao.get_datavalues("7","Temp")
-#print r
+#print(r)
 #dir(r)
 #len(r)
 
@@ -25,6 +27,6 @@ dt_format = '%m/%d/%Y %H:%M'
 for i in range(len(r)):
     DateTimeString = r[i].DateString + ' '+r[i].TimeString
     r[i].DateTimeUTC = datetime.datetime.strptime(DateTimeString, dt_format)
-    print r[i].DateTimeUTC
-    
+    print(r[i].DateTimeUTC)
+
 

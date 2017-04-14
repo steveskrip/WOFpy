@@ -1,10 +1,14 @@
+from __future__ import (absolute_import, division, print_function)
+
 import datetime
 from optparse import OptionParser
 import os
 import tempfile
 import time
-import urllib2
-
+try:
+    from urllib import urlopen
+except ImportError:
+    from urllib.parse import urlencode
 from lxml import etree
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -27,7 +31,7 @@ LOCAL_PARAMETER_FILE_PATH = os.path.join(
 LOCAL_CAPABILITIES_FILE_PATH = os.path.join(
     CBI_CACHE_DIR, 'cbi_sos_capabilities_file.xml')
 
-print CBI_CACHE_DATABASE_URI
+print(CBI_CACHE_DATABASE_URI)
 
 namespaces = {
     'gml': "http://www.opengis.net/gml",
@@ -132,7 +136,7 @@ def nspath(path, ns):
 
 
 def fetch_ioos_site_file(site_file_url, local_site_file_path):
-    response = urllib2.urlopen(site_file_url)
+    response = urlopen(site_file_url)
     cbi_site_file = open(local_site_file_path, 'w')
     cbi_site_file.write(response.read())
     cbi_site_file.close()
@@ -204,7 +208,7 @@ def parse_site_file(local_site_file_path):
 def fetch_cbi_capabilities_file(cbi_capabilities_file_url,
                                 local_capabilities_file_path):
 
-    response = urllib2.urlopen(cbi_capabilities_file_url)
+    response = urlopen(cbi_capabilities_file_url)
 
     local_capabilities_file = open(local_capabilities_file_path, 'w')
 
@@ -306,7 +310,7 @@ def parse_capabilities_for_series(local_capabilities_file_path):
 
 
 def fetch_gcoos_parameter_file(parameter_file_url, local_parameter_file_path):
-    response = urllib2.urlopen(parameter_file_url)
+    response = urlopen(parameter_file_url)
 
     cbi_parameter_file = open(local_parameter_file_path, 'w')
 
@@ -371,7 +375,7 @@ if __name__ == '__main__':
         f.close()
     #If it doesn't exist, then fetch a new one from the remote location
     except:
-        print "Fetching IOOS site file from remote location."
+        print("Fetching IOOS site file from remote location.")
         fetch_ioos_site_file(IOOS_SITE_FILE_URL, LOCAL_SITE_FILE_PATH)
 
     #Attempt to open local capbilities file to see if it exists
@@ -379,7 +383,7 @@ if __name__ == '__main__':
         f = open(LOCAL_CAPABILITIES_FILE_PATH)
         f.close()
     except:
-        print "Fetching CBI SOS Capabilities file from remote location."
+        print("Fetching CBI SOS Capabilities file from remote location.")
         fetch_cbi_capabilities_file(CBI_SOS_CAPABILITIES_URL,
                                     LOCAL_CAPABILITIES_FILE_PATH)
 
@@ -389,14 +393,14 @@ if __name__ == '__main__':
         f.close()
     #If it doesn't exist, then fetch a new one from the remote location
     except:
-        print "Fetching GCOOS parameter file from remote location."
+        print("Fetching GCOOS parameter file from remote location.")
         fetch_gcoos_parameter_file(GCOOS_ONTOLOGY_FILE_URL,
                                    LOCAL_PARAMETER_FILE_PATH)
 
     engine = create_engine(CBI_CACHE_DATABASE_URI,
                            convert_unicode=True)
     if options.dropall:
-        print "Dropping existing tables from cache."
+        print("Dropping existing tables from cache.")
         model.clear_model(engine)
 
     model.create_model(engine)
@@ -406,11 +410,11 @@ if __name__ == '__main__':
 
     model.init_model(db_session)
 
-    print "Parsing IOOS site file."
+    print("Parsing IOOS site file.")
     site_set = parse_site_file(LOCAL_SITE_FILE_PATH)
 
-    print ("Extracting valid site codes from SOS capabilities "
-           "file and removing non-matching sites from site cache.")
+    print("Extracting valid site codes from SOS capabilities "
+          "file and removing non-matching sites from site cache.")
 
     capabilities_site_list = extract_sites_from_capabilities_doc(
         LOCAL_CAPABILITIES_FILE_PATH)
@@ -421,11 +425,11 @@ if __name__ == '__main__':
     cache_sites = [model.Site(s.code, s.name, s.latitude, s.longitude)
                    for s in valid_site_list]
 
-    print "Extracting valid parameters from SOS capabilities file."
+    print("Extracting valid parameters from SOS capabilities file.")
     param_names = extract_parameters_from_capabilities_doc(
         LOCAL_CAPABILITIES_FILE_PATH)
 
-    print "Parsing GCOOS parameter file."
+    print("Parsing GCOOS parameter file.")
 
     (param_set, units_set) = parse_parameter_file(
         param_names, LOCAL_PARAMETER_FILE_PATH)
@@ -444,12 +448,12 @@ if __name__ == '__main__':
 
         cache_variables.append(v)
 
-    print "Parsing SOS Capabilities file for Series Catalog."
+    print("Parsing SOS Capabilities file for Series Catalog.")
 
     series_set = parse_capabilities_for_series(LOCAL_CAPABILITIES_FILE_PATH)
 
-    print "Adding %s sites and %s variables to local cache." % (
-        len(cache_sites), len(cache_variables))
+    msg = "Adding %s sites and %s variables to local cache.".format
+    print(msg(len(cache_sites), len(cache_variables)))
 
     try:
         db_session.add_all(cache_sites)
@@ -459,7 +463,7 @@ if __name__ == '__main__':
 
         #Now try to add series
 
-        print "Adding SeriesCatalog to local cache."
+        print("Adding SeriesCatalog to local cache.")
 
         cache_series_cats = []
 
@@ -537,7 +541,7 @@ if __name__ == '__main__':
         db_session.add_all(cache_series_cats)
         db_session.commit()
 
-        print "Finished."
+        print("Finished.")
 
     except Exception as inst:
-        print "ERROR: %s, %s" % (type(inst), inst)
+        print("ERROR: %s, %s".format(type(inst), inst))

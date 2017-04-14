@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import logging
 
 import wof
@@ -25,23 +27,23 @@ def startServer(config=CSV_CONFIG_FILE,config2=CSV_CONFIG_FILE2,
 
     openPort = 8080
     url = "http://127.0.0.1:" + str(openPort)
-    print "----------------------------------------------------------------"
-    print "Service endpoints"
+    print("----------------------------------------------------------------")
+    print("Service endpoints")
     for path in wof.flask.site_map_flask_wsgi_mount(app):
-        print "%s%s" % (url,path)
+        print("%s%s".format(url, path))
 
-    print "----------------------------------------------------------------"
-    print "----------------------------------------------------------------"
-    print "Acess HTML descriptions of endpoints at "
+    print("----------------------------------------------------------------")
+    print("----------------------------------------------------------------")
+    print("Access HTML descriptions of endpoints at ")
     for path in wof.site_map(app):
-        print "%s%s" % (url,path)
+        print("%s%s".format(url, path))
 
-    print "----------------------------------------------------------------"
+    print("----------------------------------------------------------------")
 
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':
-    # This must be an available port on your computer.  
+    # This must be an available port on your computer.
     # For example, if 8080 is already being used, try another port such as
     # 5000 or 8081.
 

@@ -1,4 +1,10 @@
-import urllib
+from __future__ import (absolute_import, division, print_function)
+
+try:
+    from urllib import urlencode, urlopen
+except ImportError:
+    from urllib.parse import urlencode
+    from urllib.request import urlopen
 import time
 
 
@@ -8,13 +14,13 @@ class CbiSosClient(object):
         self.endpoint_url = endpoint_url
 
     def get_capabilities(self):
-        params = urllib.urlencode({'request': 'GetCapabilities',
-                                   'service': 'SOS'})
+        params = urlencode({'request': 'GetCapabilities',
+                            'service': 'SOS'})
 
         #TODO: might be able to do series catalog from this, look at
         # ObservationOffering elements of response xml
         try:
-            response = urllib.urlopen(self.endpoint_url + '?%s' % params)
+            response = urlopen(self.endpoint_url + '?%s' % params)
             return response
         #TODO: Do something with exception (log?)
         except IOError as ioe:
@@ -28,7 +34,7 @@ class CbiSosClient(object):
         #or
         #?request=DescribeSensor&service=SOS&version=1.0.0&outputformat=text/xml;subtype=%22sensorML/1.0.0%22&procedure=urn:ioos:station:wmo:41012
 
-        params = urllib.urlencode({
+        params = urlencode({
             'request': 'DescribeSensor',
             'service': 'SOS',
             'version': '1.0.0',
@@ -37,7 +43,7 @@ class CbiSosClient(object):
             })
 
         try:
-            response = urllib.urlopen(self.endpoint_url + '?%s' % params)
+            response = urlopen(self.endpoint_url + '?%s' % params)
             return response
         except IOError as ioe:
             return None
@@ -66,10 +72,10 @@ class CbiSosClient(object):
                 start_datetime + 'Z',
                 end_datetime + 'Z')
             param_dict['eventtime'] = event_time_string
-        params = urllib.urlencode(param_dict)
+        params = urlencode(param_dict)
 
         try:
-            response = urllib.urlopen(self.endpoint_url + '?%s' % params)
+            response = urlopen(self.endpoint_url + '?%s' % params)
             return response
         except IOError as IOE:
             return None
@@ -80,4 +86,4 @@ if __name__ == '__main__':
     c = CbiSosClient('http://lighthouse.tamucc.edu/sos')
     r = c.get_observation('014', 'water_temperature',
                           '2011-05-04T17:24:00', '2011-05-04T17:36:00')
-    print r.read()
+    print(r.read())

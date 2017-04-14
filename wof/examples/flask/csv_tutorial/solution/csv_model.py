@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import wof.models as wof_base
 import dateutil.parser as dateparser
 
@@ -41,13 +43,13 @@ class Source(wof_base.BaseSource):
     ZipCode = '78701'
     MetadataID = None
     Metadata = None
-    
+
 
 class Method(wof_base.BaseMethod):
     # Only one in this example
     MethodID = 1
     MethodDescription = 'Measured using an ACME FlowStage Measurer'
-    
+
 
 class QualityControlLevel(wof_base.BaseQualityControlLevel):
     # Only one in this example
@@ -92,4 +94,4 @@ class Series(wof_base.BaseSeries):
 
     Variable = None
     Site = None
-    
+

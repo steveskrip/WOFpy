@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from __future__ import (absolute_import, division, print_function)
+
 import logging
 
 import wof
@@ -26,18 +28,18 @@ def startServer(connection, config='config.cfg',openPort=8080):
     configFile = WOFConfig(config)
 
     url = "http://127.0.0.1:" + str(openPort)
-    print "----------------------------------------------------------------"
-    print "Service endpoints"
+    print("----------------------------------------------------------------")
+    print("Service endpoints")
     for path in wof.flask.site_map_flask_wsgi_mount(app):
-        print "%s%s" % (url,path)
+        print("%s%s".format(url, path))
 
-    print "----------------------------------------------------------------"
-    print "----------------------------------------------------------------"
-    print "HTML Access Service endpoints at "
+    print("----------------------------------------------------------------")
+    print("----------------------------------------------------------------")
+    print("HTML Access Service endpoints at ")
     for path in wof.site_map(app):
-        print "%s%s" % (url,path)
+        print("%s%s".format(url, path))
 
-    print "----------------------------------------------------------------"
+    print("----------------------------------------------------------------")
 
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
@@ -45,7 +47,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='start WOF for an ODM1 database.')
-    parser.add_argument('connection', type=argparse.FileType('r'), 
+    parser.add_argument('connection', type=argparse.FileType('r'),
                        help='The name of a file containing the Connection String eg: private.connection which has: mysql://username:password@localhost/database')
     parser.add_argument('--config', default="config.cfg",
                        help='Configuration file')

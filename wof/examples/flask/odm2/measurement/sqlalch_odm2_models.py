@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import wof.models as wof_base
 
 class Variable(wof_base.BaseVariable):
