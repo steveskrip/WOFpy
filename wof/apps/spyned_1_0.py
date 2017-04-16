@@ -1,4 +1,5 @@
-__author__ = 'cyoun'
+from __future__ import (absolute_import, division, print_function)
+
 
 import StringIO
 import logging
@@ -10,6 +11,8 @@ from spyne.model.fault import Fault
 from spyne.service import ServiceBase
 from spyne.util import memoize
 import wof
+
+__author__ = 'cyoun'
 
 logger = logging.getLogger(__name__)
 
