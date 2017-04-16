@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+
+
 class SampleMediumTypes:
     SURFACE_WATER = 'Surface Water'
     GROUND_WATER = 'Ground Water'

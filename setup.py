@@ -8,12 +8,14 @@ CUAHSI is the Consortium of Universities for the
 Advancement of Hydrologic Science, Inc.
 
 """
+from __future__ import (absolute_import, division, print_function)
+
 import os
 import re
-import sys
 import codecs
-
 from setuptools import Command, setup, find_packages
+
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 def read(*parts):
@@ -27,12 +29,6 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
-if not sys.version_info[0] == 2:
-    sys.exit("Sorry, Python 3 is not supported (yet)")
-if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-    sys.exit("Sorry, Python  2.6 is not supported")
-if sys.version_info[0] == 2 and sys.version_info[1] == 7 and sys.version_info[2] < 8 :
-    sys.exit("Sorry, Issues with Python < 2.7.8. Please upgrade to 2.7.10 or above ")
 
 # Dependencies.
 with open('requirements.txt') as f:
@@ -72,6 +68,10 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
       entry_points=dict(console_scripts=[

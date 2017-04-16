@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from spyne.interface import InterfaceDocumentBase
 import logging
 from jinja2 import Environment, Template, PackageLoader, FileSystemLoader

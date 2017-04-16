@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+
+
 from datetime import datetime as dt, timedelta, MINYEAR, MAXYEAR
 
 from dateutil.parser import parse
@@ -40,7 +43,7 @@ class TestMethod(models.BaseMethod):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-   
+
 class TestMetadata(models.BaseMetadata):
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
@@ -52,7 +55,7 @@ class TestSource(models.BaseSource):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    
+
 class TestQualifier(models.BaseQualifier):
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
@@ -496,16 +499,16 @@ class TestDao(dao.BaseDao):
         if not begin_date_time:
             start_date = parse(dt(MINYEAR, 1, 1).isoformat() + 'Z')
         else:
-            start_date = self.get_utc_datetime(begin_date_time)            
+            start_date = self.get_utc_datetime(begin_date_time)
         if not end_date_time:
             end_date = parse(dt(MAXYEAR, 12, 31).isoformat() + 'Z')
         else:
-            end_date = self.get_utc_datetime(end_date_time)            
-            
+            end_date = self.get_utc_datetime(end_date_time)
+
         value_time = datavalue.DateTimeUTC
 
         return (value_time >= start_date and value_time <= end_date)
-    
+
     def get_datavalues(self, site_code, var_code, begin_date_time=None,
                        end_date_time=None):
         vals = test_datavalues.iteritems()

@@ -17,6 +17,8 @@
 #   WOFpy
 #
 
+from __future__ import (absolute_import, division, print_function)
+
 import sys
 import re as re_
 import base64

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 #
 # Generated Tue Feb 15 14:13:42 2011 by generateDS.py version 2.3b.
 #
+
+from __future__ import (absolute_import, division, print_function)
 
 import sys
 import getopt
@@ -177,7 +179,7 @@ class MixedContainer:
     def export(self, outfile, level, name, namespace):
         if self.category == MixedContainer.CategoryText:
             # Prevent exporting empty content as empty lines.
-            if self.value.strip(): 
+            if self.value.strip():
                 outfile.write(self.value)
         elif self.category == MixedContainer.CategorySimple:
             self.exportSimple(outfile, level, name)
@@ -482,11 +484,11 @@ class geoLocation(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'geogLocation': 
+        if nodeName_ == 'geogLocation':
             obj_ = GeogLocationType.factory()
             obj_.build(child_)
             self.set_geogLocation(obj_)
-        elif nodeName_ == 'localSiteXY': 
+        elif nodeName_ == 'localSiteXY':
             obj_ = localSiteXY.factory()
             obj_.build(child_)
             self.localSiteXY.append(obj_)
@@ -617,7 +619,7 @@ class localSiteXY(GeneratedsSuper):
         elif nodeName_ == 'Z':
             Z_ = child_.text
             self.Z = Z_
-        elif nodeName_ == 'note': 
+        elif nodeName_ == 'note':
             obj_ = NoteType.factory()
             obj_.build(child_)
             self.note.append(obj_)
@@ -919,27 +921,27 @@ class TsValuesSingleVariableType(GeneratedsSuper):
             self.unitsCode = value
             self.unitsCode = ' '.join(self.unitsCode.split())
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'value': 
+        if nodeName_ == 'value':
             obj_ = ValueSingleVariable.factory()
             obj_.build(child_)
             self.value.append(obj_)
-        elif nodeName_ == 'qualifier': 
+        elif nodeName_ == 'qualifier':
             obj_ = qualifier.factory()
             obj_.build(child_)
             self.qualifier.append(obj_)
-        elif nodeName_ == 'qualityControlLevel': 
+        elif nodeName_ == 'qualityControlLevel':
             obj_ = qualityControlLevel.factory()
             obj_.build(child_)
             self.qualityControlLevel.append(obj_)
-        elif nodeName_ == 'method': 
+        elif nodeName_ == 'method':
             obj_ = MethodType.factory()
             obj_.build(child_)
             self.method.append(obj_)
-        elif nodeName_ == 'source': 
+        elif nodeName_ == 'source':
             obj_ = SourceType.factory()
             obj_.build(child_)
             self.source.append(obj_)
-        elif nodeName_ == 'offset': 
+        elif nodeName_ == 'offset':
             obj_ = OffsetType.factory()
             obj_.build(child_)
             self.offset.append(obj_)
@@ -1212,7 +1214,7 @@ class VariableInfoType(GeneratedsSuper):
             already_processed.append('oid')
             self.oid = value
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'variableCode': 
+        if nodeName_ == 'variableCode':
             obj_ = variableCode.factory()
             obj_.build(child_)
             self.variableCode.append(obj_)
@@ -1238,19 +1240,19 @@ class VariableInfoType(GeneratedsSuper):
             sampleMedium_ = child_.text
             self.sampleMedium = sampleMedium_
             self.validate_sampleMedium(self.sampleMedium)    # validate type sampleMedium
-        elif nodeName_ == 'units': 
+        elif nodeName_ == 'units':
             obj_ = units.factory()
             obj_.build(child_)
             self.set_units(obj_)
-        elif nodeName_ == 'options': 
+        elif nodeName_ == 'options':
             obj_ = options.factory()
             obj_.build(child_)
             self.set_options(obj_)
-        elif nodeName_ == 'note': 
+        elif nodeName_ == 'note':
             obj_ = NoteType.factory()
             obj_.build(child_)
             self.note.append(obj_)
-        elif nodeName_ == 'related': 
+        elif nodeName_ == 'related':
             obj_ = related.factory()
             obj_.build(child_)
             self.set_related(obj_)
@@ -1260,7 +1262,7 @@ class VariableInfoType(GeneratedsSuper):
         elif nodeName_ == 'NoDataValue':
             NoDataValue_ = child_.text
             self.NoDataValue = NoDataValue_
-        elif nodeName_ == 'timeSupport': 
+        elif nodeName_ == 'timeSupport':
             obj_ = timeSupport.factory()
             obj_.build(child_)
             self.set_timeSupport(obj_)
@@ -1334,11 +1336,11 @@ class related(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'parentID': 
+        if nodeName_ == 'parentID':
             obj_ = xsi_string.factory()
             obj_.build(child_)
             self.set_parentID(obj_)
-        elif nodeName_ == 'relatedID': 
+        elif nodeName_ == 'relatedID':
             obj_ = xsi_string.factory()
             obj_.build(child_)
             self.set_relatedID(obj_)
@@ -1656,7 +1658,7 @@ class timeSupport(GeneratedsSuper):
             else:
                 raise_parse_error(node, 'Bad boolean attribute')
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'unit': 
+        if nodeName_ == 'unit':
             obj_ = UnitsType.factory()
             obj_.build(child_)
             self.set_unit(obj_)
@@ -1799,11 +1801,11 @@ class QueryInfoType(GeneratedsSuper):
         elif nodeName_ == 'querySQL':
             querySQL_ = child_.text
             self.querySQL = querySQL_
-        elif nodeName_ == 'criteria': 
+        elif nodeName_ == 'criteria':
             obj_ = criteria.factory()
             obj_.build(child_)
             self.set_criteria(obj_)
-        elif nodeName_ == 'note': 
+        elif nodeName_ == 'note':
             obj_ = NoteType.factory()
             obj_.build(child_)
             self.note.append(obj_)
@@ -1900,7 +1902,7 @@ class criteria(GeneratedsSuper):
         elif nodeName_ == 'variableParam':
             variableParam_ = child_.text
             self.variableParam = variableParam_
-        elif nodeName_ == 'timeParam': 
+        elif nodeName_ == 'timeParam':
             obj_ = timeParam.factory()
             obj_.build(child_)
             self.set_timeParam(obj_)
@@ -2054,7 +2056,7 @@ class variables(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'variable': 
+        if nodeName_ == 'variable':
             obj_ = VariableInfoType.factory()
             obj_.build(child_)
             self.variable.append(obj_)
@@ -2145,11 +2147,11 @@ class timeZoneInfo(GeneratedsSuper):
             else:
                 raise_parse_error(node, 'Bad boolean attribute')
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'defaultTimeZone': 
+        if nodeName_ == 'defaultTimeZone':
             obj_ = xsi_string.factory()
             obj_.build(child_)
             self.set_defaultTimeZone(obj_)
-        elif nodeName_ == 'daylightSavingsTimeZone': 
+        elif nodeName_ == 'daylightSavingsTimeZone':
             obj_ = xsi_string.factory()
             obj_.build(child_)
             self.set_daylightSavingsTimeZone(obj_)
@@ -2392,7 +2394,7 @@ class optionGroup(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'option': 
+        if nodeName_ == 'option':
             obj_ = option.factory()
             obj_.build(child_)
             self.option.append(obj_)
@@ -2604,7 +2606,7 @@ class options(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'option': 
+        if nodeName_ == 'option':
             obj_ = option.factory()
             obj_.build(child_)
             self.option.append(obj_)
@@ -2812,18 +2814,18 @@ class DataSetInfoType(SourceInfoType):
         if nodeName_ == 'dataSetIdentifier':
             dataSetIdentifier_ = child_.text
             self.dataSetIdentifier = dataSetIdentifier_
-        elif nodeName_ == 'timeZoneInfo': 
+        elif nodeName_ == 'timeZoneInfo':
             obj_ = timeZoneInfo.factory()
             obj_.build(child_)
             self.set_timeZoneInfo(obj_)
         elif nodeName_ == 'dataSetDescription':
             dataSetDescription_ = child_.text
             self.dataSetDescription = dataSetDescription_
-        elif nodeName_ == 'note': 
+        elif nodeName_ == 'note':
             obj_ = NoteType.factory()
             obj_.build(child_)
             self.note.append(obj_)
-        elif nodeName_ == 'dataSetLocation': 
+        elif nodeName_ == 'dataSetLocation':
             obj_ = GeogLocationType.factory()
             obj_.build(child_)
             self.set_dataSetLocation(obj_)
@@ -3625,11 +3627,11 @@ class seriesCatalogType(GeneratedsSuper):
             already_processed.append('serviceWsdl')
             self.serviceWsdl = value
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'note': 
+        if nodeName_ == 'note':
             obj_ = NoteType.factory()
             obj_.build(child_)
             self.note.append(obj_)
-        elif nodeName_ == 'series': 
+        elif nodeName_ == 'series':
             obj_ = series.factory()
             obj_.build(child_)
             self.series.append(obj_)
@@ -3821,15 +3823,15 @@ class series(GeneratedsSuper):
             dataType_ = child_.text
             self.dataType = dataType_
             self.validate_dataType(self.dataType)    # validate type dataType
-        elif nodeName_ == 'variable': 
+        elif nodeName_ == 'variable':
             obj_ = VariableInfoType.factory()
             obj_.build(child_)
             self.set_variable(obj_)
-        elif nodeName_ == 'valueCount': 
+        elif nodeName_ == 'valueCount':
             obj_ = valueCount.factory()
             obj_.build(child_)
             self.set_valueCount(obj_)
-        elif nodeName_ == 'variableTimeInterval': 
+        elif nodeName_ == 'variableTimeInterval':
             obj_ = TimePeriodType.factory()
             obj_.build(child_)
             self.set_variableTimeInterval(obj_)
@@ -3845,15 +3847,15 @@ class series(GeneratedsSuper):
             sampleMedium_ = child_.text
             self.sampleMedium = sampleMedium_
             self.validate_sampleMedium(self.sampleMedium)    # validate type sampleMedium
-        elif nodeName_ == 'Method': 
+        elif nodeName_ == 'Method':
             obj_ = MethodType.factory()
             obj_.build(child_)
             self.set_Method(obj_)
-        elif nodeName_ == 'Source': 
+        elif nodeName_ == 'Source':
             obj_ = SourceType.factory()
             obj_.build(child_)
             self.set_Source(obj_)
-        elif nodeName_ == 'QualityControlLevel': 
+        elif nodeName_ == 'QualityControlLevel':
             obj_ = QualityControlLevelType.factory()
             obj_.build(child_)
             self.set_QualityControlLevel(obj_)
@@ -3994,7 +3996,7 @@ class QualifiersType(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'qualifier': 
+        if nodeName_ == 'qualifier':
             obj_ = qualifier.factory()
             obj_.build(child_)
             self.set_qualifier(obj_)
@@ -4227,15 +4229,15 @@ class TimeSeriesType(GeneratedsSuper):
             already_processed.append('name')
             self.name = value
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'sourceInfo': 
+        if nodeName_ == 'sourceInfo':
             obj_ = SourceInfoType.factory()
             obj_.build(child_)
             self.set_sourceInfo(obj_)
-        elif nodeName_ == 'variable': 
+        elif nodeName_ == 'variable':
             obj_ = VariableInfoType.factory()
             obj_.build(child_)
             self.set_variable(obj_)
-        elif nodeName_ == 'values': 
+        elif nodeName_ == 'values':
             obj_ = TsValuesSingleVariableType.factory()
             obj_.build(child_)
             self.set_values(obj_)
@@ -5089,11 +5091,11 @@ class VariablesResponseType(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'queryInfo': 
+        if nodeName_ == 'queryInfo':
             obj_ = QueryInfoType.factory()
             obj_.build(child_)
             self.set_queryInfo(obj_)
-        elif nodeName_ == 'variables': 
+        elif nodeName_ == 'variables':
             obj_ = variables.factory()
             obj_.build(child_)
             self.set_variables(obj_)
@@ -5170,11 +5172,11 @@ class TimeSeriesResponseType(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'queryInfo': 
+        if nodeName_ == 'queryInfo':
             obj_ = QueryInfoType.factory()
             obj_.build(child_)
             self.set_queryInfo(obj_)
-        elif nodeName_ == 'timeSeries': 
+        elif nodeName_ == 'timeSeries':
             obj_ = TimeSeriesType.factory()
             obj_.build(child_)
             self.set_timeSeries(obj_)
@@ -5270,11 +5272,11 @@ class SiteInfoResponseType(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'queryInfo': 
+        if nodeName_ == 'queryInfo':
             obj_ = QueryInfoType.factory()
             obj_.build(child_)
             self.set_queryInfo(obj_)
-        elif nodeName_ == 'site': 
+        elif nodeName_ == 'site':
             obj_ = site.factory()
             obj_.build(child_)
             self.site.append(obj_)
@@ -5379,11 +5381,11 @@ class site(GeneratedsSuper):
     def buildAttributes(self, node, attrs, already_processed):
         pass
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'siteInfo': 
+        if nodeName_ == 'siteInfo':
             obj_ = SiteInfoType.factory()
             obj_.build(child_)
             self.set_siteInfo(obj_)
-        elif nodeName_ == 'seriesCatalog': 
+        elif nodeName_ == 'seriesCatalog':
             obj_ = seriesCatalogType.factory()
             obj_.build(child_)
             self.seriesCatalog.append(obj_)
@@ -5946,7 +5948,7 @@ class SampleType(GeneratedsSuper):
             SampleType_ = child_.text
             self.SampleType = SampleType_
             self.validate_SampleType(self.SampleType)    # validate type SampleType
-        elif nodeName_ == 'LabMethod': 
+        elif nodeName_ == 'LabMethod':
             obj_ = LabMethodType.factory()
             obj_.build(child_)
             self.set_LabMethod(obj_)
@@ -6209,11 +6211,11 @@ class SourceType(GeneratedsSuper):
         elif nodeName_ == 'SourceDescription':
             SourceDescription_ = child_.text
             self.SourceDescription = SourceDescription_
-        elif nodeName_ == 'Metadata': 
+        elif nodeName_ == 'Metadata':
             obj_ = MetaDataType.factory()
             obj_.build(child_)
             self.set_Metadata(obj_)
-        elif nodeName_ == 'ContactInformation': 
+        elif nodeName_ == 'ContactInformation':
             obj_ = ContactInformationType.factory()
             obj_.build(child_)
             self.set_ContactInformation(obj_)
@@ -6588,7 +6590,7 @@ class OffsetType(GeneratedsSuper):
         elif nodeName_ == 'offsetDescription':
             offsetDescription_ = child_.text
             self.offsetDescription = offsetDescription_
-        elif nodeName_ == 'units': 
+        elif nodeName_ == 'units':
             obj_ = units.factory()
             obj_.build(child_)
             self.set_units(obj_)
@@ -6812,15 +6814,15 @@ class SiteInfoType(SourceInfoType):
         if nodeName_ == 'siteName':
             siteName_ = child_.text
             self.siteName = siteName_
-        elif nodeName_ == 'siteCode': 
+        elif nodeName_ == 'siteCode':
             obj_ = siteCode.factory()
             obj_.build(child_)
             self.siteCode.append(obj_)
-        elif nodeName_ == 'timeZoneInfo': 
+        elif nodeName_ == 'timeZoneInfo':
             obj_ = timeZoneInfo.factory()
             obj_.build(child_)
             self.set_timeZoneInfo(obj_)
-        elif nodeName_ == 'geoLocation': 
+        elif nodeName_ == 'geoLocation':
             obj_ = geoLocation.factory()
             obj_.build(child_)
             self.set_geoLocation(obj_)
@@ -6830,7 +6832,7 @@ class SiteInfoType(SourceInfoType):
         elif nodeName_ == 'verticalDatum':
             verticalDatum_ = child_.text
             self.verticalDatum = verticalDatum_
-        elif nodeName_ == 'note': 
+        elif nodeName_ == 'note':
             obj_ = NoteType.factory()
             obj_.build(child_)
             self.note.append(obj_)

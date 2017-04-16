@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+
+
 import os
 import StringIO
 import unittest
@@ -48,7 +51,7 @@ class TestWOF(unittest.TestCase):
         response.export(f, 0, name_=root_name,
                         namespacedef_=NSDEF)
         f.close()
-        
+
     def compare_output_to_known_xml(self,
                                     response_stringIO,
                                     known_xml_filename):

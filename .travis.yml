@@ -35,8 +35,8 @@ install:
     - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install WOFpy-${version}.tar.gz && popd
 
 before_script:
-  - python examples/flask/cbi/build_cbi_cache.py
-  - python examples/flask/swis/runserver_swis.py --config=./test/test_swis_config2.cfg --connection=sqlite:///./test/test_swis2.db &
+  - python wof/examples/flask/cbi/build_cbi_cache.py
+  - python wof/examples/flask/swis/runserver_swis.py --config=./test/test_swis_config2.cfg --connection=sqlite:///./test/test_swis2.db &
 
 script:
   - if [[ $TEST_TARGET == 'default' ]]; then
