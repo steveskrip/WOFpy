@@ -72,7 +72,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 
 **Note: The installation step for WOFpy should be the same for both server on AWS and local**
 
-1. Install miniconda into the user home directory. `/home/ubuntu/miniconda`
+1. Install miniconda into the user home directory. `/home/ubuntu/miniconda2`
 	```bash
 	$ url=https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
 	$ curl $url -o miniconda.sh
@@ -109,7 +109,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 3. Copy the example `odm2/timeseries` folder from WOFpy repository to `/var/www/`
 
 	```bash
-	$ sudo cp -r /home/ubuntu/WOFpy/examples/flask/odm2/timeseries /var/www/
+	$ sudo cp -r /home/ubuntu/WOFpy/wof/examples/flask/odm2/timeseries /var/www/
 	```
 
 4. Currently the folder timeseries is owned by user `root` and group `root`, in order for nginx to be able to access and use this folder, change the owner and group to www-data.
@@ -182,7 +182,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 3. Exit from the `runserver.py` and now we will create `wsgi.py`, a file that serves as the entry point for WOFpy.
 
 	``` python
-	#! /home/ubuntu/miniconda/envs/wofpy/bin/python
+	#! /home/ubuntu/miniconda2/envs/wofpy/bin/python
 	import sys
 	sys.path.insert(0,"/var/www/timeseries")
 
@@ -244,7 +244,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
 	setgid www-data
 
 	# Set the conda environment path
-	env PATH=/home/ubuntu/miniconda/envs/wofpy/bin
+	env PATH=/home/ubuntu/miniconda2/envs/wofpy/bin
 
 	# change directory to where the uWSGI configuration file is located then execute uwsgi with the config file 
 	chdir /var/www/timeseries
@@ -266,7 +266,7 @@ The Local Ubuntu Server is running [Systemd init](http://www.freedesktop.org/wik
  	Description=uWSGI instance to serve timeseries
  
  	[Service]
- 	ExecStart=/bin/bash -c 'export PATH=/home/ubuntu/miniconda/bin:$PATH; source activate wofpy; cd /var/www/timeseries; uwsgi --ini timeseries.ini'
+ 	ExecStart=/bin/bash -c 'export PATH=/home/ubuntu/miniconda2/bin:$PATH; source activate wofpy; cd /var/www/timeseries; uwsgi --ini timeseries.ini'
  
 	[Install]
 	WantedBy=multi-user.target
