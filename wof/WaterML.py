@@ -885,7 +885,7 @@ class TsValuesSingleVariableType(GeneratedsSuper):
             already_processed.append('count')
             try:
                 self.count = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
             if self.count < 0:
                 raise_parse_error(node, 'Invalid NonNegativeInteger')
@@ -4108,7 +4108,7 @@ class qualifier(GeneratedsSuper):
             already_processed.append('qualifierID')
             try:
                 self.qualifierID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = attrs.get('default')
         if value is not None and 'default' not in already_processed:
@@ -4458,7 +4458,7 @@ class option(GeneratedsSuper):
             already_processed.append('optionID')
             try:
                 self.optionID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = attrs.get('name')
         if value is not None and 'name' not in already_processed:
@@ -4579,7 +4579,7 @@ class variableCode(GeneratedsSuper):
             already_processed.append('variableID')
             try:
                 self.variableID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = attrs.get('vocabulary')
         if value is not None and 'vocabulary' not in already_processed:
@@ -4938,7 +4938,7 @@ class ValueSingleVariable(GeneratedsSuper):
             already_processed.append('methodID')
             try:
                 self.methodID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = attrs.get('codedVocabulary')
         if value is not None and 'codedVocabulary' not in already_processed:
@@ -4954,7 +4954,7 @@ class ValueSingleVariable(GeneratedsSuper):
             already_processed.append('sourceID')
             try:
                 self.sourceID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = attrs.get('oid')
         if value is not None and 'oid' not in already_processed:
@@ -4973,21 +4973,21 @@ class ValueSingleVariable(GeneratedsSuper):
             already_processed.append('sampleID')
             try:
                 self.sampleID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = attrs.get('offsetTypeID')
         if value is not None and 'offsetTypeID' not in already_processed:
             already_processed.append('offsetTypeID')
             try:
                 self.offsetTypeID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
         value = attrs.get('accuracyStdDev')
         if value is not None and 'accuracyStdDev' not in already_processed:
             already_processed.append('accuracyStdDev')
             try:
                 self.accuracyStdDev = float(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise ValueError('Bad float/double attribute (accuracyStdDev): %s' % exp)
         value = attrs.get('offsetUnitsAbbreviation')
         if value is not None and 'offsetUnitsAbbreviation' not in already_processed:
@@ -4998,7 +4998,7 @@ class ValueSingleVariable(GeneratedsSuper):
             already_processed.append('offsetValue')
             try:
                 self.offsetValue = float(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise ValueError('Bad float/double attribute (offsetValue): %s' % exp)
         value = attrs.get('dateTime')
         if value is not None and 'dateTime' not in already_processed:
@@ -5616,7 +5616,7 @@ class QualityControlLevelType(GeneratedsSuper):
             already_processed.append('qualityControlLevelID')
             try:
                 self.qualityControlLevelID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         pass
@@ -5723,7 +5723,7 @@ class UnitsType(GeneratedsSuper):
             already_processed.append('UnitID')
             try:
                 self.UnitID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'UnitName':
@@ -5829,7 +5829,7 @@ class MethodType(GeneratedsSuper):
             already_processed.append('methodID')
             try:
                 self.methodID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'MethodDescription':
@@ -5938,7 +5938,7 @@ class SampleType(GeneratedsSuper):
             already_processed.append('sampleID')
             try:
                 self.sampleID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'labSampleCode':
@@ -6066,7 +6066,7 @@ class LabMethodType(GeneratedsSuper):
             already_processed.append('labMethodID')
             try:
                 self.labMethodID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'labName':
@@ -6202,7 +6202,7 @@ class SourceType(GeneratedsSuper):
             already_processed.append('sourceID')
             try:
                 self.sourceID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'Organization':
@@ -6581,7 +6581,7 @@ class OffsetType(GeneratedsSuper):
             already_processed.append('offsetTypeID')
             try:
                 self.offsetTypeID = int(value)
-            except ValueError, exp:
+            except ValueError as exp:
                 raise_parse_error(node, 'Bad integer attribute: %s' % exp)
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'offsetValue':
