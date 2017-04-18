@@ -1,9 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 
-try:
-    import ConfigParser as configparser
-except ImportError:
-    import configparser
+import configparser
 import cgi
 import datetime
 import logging

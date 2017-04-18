@@ -2,17 +2,15 @@ from __future__ import (absolute_import, division, print_function)
 
 
 import datetime
-try:
-    import ConfigParser as configparser
-except ImportError:
-    import configparser
+
+import configparser
 from sqlalchemy import create_engine, distinct, func
 from sqlalchemy.orm import mapper, scoped_session, sessionmaker
 from sqlalchemy.sql import and_
 from dateutil.parser import parse
 from dateutil.tz import tzutc
 
-# Instantiate zome useful time zones
+# Instantiate some useful time zones.
 utc = tzutc()
 
 import sqlalch_swis_models as model
