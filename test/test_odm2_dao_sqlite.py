@@ -1,15 +1,12 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 import unittest
-import sys
 import os
 import tempfile
 
-
-sys.path.append('../implementations/')
 from examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao as OdmDao
 #import private_config
+
 ODM2_DATABASE_URI = 'sqlite:///' + "./test/odm2/ODM2.sqlite"
 ODM2_ONFIG_PATH = os.path.join(os.path.dirname(__file__),
                                 'test_odm2_sqlite.cfg')

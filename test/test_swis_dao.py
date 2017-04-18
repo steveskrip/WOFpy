@@ -1,11 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 import unittest
 import os
-import sys
-
-sys.path.append('../implementations/')
 
 from examples.flask.swis.swis_dao import SwisDao
 
