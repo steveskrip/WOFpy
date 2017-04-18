@@ -1,10 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 import unittest
-import sys
 
-sys.path.append('../implementations/')
 from examples.flask.odm_1_1.odm_dao import OdmDao
 #import private_config
 

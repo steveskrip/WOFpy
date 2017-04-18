@@ -1,12 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 import unittest
 import os
-import sys
 import tempfile
 
-sys.path.append('../implementations/')
 from examples.flask.cbi.cbi_dao import CbiDao
 
 
