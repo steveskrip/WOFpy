@@ -6,8 +6,8 @@ from xml.sax.saxutils import escape
 import logging
 import dateutil.parser
 
-import WaterML_1_1 as WaterML
-import core
+from wof import WaterML_1_1 as WaterML
+from wof import core
 
 
 class WOF_1_1(object):

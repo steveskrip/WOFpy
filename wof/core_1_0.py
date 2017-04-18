@@ -5,8 +5,8 @@ from xml.sax.saxutils import escape
 
 import logging
 
-import core
-import WaterML
+from wof import core
+from wof import WaterML
 
 class WOF(object):
 
