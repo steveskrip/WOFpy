@@ -4,7 +4,7 @@ import urllib
 
 import werkzeug
 from flask import Flask, render_template, current_app, make_response, request
-import config
+import wof.flask.config as config
 import datetime
 
 import wof
