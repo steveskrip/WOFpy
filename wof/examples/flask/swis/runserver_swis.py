@@ -26,7 +26,7 @@ def startServer(config=SWIS_CONFIG_FILE,connection=SWIS_DATABASE_URI, openPort=8
     print("----------------------------------------------------------------")
     print("Access Service endpoints at ")
     for path in wof.site_map(app):
-        print("%s%s".format(url, path))
+        print("{}{}".format(url, path))
     print("----------------------------------------------------------------")
 
     app.run(host='0.0.0.0', port=openPort, threaded=True)

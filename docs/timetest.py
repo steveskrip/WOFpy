@@ -60,11 +60,11 @@ def parse_times(parser):
             test = str(parser(times[i]))
             expect = expected[i]
             if test != expect:
-                print expect, '  :  ', test
+                print('{}  :  {}'.format(expect, test))
             else:
-                print '.'
+                print('.')
         except Exception as e:
-            print str(e) + ": " + times[i]
+            print("{}: {}".format(e, times[i]))
 
 def test_dateutil():
     from dateutil.parser import parse as p
@@ -83,17 +83,5 @@ def test_mx():
     parse_times(p)
 
 if __name__ == '__main__':
-    print 'dateutil :'
+    print('dateutil :')
     test_dateutil()
-    #print ' '
-    #print ' '
-    #print 'isodate :'
-    #test_isodate()
-    #print ' '
-    #print ' '
-    #print 'chrono :'
-    #test_chrono()
-    #print ' '
-    #print ' '
-    #print 'mxDateTime :'
-    #test_mx()

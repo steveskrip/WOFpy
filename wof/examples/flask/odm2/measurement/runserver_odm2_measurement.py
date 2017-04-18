@@ -31,7 +31,7 @@ def startServer(config='odm2_config_measurement.cfg',connection=None,
     print("----------------------------------------------------------------")
     print("Access Service endpoints at ")
     for path in wof.site_map(app):
-        print("%s%s".format(url, path))
+        print("{}{}".format(url, path))
 
     print("----------------------------------------------------------------")
 

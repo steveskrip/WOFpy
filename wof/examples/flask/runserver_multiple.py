@@ -69,13 +69,13 @@ def startServer(openPort):
     print("----------------------------------------------------------------")
     print("Service endpoints")
     for path in wof.flask.site_map_flask_wsgi_mount(app):
-        print("%s%s".format(url, path))
+        print("{}{}".format(url, path))
 
     print("----------------------------------------------------------------")
     print("----------------------------------------------------------------")
     print("Access HTML descriptions of endpoints at ")
     for path in wof.site_map(app):
-        print("%s%s".format(url, path))
+        print("{}{}".format(url, path))
 
     print("----------------------------------------------------------------")
 

@@ -37,13 +37,13 @@ def startServer(config=CBI_CONFIG_FILE,connection=CBI_CACHE_DATABASE_URI, openPo
     print("----------------------------------------------------------------")
     print("Service endpoints")
     for path in wof.flask.site_map_flask_wsgi_mount(app):
-        print("%s%s".format(url, path))
+        print("{}{}".format(url, path))
 
     print("----------------------------------------------------------------")
     print("----------------------------------------------------------------")
     print("HTML Access Service endpoints at ")
     for path in wof.site_map(app):
-        print("%s%s".format(url, path))
+        print("{}{}".format(url, path))
 
     print("----------------------------------------------------------------")
 
