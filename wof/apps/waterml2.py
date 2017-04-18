@@ -11,10 +11,10 @@ from spyne.model.primitive import Unicode, AnyXml, Float, Boolean
 from spyne.service import ServiceBase
 from spyne.model.fault import Fault
 from spyne.util import memoize
-import wof
 from dateutil.parser import parse
-
 from jinja2 import Environment, Template, PackageLoader, FileSystemLoader
+
+import wof
 
 logger = logging.getLogger(__name__)
 

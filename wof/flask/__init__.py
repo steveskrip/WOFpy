@@ -1,14 +1,13 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 import urllib
 
 import werkzeug
 from flask import Flask, render_template, current_app, make_response, request
-import wof
 import config
 import datetime
 
+import wof
 from wof.core import wofConfig, getSpyneApplications
 import wof.core_1_1 as wof_1_1
 import wof.core_1_0 as wof_1_0

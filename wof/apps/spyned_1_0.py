@@ -1,6 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 import StringIO
 import logging
 
@@ -10,6 +9,7 @@ from spyne.model.primitive import Unicode, AnyXml
 from spyne.model.fault import Fault
 from spyne.service import ServiceBase
 from spyne.util import memoize
+
 import wof
 
 __author__ = 'cyoun'

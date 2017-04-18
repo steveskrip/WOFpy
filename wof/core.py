@@ -1,7 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 
-
-import ConfigParser
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 import cgi
 import datetime
 import logging
@@ -101,7 +103,7 @@ class WOFConfig(object):
         TEMPLATES = '../../wof/apps/templates'
 
         def __init__(self, file_name,templates=None):
-            config = ConfigParser.RawConfigParser()
+            config = configparser.RawConfigParser()
             config.read(file_name)
 
             if config.has_option('WOF_1_1','Network'):

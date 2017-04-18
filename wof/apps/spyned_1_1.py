@@ -1,7 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 
-
-
 import StringIO
 import logging
 
@@ -11,9 +9,9 @@ from spyne.model.primitive import Unicode, AnyXml, Float, Boolean
 from spyne.service import ServiceBase
 from spyne.model.fault import Fault
 from spyne.util import memoize
-import wof
 from lxml import etree
 
+import wof
 
 __author__ = 'cyoun'
 
