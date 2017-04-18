@@ -4,7 +4,7 @@ import os
 import tempfile
 import unittest
 
-from examples.flask.cbi.cbi_dao import CbiDao
+from wof.examples.flask.cbi.cbi_dao import CbiDao
 
 
 CBI_CACHE_DATABASE_URI = 'sqlite:////' + os.path.join(
