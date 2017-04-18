@@ -42,9 +42,9 @@ before_script:
 
 script:
   - if [[ $TEST_TARGET == 'default' ]]; then
-      py.test test ;
+      py.test -s -rxs -v test ;
     fi
   - if [[ $TEST_TARGET == 'coding_standards' ]]; then
-      flak8 wof --max-line-length=105 ;
-      flak8 test --max-line-length=105 ;
+      flake8 --max-line-length=105 wof ;
+      flake8 --max-line-length=105 test ;
     fi
