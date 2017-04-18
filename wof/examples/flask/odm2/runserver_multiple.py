@@ -11,8 +11,8 @@ from werkzeug.exceptions import NotFound
 
 import wof
 import wof.flask
-from measurement.odm2_measurement_dao import Odm2Dao as measurement
-from timeseries.odm2_timeseries_dao import Odm2Dao as timeseries
+from wof.examples.flask.odm2.measurement.odm2_measurement_dao import Odm2Dao as measurement
+from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao as timeseries
 #from measurement.private_config import odm2_connection_string
 
 #logging.basicConfig(level=logging.DEBUG)

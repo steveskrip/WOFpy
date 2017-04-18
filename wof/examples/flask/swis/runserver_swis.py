@@ -4,7 +4,7 @@ import logging
 
 import wof
 import wof.flask
-from swis_dao import SwisDao
+from wof.examples.flask.swis.swis_dao import SwisDao
 
 SWIS_DATABASE_URI = 'sqlite:///swis2.db'
 SWIS_CONFIG_FILE = 'swis_config.cfg'

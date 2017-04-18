@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 
 from lxml import etree
 
-import cbi_models as model
+import wof.examples.flask.cbi.cbi_models as model
 
 namespaces = {
         'xsi': "http://www.w3.org/2001/XMLSchema-instance",

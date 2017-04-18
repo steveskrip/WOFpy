@@ -7,7 +7,7 @@ import wof.flask
 import logging
 import wof
 
-from odm2_timeseries_dao import Odm2Dao
+from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao
 #import private_config
 
 """

@@ -9,10 +9,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.sql import and_
 
-import cbi_cache_models as cache
-import cbi_models as model
-import cbi_sos_client
-import cbi_sos_parser
+from wof.examples.flask.cbi import cbi_cache_models as cache
+from wof.examples.flask.cbi import cbi_models as model
+from wof.examples.flask.cbi import cbi_sos_client
+from wof.examples.flask.cbi import cbi_sos_parser
 from wof.dao import BaseDao
 
 

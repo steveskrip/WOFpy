@@ -8,7 +8,7 @@ import wof
 import wof.flask
 from wof.core import WOFConfig
 
-from odm_dao import OdmDao
+from wof.examples.flask.odm_1_1.odm_dao import OdmDao
 
 """
     python examples/flask/odm_1_1/runserver_odm_1_1.py private.connection --config=examples/odm_1_1/config.cfg

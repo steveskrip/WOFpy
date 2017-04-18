@@ -10,7 +10,7 @@ from dateutil.parser import parse
 from dateutil.tz import tzutc, tzoffset
 
 from wof.dao import BaseDao
-import sqlalch_LCM_models as model
+import wof.examples.flask.barebones.sqlalch_LCM_models as model
 import wof.models as wof_base
 
 # Instantiate some useful time zones.

@@ -5,7 +5,7 @@ import csv
 from dateutil.parser import parse
 from dateutil.tz import tzoffset as tz
 
-import csv_model
+import wof.examples.flask.csv_tutorial.solution.csv_model as csv_model
 import wof.models as wof_base
 from wof.dao import BaseDao
 

@@ -8,7 +8,7 @@ import wof
 import wof.flask
 from wof.flask import config
 from wof.flask import create_app
-from LCM_dao import LCMDao
+from wof.examples.flask.barebones.LCM_dao import LCMDao
 
 logging.basicConfig(level=logging.DEBUG)
 

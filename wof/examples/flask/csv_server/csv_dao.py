@@ -7,7 +7,7 @@ import pytz
 from dateutil.parser import parse
 from pytz import timezone
 
-import csv_model
+import wof.examples.flask.csv_server.csv_model
 import wof.models as wof_base
 from wof.dao import BaseDao
 
