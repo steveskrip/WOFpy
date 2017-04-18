@@ -1,7 +1,6 @@
 # The version as used in the setup.py
 from __future__ import (absolute_import, division, print_function)
 
-
 __version__ = "2.0.11b0"
 
 from core import _SERVICE_PARAMS, site_map

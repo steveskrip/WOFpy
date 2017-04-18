@@ -1,14 +1,14 @@
 from __future__ import (absolute_import, division, print_function)
 
-
 import datetime
 from xml.sax.saxutils import escape
 
-import ConfigParser
-import WaterML_1_1 as WaterML
-import core
 import logging
 import dateutil.parser
+
+import WaterML_1_1 as WaterML
+import core
+
 
 class WOF_1_1(object):
 

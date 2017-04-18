@@ -6,7 +6,10 @@ import unittest
 from examples.flask.swis.swis_dao import SwisDao
 import wof
 import wof.flask
-import ConfigParser
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
 from threading import Thread
 import requests
 
@@ -17,7 +20,7 @@ openPort=8080
 
 
 def setupServer():
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.readfp(open(SWIS_CONFIG_FILE))
 
     swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri="sqlite:///test_swis2.db")
