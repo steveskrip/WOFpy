@@ -1,22 +1,29 @@
 from __future__ import (absolute_import, division, print_function)
 
-import unittest
 import os
+import unittest
 
 from examples.flask.swis.swis_dao import SwisDao
 
 
-#TODO: Finish this unittest
+# TODO: Finish this unittest
 
 class TestSwisDao(unittest.TestCase):
     def setUp(self):
-        test_db_path = os.path.join(os.path.dirname(__file__),
-                                        'test_swis2.db')
+        test_db_path = os.path.join(
+            os.path.dirname(__file__),
+            'test_swis2.db'
+        )
 
-        test_config_path = os.path.join(os.path.dirname(__file__),
-                                        'test_swis_config.cfg')
+        test_config_path = os.path.join(
+            os.path.dirname(__file__),
+            'test_swis_config.cfg'
+        )
 
-        self.dao = SwisDao(test_config_path, database_uri='sqlite:///' + test_db_path, )
+        self.dao = SwisDao(
+            test_config_path,
+            database_uri='sqlite:///' + test_db_path,
+        )
 
         self.known_site_codes = [
             'ARA', 'ARROYD', 'ARROYS', 'BAFF', 'BAYT', 'BIRD', 'BLB', 'BOBH',
@@ -55,19 +62,21 @@ class TestSwisDao(unittest.TestCase):
         # Need more test data, only JOB and BAYT have datavalues
         # associated with them
         self.known_series = dict(
-            BAYT=['instrument_battery_voltage',
-                    'water_electrical_conductivity',
-                    'water_dissolved_oxygen_percent_saturation',
-                    'seawater_salinity',
-                    'water_temperature',
-                    'water_depth_non_vented'],
+            BAYT=[
+                'instrument_battery_voltage',
+                'water_electrical_conductivity',
+                'water_dissolved_oxygen_percent_saturation',
+                'seawater_salinity',
+                'water_temperature',
+                'water_depth_non_vented'
+            ],
             JOB=['water_dissolved_oxygen_percent_saturation']
         )
 
-        #TODO: Need more instruments in test_swis.db
+        # TODO: Need more instruments in test_swis.db.
         self.known_method_ids = [1]
 
-        #Only have one Source in SWIS DAO, whose info is in dao.contact_info
+        # Only have one Source in SWIS DAO, whose info is in dao.contact_info.
         self.known_source_id = 1
 
         self.known_source_info = {
@@ -76,7 +85,7 @@ class TestSwisDao(unittest.TestCase):
             'Email': 'Andrew.Wilson@twdb.state.tx.us',
             'Organization': 'TWDB',
             'Link': 'http://www.twdb.state.tx.us/',
-            'Description': 'Texas Water Development Board Surface Water Information System (TWDB SWIS)',
+            'Description': 'Texas Water Development Board Surface Water Information System (TWDB SWIS)',  # noqa
             'Address': '1700 North Congress, Suite #670',
             'City': 'Austin',
             'State': 'TX',
@@ -169,7 +178,7 @@ class TestSwisDao(unittest.TestCase):
             self.assertTrue(methodResult.MethodID in self.known_method_ids)
 
     def test_get_source_by_id(self):
-        #Only have one source in SWIS
+        # Only have one source in SWIS
         sourceResult = self.dao.get_source_by_id(1)
         self.assertNotEqual(sourceResult, None)
 
@@ -193,7 +202,7 @@ class TestSwisDao(unittest.TestCase):
     def test_get_sources_by_ids(self):
         sourceResultArr = self.dao.get_sources_by_ids([1])
 
-        #should only have one Source for SWIS
+        # Should only have one Source for SWIS.
         self.assertEqual(len(sourceResultArr), 1)
         sourceResult = sourceResultArr[0]
 
@@ -214,26 +223,26 @@ class TestSwisDao(unittest.TestCase):
         self.assertEqual(sourceResult.ZipCode,
                          self.known_source_info['ZipCode'])
 
-    #TODO
+    # TODO
     def test_get_qualifier_by_id(self):
         pass
 
-    #TODO
+    # TODO
     def test_get_qualifiers_by_ids(self):
         pass
 
-    #TODO
+    # TODO
     def test_get_qualcontrol_by_id(self):
         pass
 
-    #TODO
+    # TODO
     def test_get_qualcontrols_by_ids(self):
         pass
 
-    #TODO
+    # TODO
     def test_get_offsettype_by_id(self):
         pass
 
-    #TODO
+    # TODO
     def test_get_offsettypes_by_ids(self):
         pass

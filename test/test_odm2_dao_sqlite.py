@@ -1,15 +1,15 @@
 from __future__ import (absolute_import, division, print_function)
 
-import unittest
 import os
-import tempfile
+import unittest
 
-from examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao as OdmDao
-#import private_config
+from examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao as OdmDao  # noqa
 
 ODM2_DATABASE_URI = 'sqlite:///' + "./test/odm2/ODM2.sqlite"
-ODM2_ONFIG_PATH = os.path.join(os.path.dirname(__file__),
-                                'test_odm2_sqlite.cfg')
+ODM2_ONFIG_PATH = os.path.join(
+    os.path.dirname(__file__),
+    'test_odm2_sqlite.cfg'
+)
 
 
 # networkCode = 'LBR
@@ -18,10 +18,10 @@ ODM2_ONFIG_PATH = os.path.join(os.path.dirname(__file__),
 # beginDate = '2005-01-01'
 # endDate = '2016-01-01'
 
-#@unittest.skip("DOA requires db setup skipping")
+# @unittest.skip("DOA requires db setup skipping")
 class TestOdmDao(unittest.TestCase):
     def setUp(self):
-        #self.dao = OdmDao(private_config.lbr_connection_string)
+        # self.dao = OdmDao(private_config.lbr_connection_string)
         self.dao = OdmDao(ODM2_DATABASE_URI)
         self.known_site_codes = [
             'USU-LBR-Mendon',
@@ -104,7 +104,7 @@ class TestOdmDao(unittest.TestCase):
             # ('USU-LBR-Mendon','USU33','2007-08-16 23:30:00.000','2008-03-27 19:30:00.000'),
             # ('USU-LBR-Mendon','USU34','2007-08-16 23:30:00.000','2008-03-27 19:30:00.000'),
             # ('USU-LBR-Mendon','USU35','2007-08-16 23:30:00.000','2008-03-27 19:30:00.000'),
-            ('USU-LBR-Mendon','USU36','2007-08-16 23:30:00.000','2008-03-27 19:30:00.000'),
+            ('USU-LBR-Mendon', 'USU36', '2007-08-16 23:30:00.000', '2008-03-27 19:30:00.000'),
             # ('USU-LBR-Mendon','USU37','2007-08-16 23:30:00.000','2008-03-27 19:30:00.000'),
             # ('USU-LBR-Mendon','USU39','2007-10-04 19:00:00.000','2008-02-12 22:15:00.000'),
             # ('USU-LBR-Mendon','USU39','2005-04-28 03:00:00.000','2007-06-07 21:20:00.000'),

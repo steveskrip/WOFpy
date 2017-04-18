@@ -1,11 +1,12 @@
 from __future__ import (absolute_import, division, print_function)
 
-import unittest
 import os
+import unittest
+
+from examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
 
 from lxml import etree
 
-from examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
 
 @unittest.skip("DOA needs work to build a cache, and update tests to be valid")
 class TestCbiParser(unittest.TestCase):
@@ -14,8 +15,11 @@ class TestCbiParser(unittest.TestCase):
 
     def test_parse_datavalues_from_get_observation(self):
 
-        path = os.path.join(os.path.dirname(__file__), 'cbi_sos_examples',
-                     'cbi_get_observations.xml')
+        path = os.path.join(
+            os.path.dirname(__file__),
+            'cbi_sos_examples',
+            'cbi_get_observations.xml'
+        )
 
         f = open(path)
         tree = etree.parse(f)

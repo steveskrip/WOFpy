@@ -1,33 +1,35 @@
 from __future__ import (absolute_import, division, print_function)
 
-from suds.client import Client
-import unittest
-
-from examples.flask.swis.swis_dao import SwisDao
-import wof
-import wof.flask
 try:
     import ConfigParser as configparser
 except ImportError:
     import configparser
-from threading import Thread
+import unittest
+
+from examples.flask.swis.swis_dao import SwisDao
+
 import requests
 
-#TODO finish this unittest
-# should definitely test for bad inputs (non-existent site and var codes, bad dates for getvalues, etc.)
+from suds.client import Client
+
+import wof
+import wof.flask
+
+# TODO finish this unittest
+# should definitely test for bad inputs
+# (non-existent site and var codes, bad dates for getvalues, etc.)
 SWIS_CONFIG_FILE = 'test_swis_config.cfg'
-openPort=8080
+openPort = 8080
 
 
 def setupServer():
     config = configparser.ConfigParser()
     config.readfp(open(SWIS_CONFIG_FILE))
 
-    swis_dao = SwisDao(SWIS_CONFIG_FILE, database_uri="sqlite:///test_swis2.db")
+    swis_dao = SwisDao(SWIS_CONFIG_FILE,
+                       database_uri="sqlite:///test_swis2.db")
     app = wof.flask.create_wof_flask_app(swis_dao, SWIS_CONFIG_FILE)
-    #    app.config['DEBUG'] = True
-
-
+    # app.config['DEBUG'] = True
 
     url = "http://127.0.0.1:" + str(openPort)
     print("----------------------------------------------------------------")
@@ -43,17 +45,21 @@ def setupServer():
 
     print("----------------------------------------------------------------")
 
-    #app.run(host='0.0.0.0', port=openPort, threaded=True)
+    # app.run(host='0.0.0.0', port=openPort, threaded=True)
     app.run(host='0.0.0.0', port=openPort, threaded=False)
     # run runs indefinitely
-    #app.test_client()
+    # app.test_client()
 
-#@unittest.skip("SOAP requires running server skipping")
+
+# @unittest.skip("SOAP requires running server skipping")
 try:
-    req = requests.get('http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl', timeout=2)
+    req = requests.get(
+        'http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl',
+        timeout=2
+    )
     if req.status_code == 200:
         serverUp = True
-        serverMessage= "found server"
+        serverMessage = "found server"
     else:
         serverUp = False
         serverMessage = "found server, but URL failed"
@@ -61,7 +67,8 @@ except:
     serverUp = False
     serverMessage = "No server running"
 
-#@unittest.skip("Failing on travis with long logs. Skipping")
+
+# @unittest.skip("Failing on travis with long logs. Skipping")
 @unittest.skipUnless(serverUp, serverMessage)
 class TestWofpySoap(unittest.TestCase):
     """
@@ -71,20 +78,19 @@ class TestWofpySoap(unittest.TestCase):
     specified WSDL Address.
     """
 
-
     def setUp(self):
 
         # self.t = Thread(target=setupServer, args=())
         # self.t.start()
 
-        #Change this to your currently-running WSDL
+        # Change this to your currently-running WSDL.
         wsdl_address = "http://127.0.0.1:8080/twdb/soap/cuahsi_1_0/.wsdl"
         self.network = 'twdb'
 
         self.client = Client(wsdl_address)
 
-        #Assuming use of LBR ODM database
-        #TODO: Maybe should test against SWIS instead.  SQLite seems faster.
+        # Assuming use of LBR ODM database
+        # TODO: Maybe should test against SWIS instead.  SQLite seems faster.
         self.known_site_codes = [
             'ARA', 'ARROYD', 'ARROYS', 'BAFF', 'BAYT', 'BIRD', 'BLB', 'BOBH',
             'BOLI', 'BRAZOSD', 'BRAZOSS', 'BZ1U', 'BZ1UX', 'BZ2L', 'BZ2U',
@@ -113,15 +119,19 @@ class TestWofpySoap(unittest.TestCase):
            'upward_water_velocity', 'water_x_velocity', 'water_y_velocity'
         ]
 
-        #Need more test data, only JOB and BAYT have datavalues associated with them
+        # Need more test data,
+        # only JOB and BAYT have datavalues associated with them.
         self.known_series = dict(
-            BAYT = ['instrument_battery_voltage',
-                    'water_electrical_conductivity',
-                    'water_dissolved_oxygen_percent_saturation',
-                    'seawater_salinity',
-                    'water_temperature',
-                    'water_depth_non_vented']
+            BAYT=[
+                'instrument_battery_voltage',
+                'water_electrical_conductivity',
+                'water_dissolved_oxygen_percent_saturation',
+                'seawater_salinity',
+                'water_temperature',
+                'water_depth_non_vented'
+            ]
         )
+
     def tearDown(self):
         self.t = None
         pass
@@ -142,7 +152,7 @@ class TestWofpySoap(unittest.TestCase):
             result = self.client.service.GetVariableInfo(
                 self.network+':'+var_code)
             self.assertNotEqual(result, None)
-            #TODO: test that the var code matches the given var code
+            # TODO: test that the var code matches the given var code
 
     def test_getvariableinfoobject(self):
         result = self.client.service.GetVariableInfoObject('')
@@ -152,29 +162,38 @@ class TestWofpySoap(unittest.TestCase):
             result = self.client.service.GetVariableInfoObject(
                 self.network+':'+var_code)
             self.assertNotEqual(result, None)
-            #TODO: test that the var code matches the given var code
+            # TODO: test that the var code matches the given var code
 
     def test_getsiteinfo(self):
-        for site_code in self.known_series: #TODO: every site should have siteinfo, but the swis db is not complete
+        # TODO: every site should have siteinfo,
+        # but the swis db is not complete.
+        for site_code in self.known_series:
             result = self.client.service.GetSiteInfo(
                 self.network+':'+site_code)
             self.assertNotEqual(result, None)
-            #TODO: test that the site code in the result matches the given site code
+            # TODO: test that the site code in the result
+            # matches the given site code.
 
     def test_getsiteinfoobject(self):
-        for site_code in self.known_series: #TODO: every site should have siteinfo, but the swis db is not complete
+        # TODO: every site should have siteinfo,
+        # but the swis db is not complete.
+        for site_code in self.known_series:
             result = self.client.service.GetSiteInfoObject(
                 self.network+':'+site_code)
             self.assertNotEqual(result, None)
-            #TODO: test that the site code in the result matches the given site code
+            # TODO: test that the site code in the result
+            # matches the given site code
 
     def test_getvalues(self):
         for site_code, var_code_list in self.known_series.items():
             for var_code in var_code_list:
-                result = self.client.service.GetValues(self.network+':'+site_code, self.network+':'+var_code)
+                self.client.service.GetValues(
+                    self.network + ':' + site_code,
+                    self.network + ':' + var_code
+                )
 
     def test_getvaluesobject(self):
         for site_code, var_code_list in self.known_series.items():
             for var_code in var_code_list:
-                result = self.client.service.GetValuesObject(
+                self.client.service.GetValuesObject(
                     site_code, var_code)
