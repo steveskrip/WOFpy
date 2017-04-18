@@ -7,7 +7,7 @@
             <dataType>Continuous</dataType>
             <generalCategory>Water Quality</generalCategory>
             <sampleMedium>Surface Water</sampleMedium>
-            <units unitsAbbreviation="degC" unitsCode="96" unitsType="Temperature">degree celcius</units>
+            <units unitsAbbreviation="degC" unitsCode="96" unitsType="Temperature">degree celsius</units>
             <NoDataValue>-9999</NoDataValue>
             <timeSupport isRegular="true">
                 <unit UnitID="100">
