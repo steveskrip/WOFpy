@@ -45,6 +45,6 @@ script:
       py.test test ;
     fi
   - if [[ $TEST_TARGET == 'coding_standards' ]]; then
-      flak8 wof ;
-      flak8 test ;
+      flak8 wof --max-line-length=105 ;
+      flak8 test --max-line-length=105 ;
     fi

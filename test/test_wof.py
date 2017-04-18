@@ -1,13 +1,14 @@
 from __future__ import (absolute_import, division, print_function)
 
-import os
 import StringIO
+import os
 import unittest
 
 from lxml import etree, objectify
-from wof import WOF
 
 from test_dao import TestDao
+
+from wof import WOF
 
 TEST_CONFIG_FILE = 'test_config.cfg'
 TEST_XML_DIR = 'test_xml'
@@ -28,10 +29,12 @@ class TestWOF(unittest.TestCase):
 
     def setUp(self):
         dao = TestDao()
-        testConfig = os.path.join(os.path.dirname(__file__),TEST_CONFIG_FILE)
+        testConfig = os.path.join(os.path.dirname(__file__), TEST_CONFIG_FILE)
         self.wof_inst = WOF(dao, testConfig)
-        waterml_schema_path = os.path.join(os.path.dirname(__file__),
-                                        'cuahsiTimeSeries_v1_0.xsd')
+        waterml_schema_path = os.path.join(
+            os.path.dirname(__file__),
+            'cuahsiTimeSeries_v1_0.xsd'
+        )
         waterml_schema_doc = etree.parse(waterml_schema_path)
         self.waterml_schema = etree.XMLSchema(waterml_schema_doc)
 
@@ -140,10 +143,12 @@ class TestWOF(unittest.TestCase):
         self.compare_output_to_known_xml(response_string,
                                          'get_values_encloses_por.xml')
 
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestWOF))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

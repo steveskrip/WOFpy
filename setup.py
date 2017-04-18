@@ -10,13 +10,15 @@ Advancement of Hydrologic Science, Inc.
 """
 from __future__ import (absolute_import, division, print_function)
 
+import codecs
 import os
 import re
-import codecs
-from setuptools import Command, setup, find_packages
+
+from setuptools import find_packages, setup
 
 
 here = os.path.abspath(os.path.dirname(__file__))
+
 
 def read(*parts):
     return codecs.open(os.path.join(here, *parts), 'r').read()
@@ -30,6 +32,7 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+
 # Dependencies.
 with open('requirements.txt') as f:
     requirements = f.readlines()
@@ -37,7 +40,7 @@ install_requires = [t.strip() for t in requirements]
 
 setup(
     name='WOFpy',
-    version=find_version("wof","__init__.py"),#'2.0.0005-alpha',
+    version=find_version("wof", "__init__.py"),
     license='BSD',
     author='James Seppi',
     author_email='james.seppi@gmail.com',
@@ -53,13 +56,13 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=install_requires,
-    extras_require = {
-        'odm1':  ['sqlalchemy', 'pyodbc'],
-        'odm2':  ['sqlalchemy','odm2api'],
+    extras_require={
+        'odm1': ['sqlalchemy', 'pyodbc'],
+        'odm2': ['sqlalchemy', 'odm2api'],
         'sqlite': ['sqlalchemy'],
     },
     dependency_links=[
-        'git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0'
+        'git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0'  # noqa
     ],
     tests_require=['suds-jurko', 'requests'],
     classifiers=[
@@ -74,7 +77,8 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
-      entry_points=dict(console_scripts=[
-          'wofpy_config = wof.wofpy_config:main']
-          ),
+    entry_points=dict(console_scripts=[
+        'wofpy_config = wof.wofpy_config:main'
+        ]
+    ),
 )
