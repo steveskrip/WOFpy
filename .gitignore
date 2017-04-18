@@ -7,3 +7,4 @@ build/
 WOFpy.egg-info/
 dist/
 .idea/
+.cache
