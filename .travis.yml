@@ -31,6 +31,9 @@ before_install:
     - conda config --add channels odm2 --force
     - conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements-dev.txt
     - source activate TEST
+    - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+        conda install --yes configparser ;
+      fi
 
 # Test source distribution.
 install:
