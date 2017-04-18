@@ -8,7 +8,7 @@ from sqlalchemy.sql import and_
 from dateutil.parser import parse
 
 from wof.dao import BaseDao
-import sqlalch_odm_models as model
+import wof.examples.flask.odm_1_1.sqlalch_odm_models as model
 
 import pytz
 from dateutil.parser import parse

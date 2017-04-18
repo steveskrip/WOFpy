@@ -9,7 +9,7 @@ sys.path.insert(0, '%s/../../../' % curr_folder)
 
 import logging
 import wof
-from odm2_measurement_dao import Odm2Dao
+from wof.examples.flask.odm2.measurement.odm2_measurement_dao import Odm2Dao
 #import private_config
 
 """

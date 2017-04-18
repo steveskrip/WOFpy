@@ -3,7 +3,7 @@ from __future__ import (absolute_import, division, print_function)
 import os
 import unittest
 
-from examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
+from wof.examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
 
 from lxml import etree
 

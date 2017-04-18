@@ -6,7 +6,7 @@ import tempfile
 
 import wof
 import wof.flask
-from cbi_dao import CbiDao
+from wof.examples.flask.cbi.cbi_dao import CbiDao
 
 """ Before running this script, run build_cbi_cache.py to build a cache of
     sites and variables available from CBI.

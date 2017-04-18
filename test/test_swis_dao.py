@@ -3,7 +3,7 @@ from __future__ import (absolute_import, division, print_function)
 import os
 import unittest
 
-from examples.flask.swis.swis_dao import SwisDao
+from wof.examples.flask.swis.swis_dao import SwisDao
 
 
 # TODO: Finish this unittest

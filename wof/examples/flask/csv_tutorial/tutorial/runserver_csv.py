@@ -4,7 +4,7 @@ import logging
 
 import wof
 import wof.flask
-from csv_dao import CsvDao
+from wof.examples.flask.csv_server.csv_dao import CsvDao
 
 CSV_CONFIG_FILE = 'csv_config.cfg'
 SITES_FILE = 'sites.csv'

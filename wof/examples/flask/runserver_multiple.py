@@ -3,12 +3,12 @@ from __future__ import (absolute_import, division, print_function)
 
 import logging
 
-from examples.barebones.LCM_dao import LCMDao
+from wof.examples.flask.barebones.LCM_dao import LCMDao
 
 import wof
 import wof.flask
-from examples.flask.csv_server import CsvDao
-from examples.flask.swis.swis_dao import SwisDao
+from wof.examples.flask.csv_server.csv_dao import CsvDao
+from wof.examples.flask.swis.swis_dao import SwisDao
 
 logging.basicConfig(level=logging.DEBUG)
 

@@ -13,7 +13,7 @@ from dateutil.tz import tzutc
 # Instantiate some useful time zones.
 utc = tzutc()
 
-import sqlalch_swis_models as model
+import wof.examples.flask.swis.sqlalch_swis_models as model
 
 from wof.dao import BaseDao
 
