@@ -5,8 +5,8 @@ import logging
 
 from spyne.decorator import rpc
 from spyne.model.complex import Array
-from spyne.model.primitive import Unicode, AnyXml
 from spyne.model.fault import Fault
+from spyne.model.primitive import AnyXml, Unicode
 from spyne.service import ServiceBase
 from spyne.util import memoize
 
@@ -23,8 +23,9 @@ NSDEF = 'xmlns:gml="http://www.opengis.net/gml" \
     xmlns:wtr="http://www.cuahsi.org/waterML/" \
     xmlns="http://www.cuahsi.org/waterML/1.0/"'
 
+
 @memoize
-def TWOFService(wof_inst,T, T_name):
+def TWOFService(wof_inst, T, T_name):
     class WOFService(ServiceBase):
 
         @rpc(Array(Unicode), Unicode, _returns=AnyXml)
@@ -50,7 +51,7 @@ def TWOFService(wof_inst,T, T_name):
         # This is the one that returns WITH <![CDATA[...]]>
         @rpc(Array(Unicode), Unicode, _returns=Unicode)
         def GetSitesXml(ctx, site=None, authToken=None):
-            siteResult = WOFService.GetSites(ctx,site,authToken)
+            siteResult = WOFService.GetSites(ctx, site, authToken)
             return siteResult.replace('\n', '')
 
         @rpc(Unicode, Unicode, _returns=AnyXml)
@@ -59,8 +60,12 @@ def TWOFService(wof_inst,T, T_name):
                 siteInfoResponse = \
                     wof_inst.create_get_site_info_response(site)
                 outStream = StringIO.StringIO()
-                siteInfoResponse.export(outStream, 0, name_="sitesResponse",
-                                    namespacedef_=NSDEF)
+                siteInfoResponse.export(
+                    outStream,
+                    0,
+                    name_="sitesResponse",
+                    namespacedef_=NSDEF
+                )
                 return outStream.getvalue()
             except Exception as inst:
                 if type(inst) == Fault:
@@ -70,7 +75,7 @@ def TWOFService(wof_inst,T, T_name):
 
         @rpc(Unicode, Unicode, _returns=T)
         def GetSiteInfo(ctx, site, authToken=None):
-            siteinfoResult = WOFService.GetSiteInfoObject(ctx,site,authToken)
+            siteinfoResult = WOFService.GetSiteInfoObject(ctx, site, authToken)
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return siteinfoResult
             return str(siteinfoResult.replace('\n', ''))
@@ -81,9 +86,12 @@ def TWOFService(wof_inst,T, T_name):
                 variableInfoResponse = \
                     wof_inst.create_get_variable_info_response(variable)
                 outStream = StringIO.StringIO()
-                variableInfoResponse.export(outStream, 0,
-                                                name_="variablesResponse",
-                                                namespacedef_=NSDEF)
+                variableInfoResponse.export(
+                    outStream,
+                    0,
+                    name_="variablesResponse",
+                    namespacedef_=NSDEF
+                )
                 return outStream.getvalue()
             except Exception as inst:
                 if type(inst) == Fault:
@@ -93,13 +101,13 @@ def TWOFService(wof_inst,T, T_name):
 
         @rpc(Unicode, Unicode, _returns=T)
         def GetVariableInfo(ctx, variable, authToken=None):
-            varinfoResult = WOFService.GetVariableInfoObject(ctx,variable,authToken)
+            varinfoResult = WOFService.GetVariableInfoObject(ctx, variable, authToken)  # noqa
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return varinfoResult
             return varinfoResult.replace('\n', '')
 
         @rpc(Unicode, Unicode, Unicode, Unicode, Unicode, _returns=AnyXml)
-        def GetValuesObject(ctx, location, variable, startDate, endDate,authToken=None):
+        def GetValuesObject(ctx, location, variable, startDate, endDate, authToken=None):  # noqa
             try:
                 timeSeriesResponse = wof_inst.create_get_values_response(
                     location, variable, startDate, endDate)
@@ -115,8 +123,15 @@ def TWOFService(wof_inst,T, T_name):
                     raise Fault(faultstring=str(inst))
 
         @rpc(Unicode, Unicode, Unicode, Unicode, Unicode, _returns=T)
-        def GetValues(ctx, location, variable, startDate, endDate,authToken=None):
-            valuesResult = WOFService.GetValuesObject(ctx,location,variable,startDate,endDate,authToken)
+        def GetValues(ctx, location, variable, startDate, endDate, authToken=None):  # noqa
+            valuesResult = WOFService.GetValuesObject(
+                ctx,
+                location,
+                variable,
+                startDate,
+                endDate,
+                authToken
+            )
             if T_name == wof._SERVICE_PARAMS["r_type"]:
                 return valuesResult
             return valuesResult.replace('\n', '')
@@ -128,10 +143,10 @@ def TWOFService(wof_inst,T, T_name):
         # element that has that element removed and replaced with
         # its child, which was the original response
 
-        #TODO: how do we determine which method is being returned from?
+        # TODO: how do we determine which method is being returned from?
         # Since I don't know, I am doing a dumb test for each one
 
-        if 'xml' and not 'soap' in list(ctx.out_protocol.type):
+        if 'xml' and 'soap' not in list(ctx.out_protocol.type):
             logger.info("protocol types: %s" % list(ctx.out_protocol.type))
             modify_return_xml_object(ctx)
             return ctx
@@ -158,13 +173,19 @@ def TWOFService(wof_inst,T, T_name):
     def modify_return_xml_object(ctx):
         method_name = ctx._MethodContext__descriptor.name
         logger.info("Modify WOF10 %s request" % method_name)
-        result_element_name='%sResult' % method_name
+        result_element_name = '%sResult' % method_name
         element = ctx.out_document
-        result_element=element.find('.//{%s}%s' % (element.nsmap['ns0'], result_element_name))
+        result_element = element.find('.//{%s}%s' % (
+            element.nsmap['ns0'],
+            result_element_name)
+        )
         children = result_element.getchildren()
         ctx.out_document = children[0]
         return ctx
 
-    WOFService.event_manager.add_listener('method_return_document', _on_method_return_xml)
+    WOFService.event_manager.add_listener(
+        'method_return_document',
+        _on_method_return_xml
+    )
 
     return WOFService

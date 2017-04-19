@@ -1,12 +1,13 @@
 from __future__ import (absolute_import, division, print_function)
 
 import datetime
-from xml.sax.saxutils import escape
-
 import logging
 
-from wof import core
+from xml.sax.saxutils import escape
+
 from wof import WaterML
+from wof import core
+
 
 class WOF(object):
 
@@ -38,11 +39,10 @@ class WOF(object):
 
     def config_from_file(self, file_name):
         if self._templates:
-            config = core.WOFConfig(file_name,templates=self._templates)
+            config = core.WOFConfig(file_name, templates=self._templates)
         else:
             config = core.WOFConfig(file_name)
         self._config = config
-
 
         self.network = config.network.lower()
         self.vocabulary = config.vocabulary.lower()
@@ -59,19 +59,20 @@ class WOF(object):
         self.default_samplemedium = config.default_samplemedium
 
     '''
-    For WML 1.0 many terms were embedded in the Schemas, which made them not expandable.
-    This provides a standard warning message
+    For WML 1.0 many terms were embedded in the Schemas,
+    which made them not expandable. This provides a standard warning message
     '''
-    def invalid_enum_message(self,name,value, default=None):
-        message = "WaterML 1.0 schema enum issue '{}' not in {}. Use the cuashi_1_1 endpoint ".format(value,name)
+    def invalid_enum_message(self, name, value, default=None):
+        message = ('WaterML 1.0 schema enum issue "{}" not in {}. '
+                   'Use the cuashi_1_1 endpoint ').format(value, name)
         if default is not None:
-            message = "Substituted '"+ default +"'. " + message
+            message = 'Substituted "' + default + '". ' + message
         return message
 
     def get_site_code(self, siteArg):
 
         if ':' in siteArg:
-            networkname, siteCode = siteArg.split(':',1)
+            networkname, siteCode = siteArg.split(':', 1)
             networkname = networkname.lower()
             if self.network == networkname:
                 return siteCode
@@ -82,7 +83,7 @@ class WOF(object):
     def get_variable_code(self, varArg):
 
         if ':' in varArg:
-            vocabname, varCode = varArg.split(':',1)
+            vocabname, varCode = varArg.split(':', 1)
             vocabname = vocabname.lower()
             if self.vocabulary == vocabname:
                 return varCode
@@ -92,7 +93,7 @@ class WOF(object):
 
     def create_get_site_response(self, siteArg=None):
 
-        if siteArg == None or siteArg == '':
+        if siteArg is None or siteArg == '':
             siteResultArr = self.dao.get_all_sites()
         else:
             siteCodesArr = siteArg.split(',')
@@ -100,13 +101,13 @@ class WOF(object):
                             for s in siteCodesArr]
             siteResultArr = self.dao.get_sites_by_codes(siteCodesArr)
 
-        #if len(siteResultArr) == 0:
-        #    return None
+        # if len(siteResultArr) == 0:
+        #     return None
 
         siteInfoResponse = WaterML.SiteInfoResponseType()
 
         queryInfo = WaterML.QueryInfoType()
-        #TODO: check on how this should be done for multiple sites
+        # TODO: check on how this should be done for multiple sites.
         criteria = WaterML.criteria(locationParam=siteArg)
         queryInfo.set_criteria(criteria)
         queryInfoNote = WaterML.NoteType()
@@ -119,8 +120,8 @@ class WOF(object):
                 s = self.create_site_element(siteResult)
                 siteInfoResponse.add_site(s)
         else:
-            #site = WaterML.site()
-            #siteInfoResponse.add_site(site)
+            # site = WaterML.site()
+            # siteInfoResponse.add_site(site)
             raise Exception("Site,'%s', Not Found" % siteArg)
 
         return siteInfoResponse
@@ -131,7 +132,7 @@ class WOF(object):
         siteCode = self.get_site_code(siteArg)
         siteResult = self.dao.get_site_by_code(siteCode)
 
-        if (varArg == None or varArg == ''):
+        if (varArg is None or varArg == ''):
             seriesResultArr = self.dao.get_series_by_sitecode(siteCode)
         else:
             varCode = self.get_variable_code(varArg)
@@ -156,15 +157,15 @@ class WOF(object):
             s = self.create_site_element(siteResult, seriesResultArr)
             siteInfoResponse.add_site(s)
         else:
-            #site = WaterML.site()
-            #siteInfoResponse.add_site(site)
+            # site = WaterML.site()
+            # siteInfoResponse.add_site(site)
             raise Exception("Site,'%s', Not Found" % siteArg)
 
         return siteInfoResponse
 
     def create_get_variable_info_response(self, varArg=None):
 
-        if (varArg == None or varArg == ''):
+        if (varArg is None or varArg == ''):
             variableResultArr = self.dao.get_all_variables()
         else:
             varCodesArr = varArg.split(',')
@@ -181,13 +182,13 @@ class WOF(object):
         # like when it is.  If it should be in the response, then the
         # WSDL needs to be updated
 
-        #queryInfo = WaterML.QueryInfoType()
-        #criteria = WaterML.criteria(variableParam=varArg)
-        #queryInfo.set_criteria(criteria)
-        #queryInfoNote = WaterML.NoteType()
-        #queryInfo.add_note(queryInfoNote)
-        #queryInfo.set_extension('')
-        #variableInfoResponse.set_queryInfo(queryInfo)
+        # queryInfo = WaterML.QueryInfoType()
+        # criteria = WaterML.criteria(variableParam=varArg)
+        # queryInfo.set_criteria(criteria)
+        # queryInfoNote = WaterML.NoteType()
+        # queryInfo.add_note(queryInfoNote)
+        # queryInfo.set_extension('')
+        # variableInfoResponse.set_queryInfo(queryInfo)
 
         variables = WaterML.variables()
         for variableResult in variableResultArr:
@@ -199,8 +200,8 @@ class WOF(object):
     def create_get_values_response(self, siteArg, varArg, startDateTime=None,
                                    endDateTime=None):
 
-        #TODO: Tim thinks the DAO should handle network and vocab parsing,
-        #      not WOF
+        # TODO: Tim thinks the DAO should handle network and vocab parsing,
+        #       not WOF
 
         siteCode = self.get_site_code(siteArg)
         varCode = self.get_variable_code(varArg)
@@ -221,52 +222,52 @@ class WOF(object):
         queryInfo.set_extension('')
         timeSeriesResponse.set_queryInfo(queryInfo)
 
-        #if not valueResultArr:
-        #    timeSeries = WaterML.TimeSeriesType()
-        #    timeSeriesResponse.set_timeSeries(timeSeries)
-        #    return timeSeriesResponse
+        # if not valueResultArr:
+        #     timeSeries = WaterML.TimeSeriesType()
+        #     timeSeriesResponse.set_timeSeries(timeSeries)
+        #     return timeSeriesResponse
 
         if not valueResultArr:
             raise Exception("Values Not Found for %s:%s for dates %s - %s" % (
                 siteCode, varCode, startDateTime, endDateTime))
 
-        if isinstance(valueResultArr,dict):
+        if isinstance(valueResultArr, dict):
             for key in valueResultArr.keys():
                 valueResultArr = valueResultArr[key]
                 break
 
         timeSeries = WaterML.TimeSeriesType()
 
-        #sourceInfo (which is a siteInfo) element
+        # sourceInfo (which is a siteInfo) element
         siteResult = self.dao.get_site_by_code(siteCode)
 
-        #TODO: Exception?
+        # TODO: Exception?
         if not siteResult:
             pass
 
         sourceInfo = self.create_site_info_element(siteResult)
         timeSeries.sourceInfo = sourceInfo
 
-        #variable element
+        # variable element
         varResult = self.dao.get_variable_by_code(varCode)
 
-        #TODO: Exception?
+        # TODO: Exception?
         if not varResult:
             pass
 
         variable = self.create_variable_element(varResult)
         timeSeries.variable = variable
 
-        #TODO: fill in some more of the attributes in this element
+        # TODO: fill in some more of the attributes in this element.
         values = WaterML.TsValuesSingleVariableType()
 
         values.count = len(valueResultArr)
 
         if varResult.VariableUnits:
-            values.unitsAbbreviation = varResult.VariableUnits.UnitsAbbreviation
+            values.unitsAbbreviation = varResult.VariableUnits.UnitsAbbreviation  # noqa
             values.unitsCode = varResult.VariableUnits.UnitsID
 
-        #Need to keep track of unique methodIDs and sourceIDs
+        # Need to keep track of unique methodIDs and sourceIDs.
         methodIdSet = set()
         sourceIdSet = set()
         qualifierIdSet = set()
@@ -275,13 +276,13 @@ class WOF(object):
 
         for valueResult in valueResultArr:
             if valueResult.QualityControlLevelID is not None:
-                qualitycontrollevelIdSet.add(valueResult.QualityControlLevelID)
-                qlevelResult = self.dao.get_qualcontrollvl_by_id(valueResult.QualityControlLevelID)
-                if hasattr(qlevelResult,'Definition'):
+                qualitycontrollevelIdSet.add(valueResult.QualityControlLevelID) # noqa
+                qlevelResult = self.dao.get_qualcontrollvl_by_id(valueResult.QualityControlLevelID)  # noqa
+                if hasattr(qlevelResult, 'Definition'):
                     valueResult.QualityControlLevel = qlevelResult.Definition
                 # else:
                 #     if hasattr(valueResult,'QualityControlLevel'):
-                #         valueResult.QualityControlLevel = qlevelResult.QualityControlLevelCode
+                #         valueResult.QualityControlLevel = qlevelResult.QualityControlLevelCode  # noqa
             v = self.create_value_element(valueResult)
             values.add_value(v)
 
@@ -300,7 +301,7 @@ class WOF(object):
             if valueResult.QualityControlLevelID is not None:
                 qualitycontrollevelIdSet.add(valueResult.QualityControlLevelID)
 
-        #Add method elements for each unique methodID
+        # Add method elements for each unique methodID
         if methodIdSet:
             methodIdArr = list(methodIdSet)
             methodResultArr = self.dao.get_methods_by_ids(methodIdArr)
@@ -308,7 +309,7 @@ class WOF(object):
                 method = self.create_method_element(methodResult)
                 values.add_method(method)
 
-        #Add source elements for each unique sourceID
+        # Add source elements for each unique sourceID
         if sourceIdSet:
             sourceIdArr = list(sourceIdSet)
             sourceResultArr = self.dao.get_sources_by_ids(sourceIdArr)
@@ -316,7 +317,7 @@ class WOF(object):
                 source = self.create_source_element(sourceResult)
                 values.add_source(source)
 
-        #Add qualifier elements
+        # Add qualifier elements
         if qualifierIdSet:
             qualIdArr = list(qualifierIdSet)
             qualResultArr = self.dao.get_qualifiers_by_ids(qualIdArr)
@@ -329,7 +330,7 @@ class WOF(object):
                     qualifierCode=qualifierResult.QualifierCode)
                 values.add_qualifier(q)
 
-        #Add offset elements
+        # Add offset elements
         if offsetTypeIdSet:
             offsetTypeIdArr = list(offsetTypeIdSet)
             offsetTypeResultArr = self.dao.get_offsettypes_by_ids(
@@ -338,20 +339,20 @@ class WOF(object):
                 offset = self.create_offset_element(offsetTypeResult)
                 values.add_offset(offset)
 
-        #Add qualitycontrollevel elements
+        # Add qualitycontrollevel elements
         if qualitycontrollevelIdSet:
             qlevelIdIdArr = list(qualitycontrollevelIdSet)
 
             try:
-                qlevelResultArr = self.dao.get_qualcontrollvls_by_ids(qlevelIdIdArr)
+                qlevelResultArr = self.dao.get_qualcontrollvls_by_ids(qlevelIdIdArr)  # noqa
                 for qlevelResult in qlevelResultArr:
                     qlevel = self.create_qlevel_element(qlevelResult)
                     values.add_qualityControlLevel(qlevel)
             except:
-                logging.warn("WofPy: DOA has no get_qualcontrollvls_by_ids method (added for 2.x)")
+                logging.warn("WofPy: DOA has no get_qualcontrollvls_by_ids method (added for 2.x)")  # noqa
                 for qlevelID in qlevelIdIdArr:
                     qlevel = WaterML.QualityControlLevelType(
-                        qualityControlLevelID=qlevelID )
+                        qualityControlLevelID=qlevelID)
                     values.add_qualityControlLevel(qlevel)
 
         timeSeries.values = values
@@ -359,17 +360,18 @@ class WOF(object):
         return timeSeriesResponse
 
     def create_qlevel_element(self, qlevelResult):
-        #qlevel = WaterML.QualityControlLevelType(
+        # qlevel = WaterML.QualityControlLevelType(
         #            qualityControlLevelID=qlevelResult.QualityControlLevelID,
         #            valueOf_=qlevelResult.QualityControlLevelCode)
-        qcode = WaterML.qualityControlLevel(qualityControlLevelCode=qlevelResult.QualityControlLevelCode,
-                                            qualityControlLevelID=str(qlevelResult.QualityControlLevelID)
-                                            )
+        qcode = WaterML.qualityControlLevel(
+            qualityControlLevelCode=qlevelResult.QualityControlLevelCode,
+            qualityControlLevelID=str(qlevelResult.QualityControlLevelID)
+        )
         return qcode
 
     def create_offset_element(self, offsetTypeResult):
-        #TODO: where does offsetIsVertical come from
-        #TODO: where does offsetHorizDirectionDegrees come from?
+        # TODO: where does offsetIsVertical come from.
+        # TODO: where does offsetHorizDirectionDegrees come from?
         offset = WaterML.OffsetType(
             offsetTypeID=offsetTypeResult.OffsetTypeID,
             offsetValue=None,
@@ -380,7 +382,7 @@ class WOF(object):
         if offsetTypeResult.OffsetUnits:
             units = WaterML.UnitsType(
                 UnitID=offsetTypeResult.OffsetUnits.UnitsID,
-                UnitAbbreviation=offsetTypeResult.OffsetUnits.UnitsAbbreviation,
+                UnitAbbreviation=offsetTypeResult.OffsetUnits.UnitsAbbreviation,  # noqa
                 UnitName=offsetTypeResult.OffsetUnits.UnitsName,
                 UnitType=offsetTypeResult.OffsetUnits.UnitsType)
 
@@ -396,7 +398,7 @@ class WOF(object):
 
         # need at least one MethodLink element to meet WaterML 1.0
         # schema validation
-        if method.MethodLink == None:
+        if method.MethodLink is None:
             method.MethodLink = ''
         return method
 
@@ -425,83 +427,85 @@ class WOF(object):
 
     def create_contact_info_element(self, sourceResult):
 
-        if (sourceResult.Address and sourceResult.City and sourceResult.State
-            and sourceResult.ZipCode):
-
+        if (sourceResult.Address and
+           sourceResult.City and
+           sourceResult.State and
+           sourceResult.ZipCode):
             addressString = ", ".join([sourceResult.Address,
                                        sourceResult.City,
                                        sourceResult.State,
                                        sourceResult.ZipCode])
-
             contactInfo = WaterML.ContactInformationType(
                 Email=sourceResult.Email,
                 ContactName=sourceResult.ContactName,
                 Phone=sourceResult.Phone,
                 Address=addressString)
-
             return contactInfo
-
         return None
 
     def check_censorCode(self, censorCode):
         default = "nc"
         valueList = [
-              "lt"
-              ,"gt"
-              ,"nc"
-              ,"nd"
-              ,"pnq"
-            ]
+            "lt",
+            "gt",
+            "nc",
+            "nd",
+            "pnq",
+        ]
         if (censorCode in valueList):
             return censorCode
         else:
-            logging.info(self.invalid_enum_message( 'censorCode', censorCode))
+            logging.info(self.invalid_enum_message('censorCode', censorCode))
             return default
 
     def check_QualityControlLevel(self, QualityControlLevel):
         default = "Unknown"
         valueList = [
-             "Raw data"
-          ,"Quality controlled data"
-          ,"Derived products"
-          ,"Interpreted products"
-          ,"Knowledge products"
-          ,"Unknown"
+            "Raw data",
+            "Quality controlled data",
+            "Derived products",
+            "Interpreted products",
+            "Knowledge products",
+            "Unknown",
         ]
         if (QualityControlLevel in valueList):
             return QualityControlLevel
         else:
-            logging.info(self.invalid_enum_message( 'QualityControlLevel', QualityControlLevel))
+            logging.info(self.invalid_enum_message(
+                'QualityControlLevel',
+                QualityControlLevel)
+            )
             return default
 
-    #TODO: lots more stuff to fill out here
+    # TODO: lots more stuff to fill out here.
     def create_value_element(self, valueResult):
         adate = core._get_datavalues_datetime(
             valueResult, "LocalDateTime", "DateTimeUTC").isoformat()
-        clean_censorCode =self.check_censorCode(valueResult.CensorCode)
-        clean_qcl = self.check_QualityControlLevel(valueResult.QualityControlLevel)
+        clean_censorCode = self.check_censorCode(valueResult.CensorCode)
+        clean_qcl = self.check_QualityControlLevel(valueResult.QualityControlLevel)  # noqa
 
         value = WaterML.ValueSingleVariable(
-                        qualityControlLevel=clean_qcl,
-                       # qualityControlLevel=valueResult.QualityControlLevel,
-                        methodID=valueResult.MethodID,
-                        sourceID=valueResult.SourceID,
-                        #censorCode=valueResult.CensorCode,
-                        censorCode=clean_censorCode,
-                        sampleID=valueResult.SampleID,
-                        offsetTypeID=valueResult.OffsetTypeID,
-                        accuracyStdDev=valueResult.ValueAccuracy,
-                        offsetValue=valueResult.OffsetValue,
-                        dateTime=adate,
-                        qualifiers=valueResult.QualifierID,
-                        valueOf_=str(valueResult.DataValue))
+            qualityControlLevel=clean_qcl,
+            # qualityControlLevel=valueResult.QualityControlLevel,
+            methodID=valueResult.MethodID,
+            sourceID=valueResult.SourceID,
+            # censorCode=valueResult.CensorCode,
+            censorCode=clean_censorCode,
+            sampleID=valueResult.SampleID,
+            offsetTypeID=valueResult.OffsetTypeID,
+            accuracyStdDev=valueResult.ValueAccuracy,
+            offsetValue=valueResult.OffsetValue,
+            dateTime=adate,
+            qualifiers=valueResult.QualifierID,
+            valueOf_=str(valueResult.DataValue)
+        )
 
         # TODO: value.offset stuff?  Why does value element have all
-        # this offset stuff
-        #offsetTypeResult = valueResult.OffsetType
-        #if offsetTypeResult != None:
+        # this offset stuff.
+        # offsetTypeResult = valueResult.OffsetType
+        # if offsetTypeResult != None:
         #    value.offsetDescription = offsetTypeResult.OffsetDescription
-        #    value.offsetUnitsAbbreviation = offsetTypeResult.OffsetUnits.UnitsAbbreviation
+        #    value.offsetUnitsAbbreviation = offsetTypeResult.OffsetUnits.UnitsAbbreviation  # noqa
         #    value.offsetUnitsCode = offsetTypeResult.OffsetUnits.UnitsID
         return value
 
@@ -511,10 +515,10 @@ class WOF(object):
 
         site.set_siteInfo(siteInfo)
 
-        #need at least one note element to meet WaterML 1.0 schema validation
+        # need at least one note element to meet WaterML 1.0 schema validation
         if (not siteResult.County
-            and not siteResult.State
-            and not siteResult.Comments):
+           and not siteResult.State
+           and not siteResult.Comments):
 
             siteInfo.add_note(WaterML.NoteType())
         else:
@@ -535,9 +539,9 @@ class WOF(object):
                 siteInfo.add_note(commentsNote)
 
         seriesCatalog = WaterML.seriesCatalogType()
-        if (seriesResultArr != None):
+        if seriesResultArr is not None:
             seriesCatalog.menuGroupName = self.menu_group_name
-            #TODO: Make sure this is set properly in config fileame
+            # TODO: Make sure this is set properly in config filename.
             seriesCatalog.serviceWsdl = self.service_wsdl
 
             for seriesResult in seriesResultArr:
@@ -556,7 +560,7 @@ class WOF(object):
         siteInfo = WaterML.SiteInfoType()
         siteInfo.set_siteName(siteResult.SiteName)
 
-        #TODO: agencyName
+        # TODO: agencyName
         siteCode = WaterML.siteCode(network=self.network,
                                     siteID=siteResult.SiteID,
                                     valueOf_=siteResult.SiteCode,
@@ -583,8 +587,7 @@ class WOF(object):
 
         if (siteResult.LocalX and siteResult.LocalY):
             localSiteXY = WaterML.localSiteXY()
-            localSiteXY.projectionInformation = \
-                                        siteResult.LocalProjection.SRSName
+            localSiteXY.projectionInformation = siteResult.LocalProjection.SRSName  # noqa
             localSiteXY.X = siteResult.LocalX
             localSiteXY.Y = siteResult.LocalY
             geoLocation.add_localSiteXY(localSiteXY)
@@ -605,7 +608,7 @@ class WOF(object):
     def create_series_element(self, seriesResult):
         series = WaterML.series()
 
-        #Variable
+        # Variable
         variable = self.create_variable_element(seriesResult.Variable)
         series.set_variable(variable)
 
@@ -618,7 +621,7 @@ class WOF(object):
         endDateTime = core._get_datavalues_datetime(
             seriesResult, "EndDateTime", "EndDateTimeUTC").isoformat()
 
-        #TimeInterval
+        # TimeInterval
         if beginDateTime is None:
             beginDateTime = datetime.datetime.now().isoformat()
         if endDateTime is None:
@@ -628,17 +631,17 @@ class WOF(object):
             endDateTime=endDateTime)
         series.variableTimeInterval = variableTimeInt
 
-        #Method
+        # Method
         if seriesResult.Method:
             method = self.create_method_element(seriesResult.Method)
             series.Method = method
 
-        #Source
+        # Source
         if seriesResult.Source:
             source = self.create_source_element(seriesResult.Source)
             series.Source = source
 
-        #QualityControlLevel
+        # QualityControlLevel
         qualityControlLevel = WaterML.QualityControlLevelType(
                     qualityControlLevelID=seriesResult.QualityControlLevelID,
                     valueOf_=seriesResult.QualityControlLevelCode)
@@ -650,26 +653,26 @@ class WOF(object):
     def check_dataTypeEnum(self, datatype):
         default = "Unknown"
         valueList = [
-          "Continuous"
-          ,"Instantaneous"
-          ,"Cumulative"
-          ,"Incremental"
-          ,"Average"
-          ,"Maximum"
-          ,"Minimum"
-          ,"Constant Over Interval"
-          ,"Categorical"
-          ,"Best Easy Systematic Estimator "
-          ,"Unknown"
-          ,"Variance"
-          ,"Median"
-          ,"Mode"
-          ,"Best Easy Systematic Estimator"
-          ,"Standard Deviation"
-          ,"Skewness"
-          ,"Equivalent Mean"
-          ,"Sporadic"
-          ,"Unknown"
+            "Continuous",
+            "Instantaneous",
+            "Cumulative",
+            "Incremental",
+            "Average",
+            "Maximum",
+            "Minimum",
+            "Constant Over Interval",
+            "Categorical",
+            "Best Easy Systematic Estimator ",
+            "Unknown",
+            "Variance",
+            "Median",
+            "Mode",
+            "Best Easy Systematic Estimator",
+            "Standard Deviation",
+            "Skewness",
+            "Equivalent Mean",
+            "Sporadic",
+            "Unknown",
         ]
         if datatype is None:
             logging.warn('Datatype is not specified')
@@ -677,56 +680,62 @@ class WOF(object):
         if (datatype in valueList):
             return datatype
         else:
-            logging.info(self.invalid_enum_message( 'datatype', datatype))
+            logging.info(self.invalid_enum_message('datatype', datatype))
             return default
 
     def check_UnitsType(self, UnitsType):
         default = "Dimensionless"
         valueList = [
-              "Angle"
-              ,"Area"
-              ,"Dimensionless"
-              ,"Energy"
-              ,"Energy Flux"
-              ,"Flow"
-              ,"Force"
-              ,"Frequency"
-              ,"Length"
-              ,"Light"
-              ,"Mass"
-              ,"Permeability"
-              ,"Power"
-              ,"Pressure/Stress"
-              ,"Resolution"
-              ,"Scale"
-              ,"Temperature"
-              ,"Time"
-              ,"Velocity"
-              ,"Volume"
-            ]
+            "Angle",
+            "Area",
+            "Dimensionless",
+            "Energy",
+            "Energy Flux",
+            "Flow",
+            "Force",
+            "Frequency",
+            "Length",
+            "Light",
+            "Mass",
+            "Permeability",
+            "Power",
+            "Pressure/Stress",
+            "Resolution",
+            "Scale",
+            "Temperature",
+            "Time",
+            "Velocity",
+            "Volume",
+        ]
         if UnitsType is None:
             logging.warn('UnitsType is not specified ')
             return default
         if (UnitsType in valueList):
             return UnitsType
         else:
-            logging.info(self.invalid_enum_message( 'UnitsType', UnitsType, default=default))
+            logging.info(
+                self.invalid_enum_message(
+                    'UnitsType',
+                    UnitsType,
+                    default=default
+                )
+            )
             return default
 
     def check_SampleMedium(self, SampleMedium):
         default = "Unknown"
         valueList = [
-          "Surface Water"
-          ,"Ground Water"
-          ,"Sediment"
-          ,"Soil"
-          ,"Air"
-          ,"Tissue"
-          ,"Precipitation"
-          ,"Unknown"
-          ,"Other"
-          ,"Snow"
-          ,"Not Relevant"
+            "Surface Water",
+            "Ground Water",
+            "Sediment",
+            "Soil",
+            "Air",
+            "Tissue",
+            "Precipitation",
+            "Unknown",
+            "Other",
+            "Snow",
+            "Not Relevant",
         ]
         if SampleMedium is None:
             logging.warn('SampleMedium is not specified')
@@ -734,19 +743,23 @@ class WOF(object):
         if (SampleMedium in valueList):
             return SampleMedium
         else:
-            logging.info(self.invalid_enum_message( 'SampleMedium', SampleMedium))
+            logging.info(
+                self.invalid_enum_message(
+                    'SampleMedium',
+                    SampleMedium)
+            )
             return default
 
     def check_generalCategory(self, generalCategory):
         default = "Unknown"
         valueList = [
-          "Water Quality"
-          ,"Climate"
-          ,"Hydrology"
-          ,"Geology"
-          ,"Biota"
-          ,"Unknown"
-          ,"Instrumentation"
+            "Water Quality",
+            "Climate",
+            "Hydrology",
+            "Geology",
+            "Biota",
+            "Unknown",
+            "Instrumentation",
         ]
         if generalCategory is None:
             logging.warn('GeneralCategory is not specified')
@@ -754,17 +767,22 @@ class WOF(object):
         if (generalCategory in valueList):
             return generalCategory
         else:
-             logging.info(self.invalid_enum_message( 'generalCategory', generalCategory))
-             return default
+            logging.info(
+                self.invalid_enum_message(
+                     'generalCategory',
+                     generalCategory
+                 )
+             )
+            return default
 
     def check_valueType(self, valueType):
         default = "Unknown"
         valueList = [
-          "Field Observation"
-          ,"Sample"
-          ,"Model Simulation Result"
-          ,"Derived Value"
-          ,"Unknown"
+            "Field Observation",
+            "Sample",
+            "Model Simulation Result",
+            "Derived Value",
+            "Unknown",
         ]
         if valueType is None:
             logging.warn('ValueType is not specified')
@@ -772,28 +790,29 @@ class WOF(object):
         if (valueType in valueList):
             return valueType
         else:
-             logging.info(self.invalid_enum_message( 'valueType', valueType))
-             return default
+            logging.info(self.invalid_enum_message('valueType', valueType))
+            return default
 
     def create_variable_element(self, variableResult):
-        clean_datatype = self.check_dataTypeEnum( variableResult.DataType)
+        clean_datatype = self.check_dataTypeEnum(variableResult.DataType)
         clean_medium = self.check_SampleMedium(variableResult.SampleMedium)
-        clean_category = self.check_generalCategory(variableResult.GeneralCategory)
+        clean_category = self.check_generalCategory(variableResult.GeneralCategory)  # noqa
         clean_valuetype = self.check_valueType(variableResult.ValueType)
         variable = WaterML.VariableInfoType(
             variableName=variableResult.VariableName,
-            #valueType=variableResult.ValueType,
+            # valueType=variableResult.ValueType,
             valueType=clean_valuetype,
-                       # dataType=variableResult.DataType,
-            dataType =clean_datatype,
-            #generalCategory=variableResult.GeneralCategory,
+            # dataType=variableResult.DataType,
+            dataType=clean_datatype,
+            # generalCategory=variableResult.GeneralCategory,
             generalCategory=clean_category,
-                        #sampleMedium=variableResult.SampleMedium,
+            # sampleMedium=variableResult.SampleMedium,
             sampleMedium=clean_medium,
             NoDataValue=variableResult.NoDataValue,
-            variableDescription=variableResult.VariableDescription)
+            variableDescription=variableResult.VariableDescription
+        )
 
-        #For specimen data
+        # For specimen data.
         v_code = variableResult.VariableCode
         v_code_i = v_code.find('::')
         if v_code_i != -1:
@@ -801,19 +820,19 @@ class WOF(object):
 
         variableCode = WaterML.variableCode()
         variableCode.vocabulary = self.vocabulary
-        #TODO: What is this, should it always be true?
+        # TODO: What is this, should it always be true?
         variableCode.default = "true"
         variableCode.variableID = variableResult.VariableID
         variableCode.valueOf_ = v_code
 
         variable.add_variableCode(variableCode)
-        clean_variableUnits = self.check_UnitsType(variableResult.VariableUnits.UnitsType)
+        clean_variableUnits = self.check_UnitsType(variableResult.VariableUnits.UnitsType)  # noqa
 
         if variableResult.VariableUnits:
             units = WaterML.units(
-                unitsAbbreviation=variableResult.VariableUnits.UnitsAbbreviation,
+                unitsAbbreviation=variableResult.VariableUnits.UnitsAbbreviation,  # noqa
                 unitsCode=variableResult.VariableUnitsID,
-                #unitsType=variableResult.VariableUnits.UnitsType,
+                # unitsType=variableResult.VariableUnits.UnitsType,
                 unitsType=clean_variableUnits,
                 valueOf_=variableResult.VariableUnits.UnitsName)
 
@@ -827,7 +846,7 @@ class WOF(object):
                 UnitID=variableResult.TimeUnits.UnitsID,
                 UnitName=variableResult.TimeUnits.UnitsName,
                 UnitDescription=variableResult.TimeUnits.UnitsName,
-                #UnitType=variableResult.TimeUnits.UnitsType,
+                # UnitType=variableResult.TimeUnits.UnitsType,
                 UnitType="Time",
                 UnitAbbreviation=variableResult.TimeUnits.UnitsAbbreviation)
 
@@ -843,7 +862,7 @@ class WOF(object):
         return variable
 
     def create_wml2_values_object(self, siteArg, varArg, startDateTime=None,
-                                   endDateTime=None):
+                                  endDateTime=None):
         siteCode = self.get_site_code(siteArg)
         varCode = self.get_variable_code(varArg)
         valueResultArr = self.dao.get_datavalues(siteCode, varCode,
