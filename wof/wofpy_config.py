@@ -2,6 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import os
 import shutil
+
 from docopt import docopt
 
 __all__ = [
@@ -30,6 +31,7 @@ Options:
 _ROOT = os.path.abspath(os.path.join(os.pardir, os.path.dirname(__file__)))
 _CONFIG = os.path.join(_ROOT, 'examples', 'flask', 'odm2', 'timeseries')
 
+
 def makedirs(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -47,12 +49,14 @@ def copytree(src, dst, symlinks=False, ignore=None):
         else:
             shutil.copy2(s, d)
 
+
 def main():
     args = docopt(__doc__, version='0.1.0')
     directory = args.get('INDIR')
 
     makedirs(directory)
     copytree(_CONFIG, directory)
+
 
 if __name__ == '__main__':
     main()

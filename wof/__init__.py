@@ -7,3 +7,10 @@ from wof.core import _SERVICE_PARAMS, site_map
 
 from wof.core_1_0 import WOF
 from wof.core_1_1 import WOF_1_1
+
+__all__ = [
+    _SERVICE_PARAMS,
+    site_map,
+    WOF,
+    WOF_1_1,
+]
