@@ -452,7 +452,7 @@ if __name__ == '__main__':
 
     series_set = parse_capabilities_for_series(LOCAL_CAPABILITIES_FILE_PATH)
 
-    msg = "Adding %s sites and %s variables to local cache.".format
+    msg = "Adding {} sites and {} variables to local cache.".format
     print(msg(len(cache_sites), len(cache_variables)))
 
     try:
@@ -544,4 +544,4 @@ if __name__ == '__main__':
         print("Finished.")
 
     except Exception as inst:
-        print("ERROR: %s, %s".format(type(inst), inst))
+        print("ERROR: {}, {}".format(type(inst), inst))
