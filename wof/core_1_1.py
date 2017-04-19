@@ -120,7 +120,7 @@ class WOF_1_1(object):
         else:
             # site = WaterML.site()
             # siteInfoResponse.add_site(site)
-            raise Exception("Site,'%s', Not Found" % siteArg)
+            raise Exception("Site {} Not Found".format(siteArg))
 
         return siteInfoResponse
 
@@ -295,7 +295,7 @@ class WOF_1_1(object):
                                                  startDateTime, endDateTime)
         # if not valueResultArr:
         #    raise Exception(
-        #        "ERROR: No data found for %s:%s for dates {} - {}".format(
+        #        "ERROR: No data found for {}:{} for dates {} - {}".format(
         #            siteCode, varCode, startDateTime, endDateTime
         #        )
         #    )
@@ -332,8 +332,10 @@ class WOF_1_1(object):
         #    return timeSeriesResponse
 
         if not valueResultArr:
-            raise Exception("Values Not Found for %s:%s for dates %s - %s" % (
-                siteCode, varCode, startDateTime, endDateTime))
+            raise Exception(
+                "Values Not Found for {}:{} for dates {} - {}".format(
+                    siteCode, varCode, startDateTime, endDateTime)
+                )
 
         if isinstance(valueResultArr, dict):
             for key in valueResultArr.keys():
@@ -628,7 +630,10 @@ class WOF_1_1(object):
         # datetime_string = core._get_datavalues_datetime(
         #  valueResult, "LocalDateTime", "DateTimeUTC")
         aDate = core._get_datavalues_datetime(
-           valueResult, "LocalDateTime", "DateTimeUTC")
+            valueResult,
+            "LocalDateTime",
+            "DateTimeUTC"
+        )
         # aDate= dateutil.parser.parse(datetime_string)
 
         if not hasattr(valueResult, 'MethodCode'):

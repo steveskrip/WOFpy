@@ -14,7 +14,7 @@ namespaces = {
 
 
 def nspath(path, ns):
-    return '{%s}%s'.format(ns, path)
+    return '{{}}{}'.format(ns, path)
 
 
 def parse_datavalues_from_get_observation(tree, site_code, var_code):
