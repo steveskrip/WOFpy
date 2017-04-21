@@ -11,33 +11,33 @@ matrix:
     env: TEST_TARGET=default
   - python: 3.6
     env: TEST_TARGET=default
+  - python: 2.7
+    env: TEST_TARGET=odm2_dao_sqlite
   - python: 3.6
     env: TEST_TARGET=coding_standards
   allow_failures:
-  - python: 3.5
-    env: TEST_TARGET=default
-  - python: 3.6
-    env: TEST_TARGET=default
+  - python: 2.7
+    env: TEST_TARGET=odm2_dao_sqlite
   - python: 3.6
     env: TEST_TARGET=coding_standards
 
 before_install:
-    - wget http://bit.ly/miniconda -O miniconda.sh
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - conda update conda --yes
-    - conda config --set show_channel_urls true
-    - conda config --add channels conda-forge --force
-    - conda config --add channels odm2 --force
-    - conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements-dev.txt
-    - source activate TEST
-    - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-        conda install --yes configparser ;
-      fi
+  - wget http://bit.ly/miniconda -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda update conda --yes
+  - conda config --set show_channel_urls true
+  - conda config --add channels conda-forge --force
+  - conda config --add channels odm2 --force
+  - conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements-dev.txt
+  - source activate TEST
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      conda install --yes configparser ;
+    fi
 
 # Test source distribution.
 install:
-    - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install WOFpy-${version}.tar.gz && popd
+  - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install WOFpy-${version}.tar.gz && popd
 
 before_script:
   - python wof/examples/flask/cbi/build_cbi_cache.py
@@ -45,8 +45,13 @@ before_script:
 
 script:
   - if [[ $TEST_TARGET == 'default' ]]; then
-      py.test -s -rxs -v test ;
+      py.test -s -rxs -v -k "not test_odm2_dao_sqlite" ;
     fi
+
+  - if [[ $TEST_TARGET == 'odm2_dao_sqlite' ]]; then
+      py.test -s -rxs -v -k "test_odm2_dao_sqlite" ;
+    fi
+
   - if [[ $TEST_TARGET == 'coding_standards' ]]; then
       flake8 --max-line-length=105 wof ;
       flake8 --max-line-length=105 test ;
