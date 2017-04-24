@@ -4,9 +4,6 @@ import os, sys
 
 import wof.flask
 
-curr_folder = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, '%s/../../../' % curr_folder)
-
 import logging
 import wof
 from wof.examples.flask.odm2.measurement.odm2_measurement_dao import Odm2Dao

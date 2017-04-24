@@ -17,10 +17,9 @@ from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao as ti
 
 #logging.basicConfig(level=logging.DEBUG)
 
-M_CONFIG_FILE = './measurement/odm2_config_measurement.cfg'
-T_CONFIG_FILE = './timeseries/odm2_config_timeseries.cfg'
+M_CONFIG_FILE = os.path.join('measurement', 'odm2_config_measurement.cfg')
+T_CONFIG_FILE = os.path.join('timeseries', 'odm2_config_timeseries.cfg')
 
-TEMPLATES = '../../../wof/apps/templates'
 
 def startServer(m_config=M_CONFIG_FILE,
                 t_config=T_CONFIG_FILE,
@@ -35,7 +34,7 @@ def startServer(m_config=M_CONFIG_FILE,
     m_conf = wof.core.wofConfig(m_dao, m_config)
     t_conf = wof.core.wofConfig(t_dao, t_config)
 
-    app= wof.flask.create_wof_flask_multiple({m_conf, t_conf}, templates=TEMPLATES)
+    app= wof.flask.create_wof_flask_multiple({m_conf, t_conf}, templates=wof._TEMPLATES)
 
     url = "http://127.0.0.1:" + str(openPort)
     print("----------------------------------------------------------------")
