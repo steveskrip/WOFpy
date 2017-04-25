@@ -6,3 +6,5 @@ jinja2
 pytz
 sqlalchemy
 odm2api
+configparser
+docopt
