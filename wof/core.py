@@ -49,7 +49,8 @@ try:
 except ImportError:
     version = 'dev'
 
-curr_folder = os.path.abspath(os.path.dirname(__file__))
+_root_dir = os.path.abspath(os.path.dirname(__file__))
+_TEMPLATES = os.path.join(_root_dir, 'app', 'templates')
 
 _SERVICE_PARAMS = {
     "r_type": "rest",
@@ -102,7 +103,6 @@ class WOFConfig(object):
         default_north = None
         default_east = None
 
-        TEMPLATES = '../../wof/apps/templates'
 
         def __init__(self, file_name, templates=None):
             config = configparser.RawConfigParser()
@@ -207,7 +207,7 @@ class WOFConfig(object):
             elif config.has_option('WOFPY', 'Templates'):
                 self.TEMPLATES = config.get('WOFPY', 'Templates')
             else:
-                self.TEMPLATES = '../../../wof/apps/templates'
+                self.TEMPLATES = _TEMPLATES
 
 
 class wofSoap11(Soap11):
@@ -338,7 +338,7 @@ def getSpyneApplications(wof_obj_1_0, wof_obj_1_1, templates=None):
                 templatesPath,
                 os.path.exists(templatesPath))
             )
-            templatesPath = os.path.abspath('{}/apps/templates'.format(curr_folder))  # noqa
+            templatesPath = _TEMPLATES
             logging.info('default temnplate path: %s' % templatesPath)
         # needs to be service_baseURL. in config wof_obj_1_0.service_wsdl
         wsdl10 = WofWSDL_1_0(

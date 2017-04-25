@@ -62,7 +62,7 @@ def startServer(openPort):
     conf_lcm = wof.core.wofConfig(lcm_dao, LCM_CONFIG)
     conf_csv = wof.core.wofConfig(csv_doa, CSV_CONFIG_FILE)
 
-    app= wof.flask.create_wof_flask_multiple({conf_swis, conf_lcm, conf_csv}, templates="../../wof/apps/templates")
+    app= wof.flask.create_wof_flask_multiple({conf_swis, conf_lcm, conf_csv}, templates=wof._TEMPLATES)
 
 
     url = "http://127.0.0.1:" + str(openPort)
