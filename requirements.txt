@@ -8,3 +8,4 @@ sqlalchemy
 odm2api
 configparser
 docopt
+uwsgi
