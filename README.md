@@ -1,6 +1,6 @@
 # WOFpy
 
-[![Build Status](https://travis-ci.org/ODM2/WOFpy.svg?branch=master)](https://travis-ci.org/ODM2/WOFpy)
+[![Build Status](https://travis-ci.org/ODM2/WOFpy.svg?branch=master)](https://travis-ci.org/ODM2/WOFpy) [![Build status](https://ci.appveyor.com/api/projects/status/piji7ib6wdjeoqku?svg=true)](https://ci.appveyor.com/project/ocefpaf/wofpy-4g2xh)
 
 WOFpy is a Python package that implements [CUAHSI's](http://his.cuahsi.org) WaterOneFlow Web service.  WaterOneFlow is a Web service with methods for querying time series of water data at point locations, and which returns data in WaterML format, providing standardized access to water data.
 
