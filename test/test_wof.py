@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 
-import StringIO
+import io
 import os
 import unittest
 
@@ -42,7 +42,7 @@ class TestWOF(unittest.TestCase):
         """
         Converts WOF method response to StringIO object.
         """
-        response_output = StringIO.StringIO()
+        response_output = io.StringIO()
         response.export(response_output, 0, name_=root_name,
                         namespacedef_=NSDEF)
         response_output.seek(0)

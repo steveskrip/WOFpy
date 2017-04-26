@@ -3,9 +3,9 @@ from __future__ import (absolute_import, division, print_function)
 import os
 import unittest
 
-from wof.examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
-
 from lxml import etree
+
+from wof.examples.flask.cbi.cbi_sos_parser import parse_datavalues_from_get_observation
 
 
 @unittest.skip("DOA needs work to build a cache, and update tests to be valid")

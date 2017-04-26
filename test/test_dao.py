@@ -457,13 +457,13 @@ test_datavalues = {
 
 class TestDao(dao.BaseDao):
     def get_all_sites(self):
-        return test_sites.values()
+        return list(test_sites.values())
 
     def get_sites_by_codes(self, site_codes):
         return [test_sites[site_code] for site_code in site_codes]
 
     def get_all_variables(self):
-        return test_variables.values()
+        return list(test_variables.values())
 
     def get_variable_by_code(self, variable_code):
         return self.get_variables_by_codes([variable_code])[0]
@@ -475,11 +475,11 @@ class TestDao(dao.BaseDao):
         return test_sites[site_code]
 
     def get_series_by_sitecode(self, site_code):
-        series_catalog = test_series.iteritems()
+        series_catalog = test_series.items()
         return [v for k, v in series_catalog if v.SiteCode == site_code]
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
-        series_catalog = test_series.iteritems()
+        series_catalog = test_series.items()
         return [v for k, v in series_catalog if v.SiteCode == site_code and
                 v.VariableCode == var_code]
 
@@ -511,7 +511,7 @@ class TestDao(dao.BaseDao):
 
     def get_datavalues(self, site_code, var_code, begin_date_time=None,
                        end_date_time=None):
-        vals = test_datavalues.iteritems()
+        vals = test_datavalues.items()
         site_id = test_sites[site_code].SiteID
         var_id = test_variables[var_code].VariableID
         vals = [v for k, v in vals if v.SiteID == site_id and
