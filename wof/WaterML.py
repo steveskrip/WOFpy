@@ -3346,7 +3346,7 @@ class LatLonPointType(GeogLocationType):
             sval_ = child_.text
             try:
                 fval_ = float(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires float or double: %s' % exp)
             self.latitude = fval_
             self.validate_latitude(self.latitude)    # validate type latitude
@@ -3354,7 +3354,7 @@ class LatLonPointType(GeogLocationType):
             sval_ = child_.text
             try:
                 fval_ = float(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires float or double: %s' % exp)
             self.longitude = fval_
             self.validate_longitude(self.longitude)    # validate type longitude
@@ -3470,7 +3470,7 @@ class LatLonBoxType(GeogLocationType):
             sval_ = child_.text
             try:
                 fval_ = float(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires float or double: %s' % exp)
             self.south = fval_
             self.validate_south(self.south)    # validate type south
@@ -3478,7 +3478,7 @@ class LatLonBoxType(GeogLocationType):
             sval_ = child_.text
             try:
                 fval_ = float(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires float or double: %s' % exp)
             self.west = fval_
             self.validate_west(self.west)    # validate type west
@@ -3486,7 +3486,7 @@ class LatLonBoxType(GeogLocationType):
             sval_ = child_.text
             try:
                 fval_ = float(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires float or double: %s' % exp)
             self.north = fval_
             self.validate_north(self.north)    # validate type north
@@ -3494,7 +3494,7 @@ class LatLonBoxType(GeogLocationType):
             sval_ = child_.text
             try:
                 fval_ = float(sval_)
-            except (TypeError, ValueError), exp:
+            except (TypeError, ValueError) as exp:
                 raise_parse_error(child_, 'requires float or double: %s' % exp)
             self.east = fval_
             self.validate_east(self.east)    # validate type east
