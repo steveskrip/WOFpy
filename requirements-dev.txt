@@ -1,16 +1,6 @@
-pytest
+# examples
 suds-jurko
 requests
 pyodbc
-# The dependencies below are unavailable at PyPI at the moment!
+# unavailable at PyPI
 geoalchemy-odm2
-odm2api
-# Check for coding standards.
-pycodestyle
-flake8-print
-flake8-quotes
-flake8-import-order
-flake8-builtins
-flake8-comprehensions
-flake8-mutable
-flake8-docstrings
