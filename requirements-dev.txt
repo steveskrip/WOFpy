@@ -1,6 +1,9 @@
-# examples
-suds-jurko
-requests
+# optional
+odm2api
 pyodbc
+requests
+sqlalchemy
+suds-jurko
+uwsgi
 # unavailable at PyPI
 geoalchemy-odm2

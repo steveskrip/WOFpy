@@ -1,11 +1,8 @@
-flask>=0.10.0
-lxml>=3.4.4
-spyne>=2.12.8
-python-dateutil
-jinja2
-pytz
-sqlalchemy
-odm2api
 configparser
 docopt
-uwsgi
+flask>=0.10.0
+jinja2
+lxml>=3.4.4
+python-dateutil
+pytz
+spyne>=2.12.8

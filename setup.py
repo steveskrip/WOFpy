@@ -60,6 +60,7 @@ setup(
         'odm1': ['sqlalchemy', 'pyodbc'],
         'odm2': ['sqlalchemy', 'odm2api'],
         'sqlite': ['sqlalchemy'],
+        'server': ['uwsgi'],
     },
     dependency_links=[
         'git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0'  # noqa
