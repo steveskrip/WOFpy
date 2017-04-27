@@ -11,14 +11,14 @@ matrix:
     env: TEST_TARGET=default
   - python: 2.7
     env: TEST_TARGET=odm2_dao_sqlite
-  - python: 3.6
+  - python: 2.7
     env: TEST_TARGET=coding_standards
   allow_failures:
   - python: 2.7
     env: TEST_TARGET=odm2_dao_sqlite
   - python: 3.6
     env: TEST_TARGET=default
-  - python: 3.6
+  - python: 2.7
     env: TEST_TARGET=coding_standards
 
 before_install:
