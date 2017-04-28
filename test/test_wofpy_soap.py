@@ -4,14 +4,15 @@ from __future__ import (absolute_import, division, print_function)
 import configparser
 import unittest
 
-from wof.examples.flask.swis.swis_dao import SwisDao
-
 import requests
 
 from suds.client import Client
 
 import wof
 import wof.flask
+
+from wof.examples.flask.swis.swis_dao import SwisDao
+
 
 # TODO finish this unittest
 # should definitely test for bad inputs

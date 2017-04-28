@@ -7,6 +7,8 @@
 
 from __future__ import (absolute_import, division, print_function)
 
+from six import string_types
+
 import sys
 import getopt
 import re as re_
@@ -299,7 +301,7 @@ class siteCode(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='siteCode')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -1376,7 +1378,7 @@ class parentID(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='parentID')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -1481,7 +1483,7 @@ class relatedID(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='relatedID')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -2184,7 +2186,7 @@ class defaultTimeZone(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='defaultTimeZone')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -2268,7 +2270,7 @@ class daylightSavingsTimeZone(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='daylightSavingsTimeZone')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -2640,7 +2642,7 @@ class SourceInfoType(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='SourceInfoType')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -2864,7 +2866,7 @@ class TimePeriodType(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='TimePeriodType')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -3216,7 +3218,7 @@ class GeogLocationType(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='GeogLocationType')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -3884,7 +3886,7 @@ class valueCount(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='valueCount')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -4279,7 +4281,7 @@ class NoteType(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='NoteType')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -4395,7 +4397,7 @@ class option(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='option')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -4505,7 +4507,7 @@ class variableCode(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='variableCode')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -4625,7 +4627,7 @@ class units(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='units')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -4772,7 +4774,7 @@ class ValueSingleVariable(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='ValueSingleVariable')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
@@ -5572,7 +5574,7 @@ class QualityControlLevelType(GeneratedsSuper):
         self.exportAttributes(outfile, level, [], namespace_, name_='QualityControlLevelType')
         if self.hasContent_():
             outfile.write(u'>')
-            outfile.write(self.valueOf_)
+            outfile.write(u'%s' % self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write(u'</%s%s>\n' % (namespace_, name_))
         else:
