@@ -57,7 +57,8 @@ wofpy_config MyWorkingDirectory
 ```
 
 The command above will create and populate the `MyWorkingDirectory` with the files needed to run the `odm2 timeseries` example.
-Right now that is is only one tested example, in the future extra options will enable the user to choose the base example used.
+Right now that is is only one tested example,
+in the future extra options will enable the user to choose the base example used.
 
 Publishing Your Data
 --------------------
@@ -68,7 +69,7 @@ Follow the general steps below to publish your data with WOFpy.
    the methods should return objects as defined in wof.models.
    This class helps WOFpy read your data.
 2. Write a new config file like those found in the examples,
-   e.g. examples/swis/swis_config.cfg.
+   e.g. `wof/examples/flask/odm2/timeseries/odm2_config_timeseries.cfg`.
    This file contains static descriptors of your Web service such as the name of your water observations network.
 3. Write a new runserver script to use the new DAO you implemented.
    See files named runserver_*.py in the examples folder for examples.
