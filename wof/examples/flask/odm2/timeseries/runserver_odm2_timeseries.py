@@ -23,7 +23,7 @@ def startServer(conf='odm2_config_timeseries.cfg', openPort = 8080):
         connection = config['Database']['Connection_String']
 
     dao = Odm2Dao(connection)
-    app = wof.flask.create_wof_flask_app(dao, config)
+    app = wof.flask.create_wof_flask_app(dao, conf)
     app.config['DEBUG'] = True
 
 
