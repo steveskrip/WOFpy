@@ -1,29 +1,29 @@
 from __future__ import (absolute_import, division, print_function)
 
-import os, sys
+import argparse
 
-import wof.flask
+import configparser
 
-import logging
 import wof
-
+import wof.flask
 from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao
-#import private_config
 
 """
     python runserver_odm2_timeseries.py
     --config=odm2_config_timeseries.cfg
-    --connection=example.connection
 
 """
-#logging.basicConfig(level=logging.DEBUG)
-#logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
+def startServer(conf='odm2_config_timeseries.cfg', openPort = 8080):
 
-def startServer(config='odm2_config_timeseries.cfg',connection=None,
-                    openPort = 8080):
-    dao = Odm2Dao(connection.read())
-    app = wof.flask.create_wof_flask_app(dao, config)
+    # Parse connection from config file
+    config = configparser.ConfigParser()
+    with open(conf, 'r') as configfile:
+        config.read_file(configfile)
+        connection = config['Database']['Connection_String']
+
+    dao = Odm2Dao(connection)
+    app = wof.flask.create_wof_flask_app(dao, conf)
     app.config['DEBUG'] = True
 
 
@@ -38,17 +38,13 @@ def startServer(config='odm2_config_timeseries.cfg',connection=None,
     app.run(host='0.0.0.0', port=openPort, threaded=True)
 
 if __name__ == '__main__':
-    import argparse
 
     parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
     parser.add_argument('--config',
                        help='Configuration file', default='odm2_config_timeseries.cfg')
-    parser.add_argument('--connection',type=argparse.FileType('r'),
-                       help='The name of a file containing the Connection String eg: private.connection which has: mysql://username:password@localhost/database')
-
     parser.add_argument('--port',
                        help='Open port for server."', default=8080, type=int)
     args = parser.parse_args()
     print(args)
 
-    startServer(config=args.config,connection=args.connection,openPort=args.port)
+    startServer(conf=args.config, openPort=args.port)
