@@ -3,10 +3,12 @@ from __future__ import (absolute_import, division, print_function)
 from wof import models as wof_base
 from datetime import datetime, timedelta
 
+
 class Variable(wof_base.BaseVariable):
 
-    def __init__(self, v=None,
-                 VarSampleMedium=None, v_unit=None, v_tunit=None, v_timeinterval=None):
+    def __init__(self, v=None, VarSampleMedium=None,
+                 v_unit=None, v_tunit=None, v_timeinterval=None):
+
         self.VariableID = v.VariableID
         self.VariableCode = v.VariableCode
         self.VariableName = v.VariableNameCV
@@ -27,19 +29,20 @@ class Variable(wof_base.BaseVariable):
         else:
             self.TimeUnits = None
 
-    #SampleMedium = wof_base.SampleMediumTypes.NOT_RELEVANT
-    #ValueType = Column(String)
-    #IsRegular = Column(Boolean)
-    #TimeSupport = Column(Float)
-    #TimeUnitsID = Column(Integer, ForeignKey('Units.UnitsID'))
-    #DataType = Column(String)
-    #GeneralCategory = wof_base.GeneralCategoryTypes.WATER_QUALITY
+    # SampleMedium = wof_base.SampleMediumTypes.NOT_RELEVANT
+    # ValueType = Column(String)
+    # IsRegular = Column(Boolean)
+    # TimeSupport = Column(Float)
+    # TimeUnitsID = Column(Integer, ForeignKey('Units.UnitsID'))
+    # DataType = Column(String)
+    # GeneralCategory = wof_base.GeneralCategoryTypes.WATER_QUALITY
 
-    #VariableUnits = relationship("Units",
+    # VariableUnits = relationship("Units",
     #                    primaryjoin='Variable.VariableUnitsID==Units.UnitsID')
 
-    #TimeUnits = relationship("Units",
+    # TimeUnits = relationship("Units",
     #                    primaryjoin='Variable.TimeUnitsID==Units.UnitsID')
+
 
 class Site(wof_base.BaseSite):
 
@@ -59,6 +62,7 @@ class Site(wof_base.BaseSite):
         sr.Notes = s.SpatialReferenceObj.SRSDescription
         self.LatLongDatum = sr
 
+
 class Series(wof_base.BaseSeries):
     def __init__(self, r=None, aff=None):
         fa_obj = r.FeatureActionObj
@@ -72,23 +76,23 @@ class Series(wof_base.BaseSeries):
         o_obj = m_obj.OrganizationObj
 
         self.SeriesID = r.ResultID
-        #self.SiteID = fa_obj.SamplingFeatureID
-        #self.SiteCode = sf_obj.SamplingFeatureCode
-        #self.SiteName = sf_obj.SamplingFeatureName
+        # self.SiteID = fa_obj.SamplingFeatureID
+        # self.SiteCode = sf_obj.SamplingFeatureCode
+        # self.SiteName = sf_obj.SamplingFeatureName
 
         self.Variable = Variable(v_obj,
                                  r.SampledMediumCV,
                                  u_obj)
-        #self.VariableID = r.VariableID
-        #self.VariableCode = v_obj.VariableCode
-        #self.VariableName = v_obj.VariableNameCV
+        # self.VariableID = r.VariableID
+        # self.VariableCode = v_obj.VariableCode
+        # self.VariableName = v_obj.VariableNameCV
         self.SampleMedium = r.SampledMediumCV
         self.QualityControlLevelID = p_obj.ProcessingLevelID
         self.QualityControlLevelCode = p_obj.ProcessingLevelCode
         self.Definition = p_obj.Definition
         self.Explanation = p_obj.Explanation
-        #self.MethodID = m_obj.MethodID
-        #self.MethodDescription = m_obj.MethodDescription
+        # self.MethodID = m_obj.MethodID
+        # self.MethodDescription = m_obj.MethodDescription
         self.Method = Method(m_obj)
         if o_obj is not None:
             self.Organization = o_obj.OrganizationName
@@ -99,50 +103,55 @@ class Series(wof_base.BaseSeries):
         if aff is not None:
             self.Source = Source(aff)
 
+
+def create_iso_utc_offset(utc_offset_hrs):
+    hours = int(utc_offset_hrs)
+    minutes = int((float(utc_offset_hrs) % 1) * 60)
+
+    if hours == 0 and minutes == 0:
+        return 'Z'
+    else:
+        return '%+.2d:%.2d' % (hours, minutes)
+
+
 class DataValue(wof_base.BaseDataValue):
 
-    def __init__(self,v,aff_obj=None):
+    def __init__(self, v, aff_obj=None):
         self.ValueID = v.ValueID
         self.DataValue = v.DataValue
         self.LocalDateTime = v.ValueDateTime.isoformat()
         localtime = datetime.strptime(self.LocalDateTime, "%Y-%m-%dT%H:%M:%S")
         self.DateTimeUTC = localtime+timedelta(hours=((-1)*int(v.ValueDateTimeUTCOffset)))
-        self.UTCOffset = self.create_iso_utc_offset(v.ValueDateTimeUTCOffset)
+        self.UTCOffset = create_iso_utc_offset(v.ValueDateTimeUTCOffset)
         if aff_obj is not None:
             self.SourceID = '%d' % aff_obj.AffiliationID
-            #self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
+            # self.SourceCode = aff_obj.OrganizationObj.OrganizationCode
         self.CensorCode = v.CensorCodeCV
         self.MethodID = v.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodID
-        #self.MethodCode = v.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
+        # self.MethodCode = v.ResultObj.FeatureActionObj.ActionObj.MethodObj.MethodCode
         self.QualityControlLevelID = v.ResultObj.ProcessingLevelObj.ProcessingLevelID
-        #self.QualityControlLevel = QualityControlLevel(v.ResultObj.ProcessingLevelObj)
+        # self.QualityControlLevel = QualityControlLevel(v.ResultObj.ProcessingLevelObj)
         self.QualityControlLevel = v.ResultObj.ProcessingLevelObj.ProcessingLevelCode
 
-    def create_iso_utc_offset(self, utc_offset_hrs):
-        hours = int(utc_offset_hrs)
-        minutes = int((float(utc_offset_hrs) % 1) * 60)
-
-        if hours == 0 and minutes == 0:
-            return 'Z'
-        else:
-            return '%+.2d:%.2d' % (hours, minutes)
 
 class Method(wof_base.BaseMethod):
-    def __init__(self,m_obj):
+    def __init__(self, m_obj):
         self.MethodID = m_obj.MethodID
         self.MethodDescription = m_obj.MethodDescription
         self.MethodLink = m_obj.MethodLink
         self.MethodCode = m_obj.MethodCode
 
+
 class Unit(wof_base.BaseUnits):
-    def __init__(self,u_obj):
+    def __init__(self, u_obj):
         self.UnitsID = u_obj.UnitsID
         self.UnitsName = u_obj.UnitsName
         self.UnitsType = u_obj.UnitsTypeCV
         self.UnitsAbbreviation = u_obj.UnitsAbbreviation
 
+
 class Source(wof_base.BaseSource):
-    def __init__(self,aff_obj):
+    def __init__(self, aff_obj):
         self.SourceID = aff_obj.AffiliationID
         self.Organization = aff_obj.OrganizationObj.OrganizationName
         self.OrganizationCode = aff_obj.OrganizationObj.OrganizationCode
@@ -152,9 +161,10 @@ class Source(wof_base.BaseSource):
         self.Phone = aff_obj.PrimaryPhone
         self.Email = aff_obj.PrimaryEmail
         self.Address = aff_obj.PrimaryAddress
-        #self.City = 'San Diego'
-        #self.State = 'CA'
-        #self.ZipCode = '92122'
+        # self.City = 'San Diego'
+        # self.State = 'CA'
+        # self.ZipCode = '92122'
+
 
 class QualityControlLevel(wof_base.BaseQualityControlLevel):
     def __init__(self, p_obj):
