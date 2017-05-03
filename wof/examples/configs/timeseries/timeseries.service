@@ -1,0 +1,10 @@
+[Unit]
+Description=uWSGI instance to serve timeseries
+
+[Service]
+User=www-data
+Group=www-data
+ExecStart=/bin/bash -c 'export PATH=/home/ubuntu/miniconda/bin:$PATH; source activate wofpy; cd /var/www/timeseries; uwsgi --ini timeseries.ini'
+
+[Install]
+WantedBy=multi-user.target
