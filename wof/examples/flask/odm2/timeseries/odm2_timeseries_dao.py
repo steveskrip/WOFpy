@@ -1,57 +1,52 @@
 from __future__ import (absolute_import, division, print_function)
 
-from datetime import datetime
+from dateutil.parser import parse
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.sql import and_
-
-from dateutil.parser import parse
 
 from wof.dao import BaseDao
 import wof.examples.flask.odm2.timeseries.sqlalch_odm2_models as model
+
 from odm2api.ODM2 import models as odm2_models
-from sqlalchemy.orm import aliased
-from sqlalchemy import or_
-from sqlalchemy import and_
-from sqlalchemy.sql import func
 
-from sqlalchemy.orm import with_polymorphic
-
-import re
 
 class Odm2Dao(BaseDao):
 
     def __init__(self, db_connection_string):
 
-        self.engine = create_engine(db_connection_string, convert_unicode=True,
-            #pool_size=100
-                                    )
-        odm2_models.setSchema(self.engine)
         # Default application pool size is 5. Use 100 to improve performance.
-        self.db_session = scoped_session(sessionmaker(
-            autocommit=False, autoflush=False, bind=self.engine))
+        self.engine = create_engine(
+            db_connection_string,
+            convert_unicode=True,
+            # pool_size=100
+        )
 
+        odm2_models.setSchema(self.engine)
 
+        Session = scoped_session(
+            sessionmaker(
+                autocommit=False,
+                autoflush=False,
+                bind=self.engine
+            )
+        )
 
-        #odm2_models.Base.query = self.db_session.query_property()
+        self.db_session = Session()
 
     def __del__(self):
+
         self.db_session.close()
 
     def get_all_sites(self):
-        s_rArr = self.db_session.query(odm2_models.Sites,odm2_models.TimeSeriesResults).\
+
+        s_rArr = self.db_session.query(odm2_models.Sites,
+                                       odm2_models.TimeSeriesResults).\
             join(odm2_models.FeatureActions).\
             filter(odm2_models.FeatureActions.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
                    odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID). \
             group_by(odm2_models.Sites.SamplingFeatureID).all()
-        """
-        s_rArr = self.db_session.query(odm2_models.Results,
-                                       odm2_models.Sites).\
-            join(odm2_models.FeatureActions).\
-            join(odm2_models.SamplingFeatures).\
-            filter(odm2_models.SamplingFeatures.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID).\
-            group_by(odm2_models.Sites.SamplingFeatureID).all()
-        """
+
         s_Arr = []
         for s_r in s_rArr:
             s = model.Site(s_r.Sites)
@@ -77,7 +72,7 @@ class Odm2Dao(BaseDao):
                 s_arr.append(w_s)
         return s_arr
 
-    def get_sites_by_box(self, west,south,east,north):
+    def get_sites_by_box(self, west, south, east, north):
         """
         north - ymax - latitude
         south - ymin - latitude
@@ -100,7 +95,7 @@ class Odm2Dao(BaseDao):
             s_Arr.append(s)
         return s_Arr
 
-    def get_variables_from_results(self,var_codes=None):
+    def get_variables_from_results(self, var_codes=None):
         l_var_codes = None
         if var_codes is not None:
             if not isinstance(var_codes, list):
@@ -165,8 +160,8 @@ class Odm2Dao(BaseDao):
         for i in range(len(r)):
             if i is 0:
                 aff = self.db_session.query(odm2_models.Affiliations).\
-                    filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()
-            w_r = model.Series(r[i],aff)
+                    filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
+            w_r = model.Series(r[i], aff)
             r_arr.append(w_r)
         return r_arr
 
@@ -185,22 +180,22 @@ class Odm2Dao(BaseDao):
         for i in range(len(r)):
             if i is 0:
                 aff = self.db_session.query(odm2_models.Affiliations).\
-                  filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()
-            w_r = model.Series(r[i],aff)
+                  filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
+            w_r = model.Series(r[i], aff)
             r_arr.append(w_r)
         return r_arr
 
-    def get_datavalues(self, site_code, var_code, begin_date_time=None,
-                       end_date_time=None):
+    def get_datavalues(self, site_code, var_code,
+                       begin_date_time=None, end_date_time=None):
 
-        if (not begin_date_time or not end_date_time):
+        if not begin_date_time or not end_date_time:
             try:
                 valueResultArr = self.db_session.query(odm2_models.TimeSeriesResultValues).\
                         join(odm2_models.TimeSeriesResults).\
                         join(odm2_models.FeatureActions).\
                         join(odm2_models.SamplingFeatures).\
                         join(odm2_models.Variables).\
-                        filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                        filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,  # noqa
                                odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
                                odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
                                odm2_models.Variables.VariableCode == var_code).\
@@ -236,7 +231,7 @@ class Odm2Dao(BaseDao):
                     org_id = valueResult.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
                     aff = self.db_session.query(odm2_models.Affiliations).\
                             filter(odm2_models.Affiliations.OrganizationID == org_id).first()
-                w_v = model.DataValue(valueResult,aff)
+                w_v = model.DataValue(valueResult, aff)
                 v_arr.append(w_v)
         return v_arr
 
