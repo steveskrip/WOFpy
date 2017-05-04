@@ -10,12 +10,8 @@ matrix:
   - python: 3.6
     env: TEST_TARGET=default
   - python: 2.7
-    env: TEST_TARGET=odm2_dao_sqlite
-  - python: 2.7
     env: TEST_TARGET=coding_standards
   allow_failures:
-  - python: 2.7
-    env: TEST_TARGET=odm2_dao_sqlite
   - python: 3.6
     env: TEST_TARGET=default
   - python: 2.7
@@ -47,11 +43,7 @@ before_script:
 
 script:
   - if [[ $TEST_TARGET == 'default' ]]; then
-      py.test -s -rxs -v -k "not test_odm2_dao_sqlite" ;
-    fi
-
-  - if [[ $TEST_TARGET == 'odm2_dao_sqlite' ]]; then
-      py.test -s -rxs -v -k "test_odm2_dao_sqlite" ;
+      py.test -s -rxs -v ;
     fi
 
   - if [[ $TEST_TARGET == 'coding_standards' ]]; then
