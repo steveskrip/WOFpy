@@ -14,7 +14,8 @@ from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao
 
 """
 
-def startServer(conf='odm2_config_timeseries.cfg', openPort = 8080):
+
+def startServer(conf='odm2_config_timeseries.cfg', openPort=8080):
 
     # Parse connection from config file
     config = configparser.ConfigParser()
@@ -25,7 +26,6 @@ def startServer(conf='odm2_config_timeseries.cfg', openPort = 8080):
     dao = Odm2Dao(connection)
     app = wof.flask.create_wof_flask_app(dao, conf)
     app.config['DEBUG'] = True
-
 
     url = "http://127.0.0.1:" + str(openPort)
     print("----------------------------------------------------------------")
