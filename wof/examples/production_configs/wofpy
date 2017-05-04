@@ -1,0 +1,21 @@
+server {
+    # Assign the same port where wofpy
+    # is running in the background
+    # Find this setting in `openPort = 8080`
+    # within `runserver.py`
+    listen 8080;
+
+    # Can be assigned a domain name here
+    # Ex. example.com
+    # http://nginx.org/en/docs/http/server_names.html
+    server_name 127.0.0.1;
+
+    # Add whatever is necessary to cover all your url
+    # configured within the .cfg file
+    # Ex. Network: ODM2Timeseries this will result
+    # in url `/odm2timeseries`
+    location /odm2timeseries {
+        include uwsgi_params;
+        uwsgi_pass unix:/var/www/wofpy/wofpy.sock;
+    }
+}

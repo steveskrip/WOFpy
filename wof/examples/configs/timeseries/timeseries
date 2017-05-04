@@ -1,9 +1,0 @@
-server {
-    listen 8080;
-    server_name 127.0.0.1;
-
-    location /odm2timeseries {
-        include uwsgi_params;
-        uwsgi_pass unix:/var/www/timeseries/timeseries.sock;
-    }
-}
