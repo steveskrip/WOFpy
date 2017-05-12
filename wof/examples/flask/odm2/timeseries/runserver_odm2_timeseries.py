@@ -20,7 +20,8 @@ def get_connection(conf):
     with open(conf, 'r') as configfile:
         config.read_file(configfile)
         connection = config['Database']['Connection_String']
-        return connection
+
+    return connection
 
 parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
 parser.add_argument('--config',
@@ -28,7 +29,6 @@ parser.add_argument('--config',
 parser.add_argument('--port',
                    help='Open port for server."', default=8080, type=int)
 args = parser.parse_args()
-print(args)
 
 dao = Odm2Dao(get_connection(args.config))
 app = wof.flask.create_wof_flask_app(dao, args.config)
