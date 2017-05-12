@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
-"""
-    sqlalch_odm2_models.py
-"""
+"""ORM Definition for WOF to work with ODM2 Model"""
 from __future__ import (absolute_import, division, print_function)
 
-from wof import models as wof_base
 from datetime import datetime, timedelta
+
+from wof import models as wof_base
 
 
 class Variable(wof_base.BaseVariable):
-
-    """
-        WOF Variable Model
-    """
-
+    """WOF Variable Model."""
     def __init__(self, v=None, VarSampleMedium=None,
                  v_unit=None, v_tunit=None, v_timeinterval=None):
+        """Initialize WOF Variable Object.
 
+        :param v: ODM2 Variable Object
+        :param VarSampleMedium: ODM2 Result SampledMediumCV
+        :param v_unit: ODM2 Unit Object
+        :param v_tunit: ODM2 TimeAggregationIntervalUnits Object
+        :param v_timeinterval: ODM2 TimeSeriesResultValues TimeAggregationInterval
+        """
         self.VariableID = v.VariableID
         self.VariableCode = v.VariableCode
         self.VariableName = v.VariableNameCV
@@ -53,12 +55,12 @@ class Variable(wof_base.BaseVariable):
 
 
 class Site(wof_base.BaseSite):
-
-    """
-        WOF Site Model
-    """
-
+    """WOF Site Model."""
     def __init__(self, s=None):
+        """Initialize WOF Site Object.
+
+        :param s: ODM2 SamplingFeature Object
+        """
         self.SiteID = s.SamplingFeatureID
         self.Latitude = s.Latitude
         self.Longitude = s.Longitude
@@ -76,12 +78,13 @@ class Site(wof_base.BaseSite):
 
 
 class Series(wof_base.BaseSeries):
-
-    """
-        WOF Series Model
-    """
-
+    """WOF Series Model."""
     def __init__(self, r=None, aff=None):
+        """Initialize WOF Series Object.
+
+        :param r: ODM2 TimeSeriesResult Object
+        :param aff: ODM2 Affiliation Object
+        """
         fa_obj = r.FeatureActionObj
         u_obj = r.UnitsObj
         v_obj = r.VariableObj
@@ -122,8 +125,8 @@ class Series(wof_base.BaseSeries):
 
 
 def create_iso_utc_offset(utc_offset_hrs):
-    """
-    Function to create time offset
+    """Create time offset from offset hours.
+
     :param utc_offset_hrs: UTC offset hours
     :return: UTC Offset iso string
     """
@@ -137,12 +140,13 @@ def create_iso_utc_offset(utc_offset_hrs):
 
 
 class DataValue(wof_base.BaseDataValue):
-
-    """
-        WOF DataValue Model
-    """
-
+    """WOF DataValue Model."""
     def __init__(self, v, aff_obj=None):
+        """Initialize WOF DataValue Object.
+
+        :param v: ODM2 TimeSeriesResultValue Object
+        :param aff_obj: ODM2 Affiliation Object
+        """
         self.ValueID = v.ValueID
         self.DataValue = v.DataValue
         self.LocalDateTime = v.ValueDateTime.isoformat()
@@ -161,12 +165,12 @@ class DataValue(wof_base.BaseDataValue):
 
 
 class Method(wof_base.BaseMethod):
-
-    """
-        WOF Method Model
-    """
-
+    """WOF Method Model."""
     def __init__(self, m_obj):
+        """Initialize WOF Method Object.
+
+        :param m_obj: ODM2 Method Object
+        """
         self.MethodID = m_obj.MethodID
         self.MethodDescription = m_obj.MethodDescription
         self.MethodLink = m_obj.MethodLink
@@ -174,12 +178,12 @@ class Method(wof_base.BaseMethod):
 
 
 class Unit(wof_base.BaseUnits):
-
-    """
-        WOF Unit Model
-    """
-
+    """WOF Unit Model."""
     def __init__(self, u_obj):
+        """Initialize WOF Unit Object
+
+        :param u_obj: ODM2 Unit Object
+        """
         self.UnitsID = u_obj.UnitsID
         self.UnitsName = u_obj.UnitsName
         self.UnitsType = u_obj.UnitsTypeCV
@@ -187,12 +191,12 @@ class Unit(wof_base.BaseUnits):
 
 
 class Source(wof_base.BaseSource):
-
-    """
-        WOF Source Model
-    """
-
+    """WOF Source Model."""
     def __init__(self, aff_obj):
+        """Initialize WOF Source Object
+
+        :param aff_obj: ODM2 Affiliation Object
+        """
         self.SourceID = aff_obj.AffiliationID
         self.Organization = aff_obj.OrganizationObj.OrganizationName
         self.OrganizationCode = aff_obj.OrganizationObj.OrganizationCode
@@ -209,12 +213,12 @@ class Source(wof_base.BaseSource):
 
 
 class QualityControlLevel(wof_base.BaseQualityControlLevel):
-
-    """
-        WOF QualityControlLevel Model
-    """
-
+    """WOF QualityControlLevel Model."""
     def __init__(self, p_obj):
+        """Initialize WOF QualityControlLevel Object.
+
+        :param p_obj: ODM2 ProcessingLevel Object
+        """
         self.QualityControlLevelID = p_obj.ProcessingLevelID
         self.QualityControlLevelCode = p_obj.ProcessingLevelCode
         self.Definition = p_obj.Definition

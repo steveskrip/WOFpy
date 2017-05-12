@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-    odm2_timeseries_dao.py
-"""
+"""Data Access Objects (DAO) used to retrieve Data from ODM2 Database."""
 from __future__ import (absolute_import, division, print_function)
 
 from dateutil.parser import parse
@@ -9,19 +7,16 @@ from dateutil.parser import parse
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from wof.dao import BaseDao
-import wof.examples.flask.odm2.timeseries.sqlalch_odm2_models as model
-
 from odm2api.ODM2 import models as odm2_models
+
+import wof.examples.flask.odm2.timeseries.sqlalch_odm2_models as model
+from wof.dao import BaseDao
 
 
 class Odm2Dao(BaseDao):
-
-    """
-        Odm2Dao Object for use with WOFpy Server
-    """
-
+    """Odm2Dao Object for use with WOFpy Server."""
     def __init__(self, db_connection_string):
+        """Initialize Odm2Dao Object."""
 
         # Default application pool size is 5. Use 100 to improve performance.
         self.engine = create_engine(
@@ -43,13 +38,12 @@ class Odm2Dao(BaseDao):
         self.db_session = Session()
 
     def __del__(self):
-
+        """Closes Database Session."""
         self.db_session.close()
 
     def get_all_sites(self):
+        """Get all wof sites from odm2 database.
 
-        """
-        Get all wof sites from odm2 database
         :return: List of WOF Sites
         """
         s_rArr = self.db_session.query(odm2_models.Sites,
@@ -65,8 +59,8 @@ class Odm2Dao(BaseDao):
         return s_Arr
 
     def get_site_by_code(self, site_code):
-        """
-        Get wof site from odm2 database by site code
+        """Get wof site from odm2 database by site code.
+
         :param site_code: Site Code Ex. 'USU-LBR-Mendon'
         :return: WOF Site
         """
@@ -81,8 +75,8 @@ class Odm2Dao(BaseDao):
         return w_s
 
     def get_sites_by_codes(self, site_codes_arr):
-        """
-        Get wof sites from odm2 database by a list of site codes
+        """Get wof sites from odm2 database by a list of site codes.
+
         :param site_codes_arr: List of Site Codes Ex. ['USU-LBR-Mendon', 'USU-LBR-Mendon2']
         :return: List of WOF Sites
         """
@@ -94,8 +88,8 @@ class Odm2Dao(BaseDao):
         return s_arr
 
     def get_sites_by_box(self, west, south, east, north):
-        """
-        Get wof sites from odm2 database by a bounding box
+        """Get wof sites from odm2 database by a bounding box.
+
         :param north: north - ymax - latitude
         :param south: south - ymin - latitude
         :param west: west - xmin - longitude
@@ -119,8 +113,8 @@ class Odm2Dao(BaseDao):
         return s_Arr
 
     def get_variables_from_results(self, var_codes=None):
-        """
-        Get wof variables from odm2 database by a list of variable codes
+        """Get wof variables from odm2 database by a list of variable codes.
+
         :param var_codes: List of Variable Codes Ex. ['TEMP', 'SAL']
         :return: List of WOF Variables
         """
@@ -162,16 +156,16 @@ class Odm2Dao(BaseDao):
         return v_arr
 
     def get_all_variables(self):
-        """
-        Get wof variables from odm2 database
+        """Get wof variables from odm2 database.
+
         :return: List of WOF Variables
         """
         v_arr = self.get_variables_from_results()
         return v_arr
 
     def get_variable_by_code(self, var_code):
-        """
-        Get wof variables from odm2 database by a variable code
+        """Get wof variables from odm2 database by a variable code.
+
         :param var_code: Variable Codes Ex. 'TEMP'
         :return: WOF Variable
         """
@@ -182,8 +176,8 @@ class Odm2Dao(BaseDao):
         return w_v
 
     def get_variables_by_codes(self, var_codes_arr):
-        """
-        Get wof variables from odm2 database by a list of variable codes
+        """Get wof variables from odm2 database by a list of variable codes.
+
         :param var_codes_arr: List of Variable Codes Ex. ['TEMP', 'SAL']
         :return: List of WOF Variables
         """
@@ -191,8 +185,8 @@ class Odm2Dao(BaseDao):
         return v_arr
 
     def get_series_by_sitecode(self, site_code):
-        """
-        Get wof series from odm2 database by a site code
+        """Get wof series from odm2 database by a site code.
+
         :param site_code: Site Code Ex. 'USU-LBR-Mendon'
         :return: List of WOF Series
         """
@@ -214,8 +208,8 @@ class Odm2Dao(BaseDao):
         return r_arr
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
-        """
-        Get wof series from odm2 database by a site code and a variable code
+        """Get wof series from odm2 database by a site code and a variable code.
+
         :param site_code: Site Code Ex. 'USU-LBR-Mendon'
         :param var_code: Variable Code Ex. 'TEMP'
         :return: List of WOF Series
@@ -243,9 +237,9 @@ class Odm2Dao(BaseDao):
 
     def get_datavalues(self, site_code, var_code,
                        begin_date_time=None, end_date_time=None):
-        """
-        Get wof datavalues from odm2 database by site code,
-        variable code, start datetime, and end datetime
+        """Get wof datavalues from odm2 database by site code,
+        variable code, start datetime, and end datetime.
+
         :param site_code: Site Code Ex. 'USU-LBR-Mendon'
         :param var_code: Variable Code Ex. 'TEMP'
         :param begin_date_time: Start Time Ex. '2007-08-16 23:30:00.000'
@@ -303,8 +297,8 @@ class Odm2Dao(BaseDao):
         return v_arr
 
     def get_method_by_id(self, method_id):
-        """
-        Get wof method from odm2 database by Method ID
+        """Get wof method from odm2 database by Method ID.
+
         :param method_id: Method ID. Ex. 'METHOD1'
         :return: A WOF Method
         """
@@ -314,8 +308,8 @@ class Odm2Dao(BaseDao):
         return w_m
 
     def get_methods_by_ids(self, method_id_arr):
-        """
-        Get wof method from odm2 database by list of Method ID's
+        """Get wof method from odm2 database by list of Method ID's.
+
         :param method_id_arr: List of Method ID. Ex. ['METHOD1', 'METHOD2']
         :return: List of WOF Method
         """
@@ -328,8 +322,8 @@ class Odm2Dao(BaseDao):
         return m_arr
 
     def get_source_by_id(self, source_id):
-        """
-        Get wof source from odm2 database by Affiliation ID
+        """Get wof source from odm2 database by Affiliation ID.
+
         :param source_id: Affiliation ID.
         :return: A WOF Source
         """
@@ -339,8 +333,8 @@ class Odm2Dao(BaseDao):
         return w_aff
 
     def get_sources_by_ids(self, source_id_arr):
-        """
-        Get wof source from odm2 database by a list of Affiliation ID's
+        """Get wof source from odm2 database by a list of Affiliation ID's.
+
         :param source_id_arr: List of Affiliation ID.
         :return: List WOF Source
         """
@@ -353,8 +347,8 @@ class Odm2Dao(BaseDao):
         return aff_arr
 
     def get_qualcontrollvl_by_id(self, qual_control_lvl_id):
-        """
-        Get wof Quality Control Level from odm2 database by Processing Level ID
+        """Get wof Quality Control Level from odm2 database by Processing Level ID.
+
         :param qual_control_lvl_id: Processing Level ID.
         :return: A WOF Quality Control Level
         """
@@ -364,8 +358,8 @@ class Odm2Dao(BaseDao):
         return w_pl
 
     def get_qualcontrollvls_by_ids(self, qual_control_lvl_id_arr):
-        """
-        Get wof Quality Control Level from odm2 database by a list of Processing Level ID's
+        """Get wof Quality Control Level from odm2 database by a list of Processing Level ID's.
+
         :param qual_control_lvl_id_arr: List Processing Level ID.
         :return: List of WOF Quality Control Level
         """

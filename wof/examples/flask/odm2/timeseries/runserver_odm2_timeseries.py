@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""
-    python runserver_odm2_timeseries.py
-    --config=odm2_config_timeseries.cfg
+""" Runserver Script to Deploy WOFpy.
 
+Ex. python runserver_odm2_timeseries.py --config=odm2_config_timeseries.cfg
 """
 from __future__ import (absolute_import, division, print_function)
 
@@ -16,8 +15,8 @@ from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao
 
 
 def get_connection(conf):
-    """
-    Function to get connection string
+    """Get connection string from .cfg file.
+
     :param conf: ODM2 Config File. Ex. 'odm2_config_timeseries.cfg'
     :return: Connection String
     """
@@ -27,6 +26,7 @@ def get_connection(conf):
         connection = config['Database']['Connection_String']
 
     return connection
+
 
 parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
 parser.add_argument('--config',
@@ -44,9 +44,9 @@ app = wof.flask.create_wof_flask_app(dao, args.config)
 if __name__ == '__main__':
     app.config['DEBUG'] = True
 
-    url = "http://127.0.0.1:" + str(args.port)
-    print("----------------------------------------------------------------")
-    print("Access Service endpoints at ")
+    url = 'http://127.0.0.1:' + str(args.port)
+    print('----------------------------------------------------------------')
+    print('Access Service endpoints at ')
     for path in wof.site_map(app):
         print('{}{}'.format(url, path))
 
