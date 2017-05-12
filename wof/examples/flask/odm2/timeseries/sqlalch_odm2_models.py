@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+    sqlalch_odm2_models.py
+"""
 from __future__ import (absolute_import, division, print_function)
 
 from wof import models as wof_base
@@ -5,6 +9,10 @@ from datetime import datetime, timedelta
 
 
 class Variable(wof_base.BaseVariable):
+
+    """
+        WOF Variable Model
+    """
 
     def __init__(self, v=None, VarSampleMedium=None,
                  v_unit=None, v_tunit=None, v_timeinterval=None):
@@ -46,6 +54,10 @@ class Variable(wof_base.BaseVariable):
 
 class Site(wof_base.BaseSite):
 
+    """
+        WOF Site Model
+    """
+
     def __init__(self, s=None):
         self.SiteID = s.SamplingFeatureID
         self.Latitude = s.Latitude
@@ -64,13 +76,18 @@ class Site(wof_base.BaseSite):
 
 
 class Series(wof_base.BaseSeries):
+
+    """
+        WOF Series Model
+    """
+
     def __init__(self, r=None, aff=None):
         fa_obj = r.FeatureActionObj
         u_obj = r.UnitsObj
         v_obj = r.VariableObj
         p_obj = r.ProcessingLevelObj
 
-        sf_obj = fa_obj.SamplingFeatureObj
+        # sf_obj = fa_obj.SamplingFeatureObj
         a_obj = fa_obj.ActionObj
         m_obj = a_obj.MethodObj
         o_obj = m_obj.OrganizationObj
@@ -105,6 +122,11 @@ class Series(wof_base.BaseSeries):
 
 
 def create_iso_utc_offset(utc_offset_hrs):
+    """
+    Function to create time offset
+    :param utc_offset_hrs: UTC offset hours
+    :return: UTC Offset iso string
+    """
     hours = int(utc_offset_hrs)
     minutes = int((float(utc_offset_hrs) % 1) * 60)
 
@@ -116,11 +138,15 @@ def create_iso_utc_offset(utc_offset_hrs):
 
 class DataValue(wof_base.BaseDataValue):
 
+    """
+        WOF DataValue Model
+    """
+
     def __init__(self, v, aff_obj=None):
         self.ValueID = v.ValueID
         self.DataValue = v.DataValue
         self.LocalDateTime = v.ValueDateTime.isoformat()
-        localtime = datetime.strptime(self.LocalDateTime, "%Y-%m-%dT%H:%M:%S")
+        localtime = datetime.strptime(self.LocalDateTime, '%Y-%m-%dT%H:%M:%S')
         self.DateTimeUTC = localtime+timedelta(hours=((-1)*int(v.ValueDateTimeUTCOffset)))
         self.UTCOffset = create_iso_utc_offset(v.ValueDateTimeUTCOffset)
         if aff_obj is not None:
@@ -135,6 +161,11 @@ class DataValue(wof_base.BaseDataValue):
 
 
 class Method(wof_base.BaseMethod):
+
+    """
+        WOF Method Model
+    """
+
     def __init__(self, m_obj):
         self.MethodID = m_obj.MethodID
         self.MethodDescription = m_obj.MethodDescription
@@ -143,6 +174,11 @@ class Method(wof_base.BaseMethod):
 
 
 class Unit(wof_base.BaseUnits):
+
+    """
+        WOF Unit Model
+    """
+
     def __init__(self, u_obj):
         self.UnitsID = u_obj.UnitsID
         self.UnitsName = u_obj.UnitsName
@@ -151,13 +187,19 @@ class Unit(wof_base.BaseUnits):
 
 
 class Source(wof_base.BaseSource):
+
+    """
+        WOF Source Model
+    """
+
     def __init__(self, aff_obj):
         self.SourceID = aff_obj.AffiliationID
         self.Organization = aff_obj.OrganizationObj.OrganizationName
         self.OrganizationCode = aff_obj.OrganizationObj.OrganizationCode
         self.SourceDescription = aff_obj.OrganizationObj.OrganizationDescription
         self.SourceLink = aff_obj.OrganizationObj.OrganizationLink
-        self.ContactName = '%s %s' % (aff_obj.PersonObj.PersonFirstName,aff_obj.PersonObj.PersonLastName)
+        self.ContactName = '%s %s' % (aff_obj.PersonObj.PersonFirstName,
+                                      aff_obj.PersonObj.PersonLastName)
         self.Phone = aff_obj.PrimaryPhone
         self.Email = aff_obj.PrimaryEmail
         self.Address = aff_obj.PrimaryAddress
@@ -167,6 +209,11 @@ class Source(wof_base.BaseSource):
 
 
 class QualityControlLevel(wof_base.BaseQualityControlLevel):
+
+    """
+        WOF QualityControlLevel Model
+    """
+
     def __init__(self, p_obj):
         self.QualityControlLevelID = p_obj.ProcessingLevelID
         self.QualityControlLevelCode = p_obj.ProcessingLevelCode

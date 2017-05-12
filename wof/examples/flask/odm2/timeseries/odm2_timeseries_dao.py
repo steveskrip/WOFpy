@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+    odm2_timeseries_dao.py
+"""
 from __future__ import (absolute_import, division, print_function)
 
 from dateutil.parser import parse
@@ -12,6 +16,10 @@ from odm2api.ODM2 import models as odm2_models
 
 
 class Odm2Dao(BaseDao):
+
+    """
+        Odm2Dao Object for use with WOFpy Server
+    """
 
     def __init__(self, db_connection_string):
 
@@ -40,12 +48,15 @@ class Odm2Dao(BaseDao):
 
     def get_all_sites(self):
 
+        """
+        Get all wof sites from odm2 database
+        :return: List of WOF Sites
+        """
         s_rArr = self.db_session.query(odm2_models.Sites,
-                                       odm2_models.TimeSeriesResults).\
-            join(odm2_models.FeatureActions).\
+                                       odm2_models.TimeSeriesResults). \
+            join(odm2_models.FeatureActions). \
             filter(odm2_models.FeatureActions.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
-                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID). \
-            group_by(odm2_models.Sites.SamplingFeatureID).all()
+                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID).group_by(odm2_models.Sites.SamplingFeatureID).all()  # noqa
 
         s_Arr = []
         for s_r in s_rArr:
@@ -54,9 +65,14 @@ class Odm2Dao(BaseDao):
         return s_Arr
 
     def get_site_by_code(self, site_code):
+        """
+        Get wof site from odm2 database by site code
+        :param site_code: Site Code Ex. 'USU-LBR-Mendon'
+        :return: WOF Site
+        """
         w_s = None
         try:
-            s = self.db_session.query(odm2_models.Sites).\
+            s = self.db_session.query(odm2_models.Sites). \
                 filter(odm2_models.Sites.SamplingFeatureCode == site_code).one()
         except:
             s = None
@@ -65,6 +81,11 @@ class Odm2Dao(BaseDao):
         return w_s
 
     def get_sites_by_codes(self, site_codes_arr):
+        """
+        Get wof sites from odm2 database by a list of site codes
+        :param site_codes_arr: List of Site Codes Ex. ['USU-LBR-Mendon', 'USU-LBR-Mendon2']
+        :return: List of WOF Sites
+        """
         s_arr = []
         for site_code in site_codes_arr:
             w_s = self.get_site_by_code(site_code)
@@ -74,20 +95,22 @@ class Odm2Dao(BaseDao):
 
     def get_sites_by_box(self, west, south, east, north):
         """
-        north - ymax - latitude
-        south - ymin - latitude
-        west - xmin - longitude
-        east - xmax - longitude
+        Get wof sites from odm2 database by a bounding box
+        :param north: north - ymax - latitude
+        :param south: south - ymin - latitude
+        :param west: west - xmin - longitude
+        :param east: east - xmax - longitude
+        :return: List of WOF Sites
         """
         s_rArr = self.db_session.query(odm2_models.TimeSeriesResults,
-                                       odm2_models.Sites).\
+                                       odm2_models.Sites). \
             join(odm2_models.FeatureActions). \
             filter(odm2_models.FeatureActions.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
-                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,  # noqa
                    odm2_models.Sites.Latitude >= south,
                    odm2_models.Sites.Latitude <= north,
                    odm2_models.Sites.Longitude >= west,
-                   odm2_models.Sites.Longitude <= east).\
+                   odm2_models.Sites.Longitude <= east). \
             group_by(odm2_models.Sites.SamplingFeatureID).all()
         s_Arr = []
         for s_r in s_rArr:
@@ -96,6 +119,11 @@ class Odm2Dao(BaseDao):
         return s_Arr
 
     def get_variables_from_results(self, var_codes=None):
+        """
+        Get wof variables from odm2 database by a list of variable codes
+        :param var_codes: List of Variable Codes Ex. ['TEMP', 'SAL']
+        :return: List of WOF Variables
+        """
         l_var_codes = None
         if var_codes is not None:
             if not isinstance(var_codes, list):
@@ -106,17 +134,17 @@ class Odm2Dao(BaseDao):
 
         r_t_Arr = []
         if l_var_codes is None:
-            r_t = self.db_session.query(odm2_models.TimeSeriesResultValues).\
-                                        join(odm2_models.TimeSeriesResults).\
-                                        group_by(odm2_models.TimeSeriesResults.VariableID).all()
+            r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                join(odm2_models.TimeSeriesResults). \
+                group_by(odm2_models.TimeSeriesResults.VariableID).all()
             r_t_Arr.append(r_t)
         else:
             for item in l_var_codes:
-                r_t = self.db_session.query(odm2_models.TimeSeriesResultValues).\
-                        join(odm2_models.TimeSeriesResults).\
-                        join(odm2_models.Variables).\
-                        filter(odm2_models.Variables.VariableID == odm2_models.TimeSeriesResults.VariableID,
-                               odm2_models.Variables.VariableCode == item).\
+                r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                    join(odm2_models.TimeSeriesResults). \
+                    join(odm2_models.Variables). \
+                    filter(odm2_models.Variables.VariableID == odm2_models.TimeSeriesResults.VariableID,
+                           odm2_models.Variables.VariableCode == item). \
                     group_by(odm2_models.Variables.VariableID).all()
                 r_t_Arr.append(r_t)
         v_arr = []
@@ -128,16 +156,25 @@ class Odm2Dao(BaseDao):
                     s = result.ResultObj.SampledMediumCV
                     t = result.TimeAggregationIntervalUnitsObj
                     ti = result.TimeAggregationInterval
-                    w_v = model.Variable(v,s,u,t,ti)
+                    w_v = model.Variable(v, s, u, t, ti)
                     v_arr.append(w_v)
 
         return v_arr
 
     def get_all_variables(self):
+        """
+        Get wof variables from odm2 database
+        :return: List of WOF Variables
+        """
         v_arr = self.get_variables_from_results()
         return v_arr
 
     def get_variable_by_code(self, var_code):
+        """
+        Get wof variables from odm2 database by a variable code
+        :param var_code: Variable Codes Ex. 'TEMP'
+        :return: WOF Variable
+        """
         w_v = None
         v_arr = self.get_variables_from_results(var_code)
         if len(v_arr) is not 0:
@@ -145,79 +182,109 @@ class Odm2Dao(BaseDao):
         return w_v
 
     def get_variables_by_codes(self, var_codes_arr):
+        """
+        Get wof variables from odm2 database by a list of variable codes
+        :param var_codes_arr: List of Variable Codes Ex. ['TEMP', 'SAL']
+        :return: List of WOF Variables
+        """
         v_arr = self.get_variables_from_results(var_codes_arr)
         return v_arr
 
     def get_series_by_sitecode(self, site_code):
-        r = self.db_session.query(odm2_models.TimeSeriesResults).\
-            join(odm2_models.FeatureActions).\
-            join(odm2_models.SamplingFeatures).\
-            filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
-                   odm2_models.SamplingFeatures.SamplingFeatureCode == site_code).\
+        """
+        Get wof series from odm2 database by a site code
+        :param site_code: Site Code Ex. 'USU-LBR-Mendon'
+        :return: List of WOF Series
+        """
+        r = self.db_session.query(odm2_models.TimeSeriesResults). \
+            join(odm2_models.FeatureActions). \
+            join(odm2_models.SamplingFeatures). \
+            filter(
+            odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+            odm2_models.SamplingFeatures.SamplingFeatureCode == site_code). \
             group_by(odm2_models.TimeSeriesResults.VariableID).all()
         r_arr = []
         aff = None
         for i in range(len(r)):
             if i is 0:
-                aff = self.db_session.query(odm2_models.Affiliations).\
+                aff = self.db_session.query(odm2_models.Affiliations). \
                     filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
             w_r = model.Series(r[i], aff)
             r_arr.append(w_r)
         return r_arr
 
     def get_series_by_sitecode_and_varcode(self, site_code, var_code):
-        r = self.db_session.query(odm2_models.TimeSeriesResults).\
-            join(odm2_models.FeatureActions).\
-            join(odm2_models.SamplingFeatures).\
-            join(odm2_models.Variables).\
-            filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
-                   odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
-                   odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
-                   odm2_models.Variables.VariableCode == var_code).\
+        """
+        Get wof series from odm2 database by a site code and a variable code
+        :param site_code: Site Code Ex. 'USU-LBR-Mendon'
+        :param var_code: Variable Code Ex. 'TEMP'
+        :return: List of WOF Series
+        """
+        r = self.db_session.query(odm2_models.TimeSeriesResults). \
+            join(odm2_models.FeatureActions). \
+            join(odm2_models.SamplingFeatures). \
+            join(odm2_models.Variables). \
+            filter(
+            odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
+            odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
+            odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
+            odm2_models.Variables.VariableCode == var_code). \
             group_by(odm2_models.Results.VariableID).all()
         r_arr = []
         aff = None
         for i in range(len(r)):
             if i is 0:
-                aff = self.db_session.query(odm2_models.Affiliations).\
-                  filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
+                aff = self.db_session.query(odm2_models.Affiliations). \
+                    filter(odm2_models.Affiliations.OrganizationID == r[
+                    i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
             w_r = model.Series(r[i], aff)
             r_arr.append(w_r)
         return r_arr
 
     def get_datavalues(self, site_code, var_code,
                        begin_date_time=None, end_date_time=None):
-
+        """
+        Get wof datavalues from odm2 database by site code,
+        variable code, start datetime, and end datetime
+        :param site_code: Site Code Ex. 'USU-LBR-Mendon'
+        :param var_code: Variable Code Ex. 'TEMP'
+        :param begin_date_time: Start Time Ex. '2007-08-16 23:30:00.000'
+        :param end_date_time: End Time Ex. '2008-03-27 19:30:00.000'
+        :return: List of WOF DataValue
+        """
         if not begin_date_time or not end_date_time:
             try:
-                valueResultArr = self.db_session.query(odm2_models.TimeSeriesResultValues).\
-                        join(odm2_models.TimeSeriesResults).\
-                        join(odm2_models.FeatureActions).\
-                        join(odm2_models.SamplingFeatures).\
-                        join(odm2_models.Variables).\
-                        filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,  # noqa
-                               odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
-                               odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
-                               odm2_models.Variables.VariableCode == var_code).\
-                        order_by(odm2_models.TimeSeriesResultValues.ValueDateTime).all()
+                valueResultArr = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                    join(odm2_models.TimeSeriesResults). \
+                    join(odm2_models.FeatureActions). \
+                    join(odm2_models.SamplingFeatures). \
+                    join(odm2_models.Variables). \
+                    filter(
+                    odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,  # noqa
+                    # noqa
+                    odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
+                    odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
+                    odm2_models.Variables.VariableCode == var_code). \
+                    order_by(odm2_models.TimeSeriesResultValues.ValueDateTime).all()
             except:
                 valueResultArr = []
         else:
             begin_date_time = parse(begin_date_time)
             end_date_time = parse(end_date_time)
             try:
-                valueResultArr = self.db_session.query(odm2_models.TimeSeriesResultValues).\
-                        join(odm2_models.TimeSeriesResults).\
-                        join(odm2_models.FeatureActions).\
-                        join(odm2_models.SamplingFeatures).\
-                        join(odm2_models.Variables).\
-                        filter(odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
-                               odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
-                               odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
-                               odm2_models.Variables.VariableCode == var_code,
-                               odm2_models.TimeSeriesResultValues.ValueDateTime >= begin_date_time,
-                               odm2_models.TimeSeriesResultValues.ValueDateTime <= end_date_time).\
-                        order_by(odm2_models.TimeSeriesResultValues.ValueDateTime).all()
+                valueResultArr = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                    join(odm2_models.TimeSeriesResults). \
+                    join(odm2_models.FeatureActions). \
+                    join(odm2_models.SamplingFeatures). \
+                    join(odm2_models.Variables). \
+                    filter(
+                    odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,  # noqa
+                    odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
+                    odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
+                    odm2_models.Variables.VariableCode == var_code,
+                    odm2_models.TimeSeriesResultValues.ValueDateTime >= begin_date_time,
+                    odm2_models.TimeSeriesResultValues.ValueDateTime <= end_date_time). \
+                    order_by(odm2_models.TimeSeriesResultValues.ValueDateTime).all()
             except:
                 valueResultArr = []
         v_arr = []
@@ -229,20 +296,30 @@ class Odm2Dao(BaseDao):
                 if first_flag:
                     first_flag = False
                     org_id = valueResult.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
-                    aff = self.db_session.query(odm2_models.Affiliations).\
-                            filter(odm2_models.Affiliations.OrganizationID == org_id).first()
+                    aff = self.db_session.query(odm2_models.Affiliations). \
+                        filter(odm2_models.Affiliations.OrganizationID == org_id).first()
                 w_v = model.DataValue(valueResult, aff)
                 v_arr.append(w_v)
         return v_arr
 
     def get_method_by_id(self, method_id):
-        m = self.db_session.query(odm2_models.Methods).\
+        """
+        Get wof method from odm2 database by Method ID
+        :param method_id: Method ID. Ex. 'METHOD1'
+        :return: A WOF Method
+        """
+        m = self.db_session.query(odm2_models.Methods). \
             filter(odm2_models.Methods.MethodID == method_id).first()
         w_m = model.Method(m)
         return w_m
 
     def get_methods_by_ids(self, method_id_arr):
-        m = self.db_session.query(odm2_models.Methods).\
+        """
+        Get wof method from odm2 database by list of Method ID's
+        :param method_id_arr: List of Method ID. Ex. ['METHOD1', 'METHOD2']
+        :return: List of WOF Method
+        """
+        m = self.db_session.query(odm2_models.Methods). \
             filter(odm2_models.Methods.MethodID.in_(method_id_arr)).all()
         m_arr = []
         for i in range(len(m)):
@@ -251,13 +328,23 @@ class Odm2Dao(BaseDao):
         return m_arr
 
     def get_source_by_id(self, source_id):
-        aff = self.db_session.query(odm2_models.Affiliations).\
+        """
+        Get wof source from odm2 database by Affiliation ID
+        :param source_id: Affiliation ID.
+        :return: A WOF Source
+        """
+        aff = self.db_session.query(odm2_models.Affiliations). \
             filter(odm2_models.Affiliations.AffiliationID == source_id).one()
         w_aff = model.Source(aff)
         return w_aff
 
     def get_sources_by_ids(self, source_id_arr):
-        aff = self.db_session.query(odm2_models.Affiliations).\
+        """
+        Get wof source from odm2 database by a list of Affiliation ID's
+        :param source_id_arr: List of Affiliation ID.
+        :return: List WOF Source
+        """
+        aff = self.db_session.query(odm2_models.Affiliations). \
             filter(odm2_models.Affiliations.AffiliationID.in_(source_id_arr)).all()
         aff_arr = []
         for i in range(len(aff)):
@@ -266,13 +353,23 @@ class Odm2Dao(BaseDao):
         return aff_arr
 
     def get_qualcontrollvl_by_id(self, qual_control_lvl_id):
-        pl = self.db_session.query(odm2_models.ProcessingLevels)\
+        """
+        Get wof Quality Control Level from odm2 database by Processing Level ID
+        :param qual_control_lvl_id: Processing Level ID.
+        :return: A WOF Quality Control Level
+        """
+        pl = self.db_session.query(odm2_models.ProcessingLevels) \
             .filter(odm2_models.ProcessingLevels.ProcessingLevelID == qual_control_lvl_id).first()
         w_pl = model.QualityControlLevel(pl)
         return w_pl
 
     def get_qualcontrollvls_by_ids(self, qual_control_lvl_id_arr):
-        pl = self.db_session.query(odm2_models.ProcessingLevels)\
+        """
+        Get wof Quality Control Level from odm2 database by a list of Processing Level ID's
+        :param qual_control_lvl_id_arr: List Processing Level ID.
+        :return: List of WOF Quality Control Level
+        """
+        pl = self.db_session.query(odm2_models.ProcessingLevels) \
             .filter(odm2_models.ProcessingLevels.ProcessingLevelID.in_(qual_control_lvl_id_arr)).all()
         pl_arr = []
         for i in range(len(pl)):
