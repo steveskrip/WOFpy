@@ -15,7 +15,6 @@ import wof.flask
 from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao
 
 
-
 def get_connection(conf):
     """
     Function to get connection string
@@ -31,9 +30,12 @@ def get_connection(conf):
 
 parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
 parser.add_argument('--config',
-                   help='Configuration file', default='odm2_config_timeseries.cfg')
+                    help='Configuration file',
+                    default='odm2_config_timeseries.cfg')
 parser.add_argument('--port',
-                   help='Open port for server."', default=8080, type=int)
+                    help='Open port for server."',
+                    default=8080,
+                    type=int)
 args = parser.parse_args()
 
 dao = Odm2Dao(get_connection(args.config))
