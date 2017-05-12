@@ -1,0 +1,14 @@
+[Unit]
+# description of the script purpose
+Description=uWSGI instance to serve WOFpy
+
+[Service]
+# The Nginx server runs under the www-data group.
+# We need Nginx to be able to read from and write to the socket file, so we'll give this group ownership over the process
+User=www-data
+Group=www-data
+# Command to start the application with uwsgi
+ExecStart=/bin/bash -c 'export PATH=/home/ubuntu/miniconda/bin:$PATH; source activate wofpy; cd /var/www/wofpy; uwsgi --ini wofpy.ini'
+
+[Install]
+WantedBy=multi-user.target
