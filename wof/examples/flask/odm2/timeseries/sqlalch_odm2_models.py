@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""ORM Definition for WOF to work with ODM2 Model"""
+"""ORM Definition for WOF to work with ODM2 Model."""
 from __future__ import (absolute_import, division, print_function)
 
 from datetime import datetime, timedelta
