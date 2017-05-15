@@ -50,7 +50,7 @@ except ImportError:
     version = 'dev'
 
 _root_dir = os.path.abspath(os.path.dirname(__file__))
-_TEMPLATES = os.path.join(_root_dir, 'app', 'templates')
+_TEMPLATES = os.path.join(_root_dir, 'flask', 'templates')
 
 _SERVICE_PARAMS = {
     "r_type": "rest",
