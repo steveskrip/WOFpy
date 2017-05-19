@@ -1,3 +1,7 @@
+# ----- THIS IS A DRAFT! DO NOT USE YET, UNTIL THIS WARNING HAS BEEN REMOVED! -----
+5/19/2017: We plan to finalize the document by 5/25/2017 or so.
+
+-----------------------
 
 # Installing WOFpy with Little Bear River MySQL and SQLite ODM2 test database in "testing" and "production" modes.
 
