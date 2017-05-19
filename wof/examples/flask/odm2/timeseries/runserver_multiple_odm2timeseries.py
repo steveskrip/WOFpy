@@ -34,9 +34,11 @@ parser.add_argument('--port',
                    help='Open port for server."', default=8080, type=int)
 args = parser.parse_args()
 
+# Add the necessary DAO objects for each config
 m_dao = timeseries(get_connection(M_CONFIG_FILE))
 s_dao = timeseries(get_connection(S_CONFIG_FILE))
 
+# Create the necessary WOF config from the DAO and Config File Path
 m_conf = wof.core.wofConfig(m_dao, M_CONFIG_FILE)
 s_conf = wof.core.wofConfig(s_dao, S_CONFIG_FILE)
 
