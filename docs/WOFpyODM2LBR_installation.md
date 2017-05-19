@@ -202,72 +202,10 @@ cd $HOME/wofpy
 
 ### Set up runserver script
 
-1. Make a new script called `runserver.py` within `wofpy` folder.
+1. Edit `runserver_multiple_odm2timeseries.py` within `wofpy` directory to have your config files.
+2. For convenience, rename `runserver_multiple_odm2timeseries.py` to `runserver.py`.
     ```bash
-    touch runserver.py
-    ```
-2. Edit the script to match the content below.
-    
-    ```python
-    from __future__ import (absolute_import, division, print_function)
-
-    import argparse
-    import configparser
-    import logging
-    import os
-    import tempfile
-    import sys
-
-    from werkzeug.wsgi import DispatcherMiddleware
-    from werkzeug.serving import run_simple
-    from werkzeug.exceptions import NotFound
-
-    import wof
-    import wof.flask
-    from wof.examples.flask.odm2.timeseries.odm2_timeseries_dao import Odm2Dao as timeseries
-
-    M_CONFIG_FILE = os.path.join(os.path.curdir,'odm2_config_mysql.cfg')
-    S_CONFIG_FILE = os.path.join(os.path.curdir,'odm2_config_sqlite.cfg')
-
-    def get_connection(conf):
-        # Parse connection from config file
-        config = configparser.ConfigParser()
-        with open(conf, 'r') as configfile:
-            config.read_file(configfile)
-            connection = config['Database']['Connection_String']
-
-        return connection
-
-    parser = argparse.ArgumentParser(description='start WOF for an ODM2 database.')
-    parser.add_argument('--port',
-                       help='Open port for server."', default=8080, type=int)
-    args = parser.parse_args()
-
-    m_dao = timeseries(get_connection(M_CONFIG_FILE))
-    s_dao = timeseries(get_connection(S_CONFIG_FILE))
-
-    m_conf = wof.core.wofConfig(m_dao, M_CONFIG_FILE)
-    s_conf = wof.core.wofConfig(s_dao, S_CONFIG_FILE)
-
-    app = wof.flask.create_wof_flask_multiple({m_conf, s_conf}, templates=wof._TEMPLATES)
-
-    if __name__ == '__main__':
-
-        url = "http://127.0.0.1:" + str(args.port)
-        print("----------------------------------------------------------------")
-        print("Service endpoints")
-        for path in wof.flask.site_map_flask_wsgi_mount(app):
-            print("{}{}".format(url, path))
-
-        print("----------------------------------------------------------------")
-        print("----------------------------------------------------------------")
-        print("Access HTML descriptions of endpoints at ")
-        for path in wof.site_map(app):
-            print("{}{}".format(url, path))
-
-        print("----------------------------------------------------------------")
-
-        app.run(host='0.0.0.0', port=args.port, threaded=True)
+    mv runserver_multiple_odm2timeseries.py runserver.py
     ```
 3. Test that `runserver.py` will deploy WOFpy. Go to one of the endpoints provided, replacing `127.0.0.1` with your server ipaddress:
 
