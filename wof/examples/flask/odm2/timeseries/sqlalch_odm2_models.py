@@ -114,11 +114,16 @@ class Series(wof_base.BaseSeries):
         # self.MethodID = m_obj.MethodID
         # self.MethodDescription = m_obj.MethodDescription
         self.Method = Method(m_obj)
+        #
         if o_obj is not None:
             self.Organization = o_obj.OrganizationName
+
         self.BeginDateTimeUTC = a_obj.BeginDateTime.isoformat()
         if a_obj.EndDateTime is not None:
             self.EndDateTimeUTC = a_obj.EndDateTime.isoformat()
+        else:
+            self.EndDateTimeUTC = r.tsrv_EndDateTime.isoformat()
+
         self.ValueCount = r.ValueCount
         if aff is not None:
             self.Source = Source(aff)

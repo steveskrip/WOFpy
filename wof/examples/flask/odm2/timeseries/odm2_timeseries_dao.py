@@ -4,8 +4,8 @@ from __future__ import (absolute_import, division, print_function)
 
 from dateutil.parser import parse
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import (create_engine, func)
+from sqlalchemy.orm import (scoped_session, sessionmaker)
 
 from odm2api.ODM2 import models as odm2_models
 
@@ -46,15 +46,15 @@ class Odm2Dao(BaseDao):
 
         :return: List of WOF Sites
         """
-        s_rArr = self.db_session.query(odm2_models.Sites,
-                                       odm2_models.TimeSeriesResults). \
+        s_rArr = self.db_session.query(odm2_models.Sites). \
             join(odm2_models.FeatureActions). \
+            join(odm2_models.TimeSeriesResults). \
             filter(odm2_models.FeatureActions.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
-                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID).group_by(odm2_models.Sites.SamplingFeatureID).all()  # noqa
+                   odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID).distinct()  # noqa
 
         s_Arr = []
         for s_r in s_rArr:
-            s = model.Site(s_r.Sites)
+            s = model.Site(s_r)
             s_Arr.append(s)
         return s_Arr
 
@@ -96,19 +96,18 @@ class Odm2Dao(BaseDao):
         :param east: east - xmax - longitude
         :return: List of WOF Sites
         """
-        s_rArr = self.db_session.query(odm2_models.TimeSeriesResults,
-                                       odm2_models.Sites). \
+        s_rArr = self.db_session.query(odm2_models.Sites). \
             join(odm2_models.FeatureActions). \
+            join(odm2_models.TimeSeriesResults). \
             filter(odm2_models.FeatureActions.SamplingFeatureID == odm2_models.Sites.SamplingFeatureID,
                    odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,  # noqa
                    odm2_models.Sites.Latitude >= south,
                    odm2_models.Sites.Latitude <= north,
                    odm2_models.Sites.Longitude >= west,
-                   odm2_models.Sites.Longitude <= east). \
-            group_by(odm2_models.Sites.SamplingFeatureID).all()
+                   odm2_models.Sites.Longitude <= east).distinct()
         s_Arr = []
         for s_r in s_rArr:
-            s = model.Site(s_r.Sites)
+            s = model.Site(s_r)
             s_Arr.append(s)
         return s_Arr
 
@@ -118,6 +117,7 @@ class Odm2Dao(BaseDao):
         :param var_codes: List of Variable Codes Ex. ['TEMP', 'SAL']
         :return: List of WOF Variables
         """
+        # TODO: Need to refine this function; currently seeking database.
         l_var_codes = None
         if var_codes is not None:
             if not isinstance(var_codes, list):
@@ -128,18 +128,33 @@ class Odm2Dao(BaseDao):
 
         r_t_Arr = []
         if l_var_codes is None:
-            r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
-                join(odm2_models.TimeSeriesResults). \
-                group_by(odm2_models.TimeSeriesResults.VariableID).all()
+            if self.engine.name is 'postgresql':
+                r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                    join(odm2_models.TimeSeriesResults). \
+                    distinct(odm2_models.TimeSeriesResults.VariableID).all()
+            else:
+                r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                    join(odm2_models.TimeSeriesResults). \
+                    group_by(odm2_models.TimeSeriesResults.VariableID).all()
             r_t_Arr.append(r_t)
         else:
             for item in l_var_codes:
-                r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
-                    join(odm2_models.TimeSeriesResults). \
-                    join(odm2_models.Variables). \
-                    filter(odm2_models.Variables.VariableID == odm2_models.TimeSeriesResults.VariableID,
-                           odm2_models.Variables.VariableCode == item). \
-                    group_by(odm2_models.Variables.VariableID).all()
+                if self.engine.name is 'postgresql':
+                    r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                        join(odm2_models.TimeSeriesResults). \
+                        join(odm2_models.Variables). \
+                        filter(
+                        odm2_models.Variables.VariableID == odm2_models.TimeSeriesResults.VariableID,
+                        odm2_models.Variables.VariableCode == item). \
+                        distinct(odm2_models.Variables.VariableID).all()
+                else:
+                    r_t = self.db_session.query(odm2_models.TimeSeriesResultValues). \
+                        join(odm2_models.TimeSeriesResults). \
+                        join(odm2_models.Variables). \
+                        filter(
+                        odm2_models.Variables.VariableID == odm2_models.TimeSeriesResults.VariableID,
+                        odm2_models.Variables.VariableCode == item). \
+                        group_by(odm2_models.Variables.VariableID).all()
                 r_t_Arr.append(r_t)
         v_arr = []
         if len(r_t_Arr) is not 0:
@@ -196,13 +211,27 @@ class Odm2Dao(BaseDao):
             filter(
             odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,
             odm2_models.SamplingFeatures.SamplingFeatureCode == site_code). \
-            group_by(odm2_models.TimeSeriesResults.VariableID).all()
+            group_by(odm2_models.TimeSeriesResults.VariableID,
+                     odm2_models.TimeSeriesResults.ResultID,
+                     odm2_models.Results.ResultID).all()
+
+        ids = [i.ResultID for i in r]
+
+        edt_dict = _get_tsrv_enddatetimes(self.db_session, ids)
+
         r_arr = []
         aff = None
         for i in range(len(r)):
-            if i is 0:
+            if i == 0:
                 aff = self.db_session.query(odm2_models.Affiliations). \
                     filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
+                if aff:
+                    # TODO: Long run can't be here, ODM2 Allows aff without Organization
+                    if not aff.OrganizationObj:
+                        aff = None
+
+            r[i].tsrv_EndDateTime = edt_dict[r[i].ResultID]
+
             w_r = model.Series(r[i], aff)
             r_arr.append(w_r)
         return r_arr
@@ -223,7 +252,14 @@ class Odm2Dao(BaseDao):
             odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
             odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
             odm2_models.Variables.VariableCode == var_code). \
-            group_by(odm2_models.Results.VariableID).all()
+            group_by(odm2_models.TimeSeriesResults.VariableID,
+                     odm2_models.TimeSeriesResults.ResultID,
+                     odm2_models.Results.ResultID).all()
+
+        ids = [i.ResultID for i in r]
+
+        edt_dict = _get_tsrv_enddatetimes(self.db_session, ids)
+
         r_arr = []
         aff = None
         for i in range(len(r)):
@@ -231,6 +267,13 @@ class Odm2Dao(BaseDao):
                 aff = self.db_session.query(odm2_models.Affiliations). \
                     filter(odm2_models.Affiliations.OrganizationID == r[
                     i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
+                if aff:
+                    # TODO: Long run can't be here, ODM2 Allows aff without Organization
+                    if not aff.OrganizationObj:
+                        aff = None
+
+            r[i].tsrv_EndDateTime = edt_dict[r[i].ResultID]
+
             w_r = model.Series(r[i], aff)
             r_arr.append(w_r)
         return r_arr
@@ -255,7 +298,6 @@ class Odm2Dao(BaseDao):
                     join(odm2_models.Variables). \
                     filter(
                     odm2_models.TimeSeriesResults.FeatureActionID == odm2_models.FeatureActions.FeatureActionID,  # noqa
-                    # noqa
                     odm2_models.TimeSeriesResults.VariableID == odm2_models.Variables.VariableID,
                     odm2_models.SamplingFeatures.SamplingFeatureCode == site_code,
                     odm2_models.Variables.VariableCode == var_code). \
@@ -370,3 +412,13 @@ class Odm2Dao(BaseDao):
             w_pl = model.QualityControlLevel(pl[i])
             pl_arr.append(w_pl)
         return pl_arr
+
+
+def _get_tsrv_enddatetimes(db_session, resultids):
+    edt_dict = dict(db_session.query(odm2_models.TimeSeriesResultValues.ResultID,
+                                               func.max(
+                                                   odm2_models.TimeSeriesResultValues.ValueDateTime)).filter(  # noqa
+        odm2_models.TimeSeriesResultValues.ResultID.in_(resultids)). \
+                         group_by(odm2_models.TimeSeriesResultValues.ResultID).all())
+
+    return edt_dict
