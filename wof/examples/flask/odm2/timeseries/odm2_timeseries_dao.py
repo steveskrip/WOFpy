@@ -230,7 +230,6 @@ class Odm2Dao(BaseDao):
             r[i].tsrv_EndDateTime = edt_dict[r[i].ResultID]
 
             w_r = model.Series(r[i], aff)
-            print(vars(w_r))
             r_arr.append(w_r)
         return r_arr
 
