@@ -224,15 +224,13 @@ class Odm2Dao(BaseDao):
         for i in range(len(r)):
             if i == 0:
                 aff = self.db_session.query(odm2_models.Affiliations). \
-                    filter(odm2_models.Affiliations.OrganizationID == r[i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
-                if aff:
-                    # TODO: Long run can't be here, ODM2 Allows aff without Organization
-                    if not aff.OrganizationObj:
-                        aff = None
+                    join(odm2_models.ActionBy). \
+                    filter(odm2_models.ActionBy.ActionID == r[i].FeatureActionObj.ActionID).first()  # noqa
 
             r[i].tsrv_EndDateTime = edt_dict[r[i].ResultID]
 
             w_r = model.Series(r[i], aff)
+            print(vars(w_r))
             r_arr.append(w_r)
         return r_arr
 
@@ -265,12 +263,8 @@ class Odm2Dao(BaseDao):
         for i in range(len(r)):
             if i is 0:
                 aff = self.db_session.query(odm2_models.Affiliations). \
-                    filter(odm2_models.Affiliations.OrganizationID == r[
-                    i].FeatureActionObj.ActionObj.MethodObj.OrganizationID).first()  # noqa
-                if aff:
-                    # TODO: Long run can't be here, ODM2 Allows aff without Organization
-                    if not aff.OrganizationObj:
-                        aff = None
+                    join(odm2_models.ActionBy). \
+                    filter(odm2_models.ActionBy.ActionID == r[i].FeatureActionObj.ActionID).first()
 
             r[i].tsrv_EndDateTime = edt_dict[r[i].ResultID]
 
@@ -331,9 +325,10 @@ class Odm2Dao(BaseDao):
             for valueResult in valueResultArr:
                 if first_flag:
                     first_flag = False
-                    org_id = valueResult.ResultObj.FeatureActionObj.ActionObj.MethodObj.OrganizationID
+                    act_id = valueResult.ResultObj.FeatureActionObj.ActionID
                     aff = self.db_session.query(odm2_models.Affiliations). \
-                        filter(odm2_models.Affiliations.OrganizationID == org_id).first()
+                        join(odm2_models.ActionBy). \
+                        filter(odm2_models.ActionBy.ActionID == act_id).first()
                 w_v = model.DataValue(valueResult, aff)
                 v_arr.append(w_v)
         return v_arr
@@ -415,6 +410,12 @@ class Odm2Dao(BaseDao):
 
 
 def _get_tsrv_enddatetimes(db_session, resultids):
+    """Extracts Latest DateTime from Timeseries Result Values.
+
+    :param db_session: SQLAlchemy Session Object
+    :param resultids: List of result id. Ex. [1, 2, 3]
+    :return: Dictionary of End Date Time
+    """
     edt_dict = dict(db_session.query(odm2_models.TimeSeriesResultValues.ResultID,
                                                func.max(
                                                    odm2_models.TimeSeriesResultValues.ValueDateTime)).filter(  # noqa

@@ -93,7 +93,6 @@ class Series(wof_base.BaseSeries):
         # sf_obj = fa_obj.SamplingFeatureObj
         a_obj = fa_obj.ActionObj
         m_obj = a_obj.MethodObj
-        o_obj = m_obj.OrganizationObj
 
         self.SeriesID = r.ResultID
         # self.SiteID = fa_obj.SamplingFeatureID
@@ -114,10 +113,7 @@ class Series(wof_base.BaseSeries):
         # self.MethodID = m_obj.MethodID
         # self.MethodDescription = m_obj.MethodDescription
         self.Method = Method(m_obj)
-        #
-        if o_obj is not None:
-            self.Organization = o_obj.OrganizationName
-
+        # TODO: Need Datetime handling, get offset from data
         self.BeginDateTimeUTC = a_obj.BeginDateTime.isoformat()
         if a_obj.EndDateTime is not None:
             self.EndDateTimeUTC = a_obj.EndDateTime.isoformat()
@@ -126,6 +122,8 @@ class Series(wof_base.BaseSeries):
 
         self.ValueCount = r.ValueCount
         if aff is not None:
+            if aff.OrganizationObj is not None:
+                self.Organization = aff.OrganizationObj.OrganizationName
             self.Source = Source(aff)
 
 
@@ -203,15 +201,21 @@ class Source(wof_base.BaseSource):
         :param aff_obj: ODM2 Affiliation Object
         """
         self.SourceID = aff_obj.AffiliationID
-        self.Organization = aff_obj.OrganizationObj.OrganizationName
-        self.OrganizationCode = aff_obj.OrganizationObj.OrganizationCode
-        self.SourceDescription = aff_obj.OrganizationObj.OrganizationDescription
-        self.SourceLink = aff_obj.OrganizationObj.OrganizationLink
+
+        if aff_obj.OrganizationObj is not None:
+            self.Organization = aff_obj.OrganizationObj.OrganizationName
+            self.OrganizationCode = aff_obj.OrganizationObj.OrganizationCode
+            self.SourceDescription = aff_obj.OrganizationObj.OrganizationDescription
+            self.SourceLink = aff_obj.OrganizationObj.OrganizationLink
+
         self.ContactName = '%s %s' % (aff_obj.PersonObj.PersonFirstName,
                                       aff_obj.PersonObj.PersonLastName)
-        self.Phone = aff_obj.PrimaryPhone
+
+        if aff_obj.PrimaryPhone is not None:
+            self.Phone = aff_obj.PrimaryPhone
         self.Email = aff_obj.PrimaryEmail
-        self.Address = aff_obj.PrimaryAddress
+        if aff_obj.PrimaryAddress is not None:
+            self.Address = aff_obj.PrimaryAddress
         # self.City = 'San Diego'
         # self.State = 'CA'
         # self.ZipCode = '92122'
