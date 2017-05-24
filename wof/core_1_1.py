@@ -589,7 +589,7 @@ class WOF_1_1(object):
 
         contactInfo = self.create_contact_info_element(sourceResult)
 
-        source.ContactInformation = contactInfo
+        source.contactInformation = [contactInfo]
 
         if sourceResult.Metadata:
             metadata = WaterML.MetaDataType(
@@ -605,21 +605,17 @@ class WOF_1_1(object):
 
     def create_contact_info_element(self, sourceResult):
 
-        if (sourceResult.Address and
-           sourceResult.City and
-           sourceResult.State and
-           sourceResult.ZipCode):
+        if sourceResult.ContactName:
 
-            addressString = ", ".join([sourceResult.Address,
-                                       sourceResult.City,
-                                       sourceResult.State,
-                                       sourceResult.ZipCode])
+            addressString = ''
+            if sourceResult.Address:
+                addressString = '{}'.format(sourceResult.Address)
 
             contactInfo = WaterML.ContactInformationType(
-                email=sourceResult.Email,
+                email=[sourceResult.Email],
                 contactName=sourceResult.ContactName,
-                phone=sourceResult.Phone,
-                address=addressString)
+                phone=[sourceResult.Phone],
+                address=[addressString])
 
             return contactInfo
 
