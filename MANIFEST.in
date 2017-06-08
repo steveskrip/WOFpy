@@ -5,3 +5,5 @@ prune wof/examples/flask/barebones*
 prune wof/examples/flask/csv_server*
 prune wof/examples/flask/csv_tutorial*
 prune wof/examples/flask/odm_1_1*
+include versioneer.py
+include wof/_version.py

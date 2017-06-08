@@ -1,8 +1,6 @@
 # The version as used in the setup.py
 from __future__ import (absolute_import, division, print_function)
 
-__version__ = "2.0.11b0"
-
 from wof.core import _SERVICE_PARAMS, _TEMPLATES, site_map
 
 from wof.core_1_0 import WOF
@@ -16,3 +14,7 @@ __all__ = [
     WOF,
     WOF_1_1,
 ]
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
