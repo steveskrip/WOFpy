@@ -19,7 +19,7 @@ IOOS_SITE_FILE_URL = 'http://lighthouse.tamucc.edu/ioosobsreg.xml'
 CBI_SOS_URL = 'http://lighthouse.tamucc.edu/sos'
 CBI_SOS_CAPABILITIES_URL = CBI_SOS_URL + '?service=sos&request=GetCapabilities'
 GCOOS_ONTOLOGY_FILE_URL = \
-    'http://mmisw.org/ont?form=rdf&uri=http://mmisw.org/ont/gcoos/parameter'
+    'http://mmisw.org/ont/api/v0/ont?format=rdf&iri=http://mmisw.org/ont/gcoos/parameter'
 
 CBI_CACHE_DIR = tempfile.gettempdir()
 CBI_CACHE_DATABASE_URI = 'sqlite:///' + os.path.join(
