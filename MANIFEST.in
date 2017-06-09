@@ -1,10 +1,10 @@
 include *.txt
 recursive-include wof/flask/templates *
-recursive-include wof/examples/flask/odm2/timeseries *
-recursive-include wof/examples/production_configs *
+recursive-include wof/examples *
 prune wof/examples/flask/barebones*
 prune wof/examples/flask/csv_server*
 prune wof/examples/flask/csv_tutorial*
 prune wof/examples/flask/odm_1_1*
+prune test
 include versioneer.py
 include wof/_version.py
