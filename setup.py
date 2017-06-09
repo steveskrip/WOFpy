@@ -16,21 +16,14 @@ import re
 
 from setuptools import find_packages, setup
 
+import versioneer
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 
 
 def read(*parts):
     return codecs.open(os.path.join(here, *parts), 'r').read()
-
-
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
 
 
 # Dependencies.
@@ -40,7 +33,7 @@ install_requires = [t.strip() for t in requirements]
 
 setup(
     name='WOFpy',
-    version=find_version("wof", "__init__.py"),
+    version=versioneer.get_version(),
     license='BSD',
     author='James Seppi',
     author_email='james.seppi@gmail.com',
