@@ -55,9 +55,6 @@ setup(
         'sqlite': ['sqlalchemy'],
         'server': ['uwsgi'],
     },
-    dependency_links=[
-        'git+https://github.com/ODM2/ODM2PythonAPI@v0.1.0-alpha#egg=odm2api-0.1.0'  # noqa
-    ],
     tests_require=['suds-jurko', 'requests'],
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -75,4 +72,5 @@ setup(
         'wofpy_config = wof.wofpy_config:main'
         ]
     ),
+    cmdclass=versioneer.get_cmdclass(),
 )
